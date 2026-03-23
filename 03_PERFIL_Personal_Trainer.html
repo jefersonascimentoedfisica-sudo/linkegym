@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>LinkeGym — Perfil do Personal Trainer</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --red:#e8173a;--red2:#c0102c;--orange:#f97316;--blue:#1a8fff;
+  --dark:#0d0d0d;--white:#fff;--off:#f8f7f4;--gray:#f1f0ed;
+  --border:#e8e6e1;--text:#1a1a1a;--muted:#8a8a8a;--green:#10b981;
+  --gold:#f59e0b;--purple:#7c3aed;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--off);color:var(--text);min-height:100vh;}
+
+/* NAV */
+nav{background:white;border-bottom:1px solid var(--border);padding:0 5vw;height:64px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;box-shadow:0 2px 12px rgba(0,0,0,.04);}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.nav-logo img{width:34px;height:34px;object-fit:contain;}
+.nav-logo-name{font-size:1.15rem;font-weight:800;background:linear-gradient(90deg,var(--blue),var(--orange));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.nav-logo-tag{font-size:.6rem;color:var(--muted);font-style:italic;}
+.nav-back{display:flex;align-items:center;gap:6px;font-size:.82rem;font-weight:600;color:var(--muted);background:none;border:1px solid var(--border);cursor:pointer;font-family:inherit;padding:.45rem .9rem;border-radius:8px;transition:all .2s;}
+.nav-back:hover{background:var(--gray);color:var(--text);}
+
+/* PLAN SELECTOR (demo) */
+.plan-demo{background:var(--dark);padding:.7rem 5vw;display:flex;align-items:center;justify-content:center;gap:.6rem;flex-wrap:wrap;}
+.plan-demo-label{font-size:.65rem;color:rgba(255,255,255,.4);font-weight:600;letter-spacing:.08em;text-transform:uppercase;}
+.pdemo-btn{padding:.35rem .9rem;border-radius:100px;font-size:.72rem;font-weight:800;cursor:pointer;border:1.5px solid transparent;font-family:inherit;transition:all .2s;}
+.pdemo-btn.active-elite{background:linear-gradient(90deg,#f59e0b,#f97316);color:white;border-color:transparent;}
+.pdemo-btn.active-premium{background:linear-gradient(90deg,#7c3aed,#4f46e5);color:white;border-color:transparent;}
+.pdemo-btn.active-pro{background:linear-gradient(90deg,#059669,#10b981);color:white;border-color:transparent;}
+.pdemo-btn.active-free{background:#374151;color:white;border-color:transparent;}
+.pdemo-btn:not([class*="active"]){background:rgba(255,255,255,.06);color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.1);}
+.pdemo-btn:not([class*="active"]):hover{background:rgba(255,255,255,.12);color:white;}
+
+/* PROFILE WRAPPER */
+.profile-wrap{max-width:780px;margin:0 auto;padding:2rem 5vw 5rem;}
+
+/* COVER */
+.cover{border-radius:20px 20px 0 0;height:200px;position:relative;overflow:hidden;}
+.cover-img{width:100%;height:100%;object-fit:cover;}
+.cover-overlay{position:absolute;inset:0;}
+
+/* PLAN HEADER BANNER */
+.plan-banner{padding:.45rem 1.2rem;display:flex;align-items:center;justify-content:space-between;}
+.plan-banner-left{display:flex;align-items:center;gap:7px;font-size:.68rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:white;}
+.plan-banner-right{font-size:.62rem;color:rgba(255,255,255,.6);font-weight:500;}
+
+/* PROFILE CARD */
+.profile-card{background:white;border-radius:0 0 20px 20px;border:1px solid var(--border);border-top:none;padding:0 1.8rem 1.8rem;}
+
+/* AVATAR ROW */
+.avatar-row{display:flex;align-items:flex-end;justify-content:space-between;margin-top:-40px;margin-bottom:1rem;position:relative;z-index:2;}
+.avatar-wrap{position:relative;}
+.big-avatar{width:80px;height:80px;border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;font-weight:800;color:white;border:3px solid white;box-shadow:0 4px 16px rgba(0,0,0,.15);}
+.avatar-online{position:absolute;bottom:0;right:0;width:18px;height:18px;background:var(--green);border-radius:50%;border:3px solid white;}
+.avatar-video-badge{position:absolute;top:-4px;left:-4px;width:20px;height:20px;background:var(--blue);border-radius:50%;border:2px solid white;display:flex;align-items:center;justify-content:center;}
+.avatar-row-actions{display:flex;gap:.5rem;padding-top:50px;}
+.btn-fav{padding:.55rem .9rem;background:white;border:1.5px solid var(--border);border-radius:10px;cursor:pointer;font-family:inherit;font-size:.8rem;font-weight:700;display:flex;align-items:center;gap:5px;transition:all .2s;color:var(--text);}
+.btn-fav:hover{border-color:#f43f5e;color:#f43f5e;}
+.btn-share{padding:.55rem .9rem;background:white;border:1.5px solid var(--border);border-radius:10px;cursor:pointer;font-family:inherit;font-size:.8rem;font-weight:700;display:flex;align-items:center;gap:5px;transition:all .2s;color:var(--text);}
+.btn-share:hover{border-color:#aaa;}
+
+/* PROFILE INFO */
+.profile-name-row{display:flex;align-items:center;flex-wrap:wrap;gap:.5rem;margin-bottom:.3rem;}
+.profile-name{font-size:1.4rem;font-weight:800;color:var(--text);letter-spacing:-.02em;}
+.badge-verified{background:#ecfdf5;color:var(--green);font-size:.62rem;font-weight:800;padding:3px 9px;border-radius:20px;}
+.badge-plan{font-size:.62rem;font-weight:800;padding:3px 10px;border-radius:20px;}
+.profile-spec{font-size:.88rem;color:var(--muted);margin-bottom:.6rem;}
+.profile-meta{display:flex;align-items:center;gap:1rem;flex-wrap:wrap;font-size:.78rem;color:var(--muted);}
+.meta-item{display:flex;align-items:center;gap:4px;}
+
+/* STATS BAR */
+.stats-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin:1.2rem 0;}
+.stat-cell{background:white;padding:.9rem .5rem;text-align:center;}
+.stat-val{font-size:1.1rem;font-weight:800;color:var(--text);line-height:1;}
+.stat-lbl{font-size:.6rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-top:3px;}
+
+/* TABS */
+.tabs{display:flex;border-bottom:1px solid var(--border);margin:1.2rem -1.8rem 0;padding:0 1.8rem;gap:0;overflow-x:auto;}
+.tab{padding:.7rem 1.1rem;font-size:.8rem;font-weight:700;cursor:pointer;border-bottom:2px solid transparent;color:var(--muted);white-space:nowrap;transition:all .2s;background:none;border-top:none;border-left:none;border-right:none;font-family:inherit;}
+.tab.active{color:var(--text);border-bottom-color:var(--red);}
+.tab-content{padding-top:1.5rem;display:none;}
+.tab-content.active{display:block;}
+
+/* ABOUT */
+.about-bio{font-size:.9rem;line-height:1.75;color:#555;margin-bottom:1.3rem;}
+.section-label{font-size:.7rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:.7rem;display:flex;align-items:center;gap:6px;}
+.section-label::before{content:'';width:12px;height:2px;background:var(--red);}
+.spec-chips{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1.3rem;}
+.spec-chip{padding:.3rem .85rem;border-radius:100px;font-size:.75rem;font-weight:600;border:1px solid var(--border);background:var(--off);color:#555;}
+.spec-chip.highlight{background:rgba(232,23,58,.06);border-color:rgba(232,23,58,.2);color:var(--red);}
+.cert-list{display:flex;flex-direction:column;gap:.6rem;margin-bottom:1.3rem;}
+.cert-item{display:flex;align-items:flex-start;gap:10px;padding:.75rem 1rem;background:var(--off);border-radius:12px;border:1px solid var(--border);}
+.cert-icon{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1rem;}
+.cert-name{font-size:.82rem;font-weight:700;color:var(--text);}
+.cert-issuer{font-size:.7rem;color:var(--muted);}
+.areas-grid{display:flex;flex-wrap:wrap;gap:.4rem;}
+.area-chip{background:white;border:1px solid var(--border);border-radius:8px;padding:.25rem .7rem;font-size:.72rem;font-weight:600;color:#555;display:flex;align-items:center;gap:4px;}
+
+/* PHOTOS GRID */
+.photos-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;}
+.photo-item{aspect-ratio:1;border-radius:12px;overflow:hidden;position:relative;cursor:pointer;background:var(--gray);}
+.photo-item img{width:100%;height:100%;object-fit:cover;transition:transform .3s;}
+.photo-item:hover img{transform:scale(1.05);}
+.photo-placeholder{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.3rem;color:var(--muted);}
+.photo-placeholder span{font-size:1.5rem;}
+.photo-placeholder p{font-size:.65rem;font-weight:600;}
+.photo-lock{position:absolute;inset:0;background:rgba(0,0,0,.55);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.3rem;border-radius:12px;}
+.photo-lock span{font-size:1.5rem;}
+.photo-lock p{font-size:.65rem;font-weight:700;color:rgba(255,255,255,.8);text-align:center;padding:0 .5rem;}
+
+/* VIDEO */
+.video-section{margin-bottom:1rem;}
+.video-player{border-radius:16px;overflow:hidden;position:relative;background:var(--dark);aspect-ratio:16/9;}
+.video-thumb{width:100%;height:100%;object-fit:cover;opacity:.6;}
+.video-play{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.8rem;}
+.play-btn{width:60px;height:60px;border-radius:50%;background:rgba(255,255,255,.9);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;border:none;}
+.play-btn:hover{background:white;transform:scale(1.08);}
+.video-title{font-size:.78rem;font-weight:700;color:rgba(255,255,255,.8);}
+.video-lock{position:absolute;inset:0;background:rgba(0,0,0,.7);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.6rem;border-radius:16px;}
+.video-lock-icon{font-size:2.5rem;}
+.video-lock p{font-size:.82rem;font-weight:700;color:white;text-align:center;}
+.video-lock small{font-size:.7rem;color:rgba(255,255,255,.5);}
+
+/* REVIEWS */
+.review-summary{display:flex;align-items:center;gap:2rem;padding:1.2rem;background:var(--off);border-radius:14px;margin-bottom:1.2rem;border:1px solid var(--border);}
+.review-big-num{font-size:3rem;font-weight:800;color:var(--text);letter-spacing:-.04em;line-height:1;}
+.review-stars-big{color:#f59e0b;font-size:1.2rem;letter-spacing:2px;}
+.review-count{font-size:.75rem;color:var(--muted);margin-top:3px;}
+.rating-bars{flex:1;}
+.rating-bar-row{display:flex;align-items:center;gap:.5rem;margin-bottom:.3rem;}
+.rb-num{font-size:.7rem;font-weight:700;width:12px;color:var(--muted);}
+.rb-track{flex:1;height:5px;background:var(--border);border-radius:3px;overflow:hidden;}
+.rb-fill{height:100%;background:linear-gradient(90deg,#f59e0b,var(--orange));border-radius:3px;transition:width .6s ease;}
+.rb-pct{font-size:.65rem;color:var(--muted);width:28px;text-align:right;}
+.review-card{padding:1.1rem;background:white;border:1px solid var(--border);border-radius:14px;margin-bottom:.8rem;}
+.rc-header{display:flex;align-items:center;gap:.7rem;margin-bottom:.6rem;}
+.rc-avatar{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:800;color:white;flex-shrink:0;}
+.rc-name{font-size:.82rem;font-weight:700;color:var(--text);}
+.rc-date{font-size:.68rem;color:var(--muted);}
+.rc-stars{color:#f59e0b;font-size:.78rem;}
+.rc-text{font-size:.82rem;color:#555;line-height:1.65;font-style:italic;}
+.rc-text::before{content:'"';}
+.rc-text::after{content:'"';}
+
+/* SCHEDULE */
+.schedule-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:.4rem;margin-bottom:1.2rem;}
+.sched-day{text-align:center;}
+.sched-day-name{font-size:.6rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.3rem;}
+.sched-slots{display:flex;flex-direction:column;gap:.2rem;}
+.sched-slot{padding:.2rem;border-radius:5px;font-size:.55rem;font-weight:700;text-align:center;}
+.sched-slot.avail{background:rgba(16,185,129,.12);color:var(--green);}
+.sched-slot.busy{background:rgba(0,0,0,.04);color:#ccc;}
+
+/* STICKY CTA */
+.sticky-cta{position:fixed;bottom:0;left:0;right:0;z-index:60;background:white;border-top:1px solid var(--border);padding:1rem 5vw;box-shadow:0 -4px 24px rgba(0,0,0,.08);}
+.sticky-inner{max-width:780px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:1rem;}
+.sticky-trainer{display:flex;align-items:center;gap:.8rem;}
+.sticky-av{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:800;color:white;flex-shrink:0;}
+.sticky-name{font-size:.88rem;font-weight:800;color:var(--text);}
+.sticky-price{font-size:.78rem;color:var(--red);font-weight:700;}
+.sticky-btns{display:flex;gap:.6rem;}
+.btn-msg{padding:.7rem 1.1rem;background:white;border:1.5px solid var(--border);border-radius:12px;font-family:inherit;font-size:.8rem;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;transition:all .2s;color:var(--text);}
+.btn-msg:hover{border-color:#aaa;}
+.btn-request{padding:.7rem 1.5rem;border:none;border-radius:12px;font-family:inherit;font-size:.82rem;font-weight:800;cursor:pointer;color:white;display:flex;align-items:center;gap:6px;transition:all .2s;}
+.btn-request:hover{opacity:.9;transform:translateY(-1px);}
+
+/* UPGRADE NOTICE */
+.upgrade-notice{background:linear-gradient(135deg,rgba(245,158,11,.08),rgba(249,115,22,.05));border:1px solid rgba(245,158,11,.2);border-radius:14px;padding:1.1rem 1.2rem;display:flex;align-items:flex-start;gap:.8rem;margin-bottom:1rem;}
+.un-icon{font-size:1.3rem;flex-shrink:0;}
+.un-title{font-size:.82rem;font-weight:800;color:var(--text);margin-bottom:.2rem;}
+.un-desc{font-size:.75rem;color:var(--muted);line-height:1.5;}
+
+/* ANIMATIONS */
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+.fade-up{animation:fadeUp .4s ease both;}
+
+@media(max-width:600px){
+  .stats-bar{grid-template-columns:repeat(2,1fr);}
+  .photos-grid{grid-template-columns:repeat(2,1fr);}
+  .sticky-inner{flex-wrap:wrap;}
+  .schedule-grid{grid-template-columns:repeat(4,1fr);}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#">
+    <img id="navLogo" src="https://d2xsxph8kpxj0f.cloudfront.net/310519663402727665/W9B2DZe626mJSzUHcntkhr/linkegym-icon-correct-7iSBeGTmGXpGGLSH7wpVF5.webp" alt="LinkeGym"/>
+    <div>
+      <div class="nav-logo-name">LinkeGym</div>
+      <div class="nav-logo-tag">Conectando você à saúde</div>
+    </div>
+  </a>
+  <button class="nav-back" onclick="history.back()">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+    Voltar
+  </button>
+</nav>
+
+<!-- PLAN DEMO SELECTOR -->
+<div class="plan-demo">
+  <span class="plan-demo-label">Visualizar como plano:</span>
+  <button class="pdemo-btn active-elite" onclick="loadPlan('elite',this)">👑 Elite</button>
+  <button class="pdemo-btn" onclick="loadPlan('premium',this)">⭐ Premium</button>
+  <button class="pdemo-btn" onclick="loadPlan('pro',this)">✅ Profissional</button>
+  <button class="pdemo-btn" onclick="loadPlan('free',this)">🔓 Free</button>
+</div>
+
+<!-- PROFILE -->
+<div class="profile-wrap fade-up" id="profileWrap"></div>
+
+<!-- STICKY CTA -->
+<div class="sticky-cta" id="stickyCta"></div>
+
+<script>
+const PLANS = {
+  elite: {
+    name:'Rafael Costa',
+    spec:'Musculação · Funcional · HIIT · Emagrecimento',
+    bio:'Especialista em hipertrofia e emagrecimento com 8 anos de experiência. Ex-atleta de fisiculturismo, formado pela USP em Educação Física com pós-graduação em Biomecânica do Exercício. Já transformou mais de 200 alunos, desde iniciantes até atletas de alto rendimento.',
+    cref:'CREF 012345-G/SP',
+    avatar:'RC',
+    color:'linear-gradient(135deg,#e8173a,#f97316)',
+    price:80,
+    rating:5.0,
+    sessions:142,
+    students:89,
+    distance:'0.8km',
+    acceptRate:98,
+    responseTime:'~5 min',
+    experience:'8 anos',
+    plan:'elite',
+    planLabel:'ELITE',
+    planIcon:'👑',
+    planColor:'linear-gradient(90deg,#f59e0b,#f97316)',
+    planBorder:'#f59e0b',
+    planBg:'linear-gradient(160deg,#fffbeb,#fff8f0)',
+    planAccent:'#f59e0b',
+    badge:'🥇 Top da Semana',
+    coverBg:'linear-gradient(135deg,#1c0505,#3d1a00)',
+    specs:['Musculação','Funcional','HIIT','Emagrecimento','Hipertrofia','Core','Mobilidade'],
+    highlights:['Aceita hoje','Responde em ~5min','Mais solicitado','Top da semana'],
+    neighborhoods:['Paulista','Jardins','Itaim Bibi','Vila Olímpia','Moema'],
+    certs:[
+      {icon:'🎓',name:'Bacharelado em Ed. Física',issuer:'Universidade de São Paulo (USP)'},
+      {icon:'🏅',name:'Pós-grad. Biomecânica do Exercício',issuer:'FMUSP — 2019'},
+      {icon:'💪',name:'Personal Trainer Certificado',issuer:'CONFEF — CREF 012345'},
+      {icon:'🏆',name:'Especialização em Musculação Avançada',issuer:'CREF/SP — 2021'},
+    ],
+    hasPhotos:true,
+    hasVideo:true,
+    photoCount:12,
+    reviews:[
+      {name:'Camila M.',color:'linear-gradient(135deg,#e8173a,#f97316)',initials:'CM',rating:5,date:'há 3 dias',text:'Rafael é incrível! Fiz 3 meses com ele e perdi 8kg. Totalmente dedicado, pontual e muito atencioso. Recomendo demais!'},
+      {name:'Lucas F.',color:'linear-gradient(135deg,#7c3aed,#4f46e5)',initials:'LF',rating:5,date:'há 1 semana',text:'Melhor personal que já tive. Treinos bem planejados, explica tudo direitinho e cobra na medida certa. Vale cada centavo.'},
+      {name:'Patrícia S.',color:'linear-gradient(135deg,#059669,#10b981)',initials:'PS',rating:5,date:'há 2 semanas',text:'Profissional exemplar, chega sempre antes do horário, aula dinâmica e resultado aparece rápido. Super recomendo!'},
+    ],
+    ratingBars:[98,1,1,0,0],
+  },
+  premium: {
+    name:'Ana Paula Ferreira',
+    spec:'Pilates · Yoga · Reabilitação · Mobilidade',
+    bio:'Formada em Educação Física e pós-graduada em Pilates Clínico. Especialista em reabilitação postural e bem-estar. Atendo gestantes, idosos e pessoas em recuperação de lesões.',
+    cref:'CREF 067890-G/SP',
+    avatar:'AF',
+    color:'linear-gradient(135deg,#7c3aed,#4f46e5)',
+    price:90,
+    rating:4.9,
+    sessions:98,
+    students:61,
+    distance:'1.2km',
+    acceptRate:95,
+    responseTime:'~12 min',
+    experience:'6 anos',
+    plan:'premium',
+    planLabel:'PREMIUM',
+    planIcon:'⭐',
+    planColor:'linear-gradient(90deg,#7c3aed,#4f46e5)',
+    planBorder:'#7c3aed',
+    planBg:'linear-gradient(160deg,#f5f3ff,#faf8ff)',
+    planAccent:'#7c3aed',
+    badge:null,
+    coverBg:'linear-gradient(135deg,#1a0a2e,#2e1065)',
+    specs:['Pilates','Yoga','Reabilitação','Mobilidade','Gestantes','Idosos','Flexibilidade'],
+    highlights:['Alta avaliação','CREF verificado','Especialista em reabilitação'],
+    neighborhoods:['Moema','Vila Olímpia','Ibirapuera','Brooklin'],
+    certs:[
+      {icon:'🎓',name:'Bacharelado em Ed. Física',issuer:'PUC-SP — 2017'},
+      {icon:'🏅',name:'Pós-grad. Pilates Clínico',issuer:'Instituto Pilates Brasil — 2019'},
+      {icon:'💪',name:'Personal Trainer Certificado',issuer:'CONFEF — CREF 067890'},
+    ],
+    hasPhotos:true,
+    hasVideo:false,
+    photoCount:8,
+    reviews:[
+      {name:'Mariana R.',color:'linear-gradient(135deg,#db2777,#e879f9)',initials:'MR',rating:5,date:'há 2 dias',text:'Ana é excepcional! Tenho escoliose e ela montou um programa perfeito para mim. Dor no dia a dia reduziu 80%.'},
+      {name:'Roberto A.',color:'linear-gradient(135deg,#d97706,#f59e0b)',initials:'RA',rating:5,date:'há 5 dias',text:'Profissional muito competente e atenciosa. Minha mobilidade melhorou muito depois de 2 meses de pilates com ela.'},
+      {name:'Fernanda L.',color:'linear-gradient(135deg,#0891b2,#06b6d4)',initials:'FL',rating:4,date:'há 2 semanas',text:'Ótima professora de yoga. Transmite calma e conhecimento. Recomendo para quem quer começar ou evoluir na prática.'},
+    ],
+    ratingBars:[92,5,3,0,0],
+  },
+  pro: {
+    name:'Marcos Oliveira',
+    spec:'CrossFit · Emagrecimento · Funcional',
+    bio:'Personal trainer com foco em resultados rápidos e treinos intensos. Formado em Ed. Física, especialista em treino funcional de alta intensidade.',
+    cref:'CREF 011111-G/SP',
+    avatar:'MO',
+    color:'linear-gradient(135deg,#059669,#10b981)',
+    price:75,
+    rating:4.7,
+    sessions:67,
+    students:42,
+    distance:'1.5km',
+    acceptRate:90,
+    responseTime:'~20 min',
+    experience:'4 anos',
+    plan:'pro',
+    planLabel:'PROFISSIONAL',
+    planIcon:'✅',
+    planColor:'linear-gradient(90deg,#059669,#10b981)',
+    planBorder:'#10b981',
+    planBg:'linear-gradient(160deg,#f0fdf4,#f7fef9)',
+    planAccent:'#10b981',
+    badge:null,
+    coverBg:'linear-gradient(135deg,#022c22,#064e3b)',
+    specs:['CrossFit','Funcional','HIIT','Emagrecimento','Condicionamento'],
+    highlights:['Bom custo-benefício','CREF verificado'],
+    neighborhoods:['Pinheiros','Vila Madalena'],
+    certs:[
+      {icon:'🎓',name:'Bacharelado em Ed. Física',issuer:'Universidade Mackenzie — 2019'},
+      {icon:'💪',name:'Personal Trainer Certificado',issuer:'CONFEF — CREF 011111'},
+    ],
+    hasPhotos:true,
+    hasVideo:false,
+    photoCount:4,
+    reviews:[
+      {name:'Diego M.',color:'linear-gradient(135deg,#e8173a,#f97316)',initials:'DM',rating:5,date:'há 1 semana',text:'Marcos é muito bom! Treinos pesados mas muito bem orientados. Já perdi 5kg em 6 semanas.'},
+      {name:'Sabrina T.',color:'linear-gradient(135deg,#7c3aed,#4f46e5)',initials:'ST',rating:4,date:'há 3 semanas',text:'Bom profissional, pontual e comprometido. Recomendo para quem gosta de treinos intensos.'},
+    ],
+    ratingBars:[75,15,8,2,0],
+  },
+  free: {
+    name:'Carlos Mendes',
+    spec:'Musculação · Hipertrofia',
+    bio:'Personal trainer certificado atendendo na região da Paulista.',
+    cref:'CREF 033333-G/SP',
+    avatar:'CM',
+    color:'linear-gradient(135deg,#64748b,#94a3b8)',
+    price:60,
+    rating:4.3,
+    sessions:18,
+    students:12,
+    distance:'2.8km',
+    acceptRate:80,
+    responseTime:'~35 min',
+    experience:'2 anos',
+    plan:'free',
+    planLabel:'FREE',
+    planIcon:'🔓',
+    planColor:'linear-gradient(90deg,#6b7280,#9ca3af)',
+    planBorder:'#d1d5db',
+    planBg:'#ffffff',
+    planAccent:'#9ca3af',
+    badge:null,
+    coverBg:'linear-gradient(135deg,#1f2937,#374151)',
+    specs:['Musculação','Hipertrofia'],
+    highlights:[],
+    neighborhoods:['Paulista'],
+    certs:[
+      {icon:'💪',name:'Personal Trainer Certificado',issuer:'CONFEF — CREF 033333'},
+    ],
+    hasPhotos:false,
+    hasVideo:false,
+    photoCount:0,
+    reviews:[
+      {name:'André P.',color:'linear-gradient(135deg,#64748b,#94a3b8)',initials:'AP',rating:4,date:'há 1 mês',text:'Profissional dedicado, boa aula de musculação. Recomendo.'},
+    ],
+    ratingBars:[60,25,10,5,0],
+  }
+};
+
+function starsHtml(r){
+  return '★'.repeat(Math.floor(r))+(r%1>=.5?'½':'')+'☆'.repeat(5-Math.ceil(r));
+}
+
+function loadPlan(plan, btn){
+  // Update demo buttons
+  document.querySelectorAll('.pdemo-btn').forEach(b=>{
+    b.className='pdemo-btn';
+  });
+  btn.className=`pdemo-btn active-${plan}`;
+
+  const t = PLANS[plan];
+  const wrap = document.getElementById('profileWrap');
+  const isElite = plan==='elite';
+  const isPremium = plan==='premium';
+  const isPro = plan==='pro';
+  const isFree = plan==='free';
+
+  // Photos HTML
+  function photosHtml(){
+    if(!t.hasPhotos){
+      return `
+        <div class="upgrade-notice">
+          <span class="un-icon">📸</span>
+          <div>
+            <div class="un-title">Fotos não disponíveis neste plano</div>
+            <div class="un-desc">Este trainer ainda não adicionou fotos. Trainers com planos Profissional ou superior podem publicar fotos do seu trabalho.</div>
+          </div>
+        </div>`;
+    }
+    const photoUrls = [
+      'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=400&q=80',
+      'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=400&q=80',
+      'https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=400&q=80',
+      'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=400&q=80',
+      'https://images.unsplash.com/photo-1549476464-37392f717541?w=400&q=80',
+      'https://images.unsplash.com/photo-1526506118085-60ce8714f8c5?w=400&q=80',
+    ];
+    const maxPhotos = isElite?6:isPremium?4:2;
+    const lockedAfter = t.photoCount > maxPhotos ? maxPhotos : t.photoCount;
+
+    return `
+      <div class="photos-grid">
+        ${Array.from({length:6},(_,i)=>{
+          if(i < Math.min(lockedAfter, photoUrls.length)){
+            return `<div class="photo-item"><img src="${photoUrls[i]}" alt="Foto ${i+1}" loading="lazy"/></div>`;
+          }
+          return `
+            <div class="photo-item">
+              <div class="photo-placeholder"><span>📷</span><p>Foto ${i+1}</p></div>
+              <div class="photo-lock"><span>🔒</span><p>Visível com plano Premium+</p></div>
+            </div>`;
+        }).join('')}
+      </div>
+      ${t.photoCount > 6 ? `<p style="text-align:center;font-size:.75rem;color:var(--muted);margin-top:.7rem;">+${t.photoCount-6} fotos disponíveis</p>` : ''}`;
+  }
+
+  // Video HTML
+  function videoHtml(){
+    if(!t.hasVideo){
+      return `
+        <div class="upgrade-notice">
+          <span class="un-icon">🎬</span>
+          <div>
+            <div class="un-title">Vídeo de apresentação não disponível</div>
+            <div class="un-desc">Este trainer ainda não publicou um vídeo. Trainers com Plano Elite podem adicionar vídeos de apresentação e de treinos.</div>
+          </div>
+        </div>`;
+    }
+    return `
+      <div class="video-section">
+        <div class="video-player">
+          <img class="video-thumb" src="https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=800&q=80" alt="Video"/>
+          <div class="video-play">
+            <button class="play-btn" onclick="alert('Vídeo de apresentação do trainer — Em breve!')">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="var(--red)"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            </button>
+            <div class="video-title">Apresentação — Rafael Costa · Personal Trainer</div>
+          </div>
+        </div>
+        <p style="font-size:.72rem;color:var(--muted);margin-top:.5rem;text-align:center;">2:34 · Gravado em Nov 2024</p>
+      </div>
+      <div style="margin-top:1rem;">
+        <div class="section-label">Vídeos de treino</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem;">
+          ${[
+            {title:'Treino Funcional Completo',dur:'4:12',thumb:'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=400&q=80'},
+            {title:'HIIT 30 minutos',dur:'2:58',thumb:'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=400&q=80'},
+          ].map(v=>`
+            <div style="border-radius:12px;overflow:hidden;position:relative;aspect-ratio:16/9;cursor:pointer;background:var(--dark);" onclick="alert('Vídeo: ${v.title}')">
+              <img src="${v.thumb}" style="width:100%;height:100%;object-fit:cover;opacity:.6;"/>
+              <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.3rem;">
+                <div style="width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.85);display:flex;align-items:center;justify-content:center;">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="var(--red)"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                </div>
+                <span style="font-size:.62rem;color:rgba(255,255,255,.8);font-weight:700;">${v.dur}</span>
+              </div>
+              <div style="position:absolute;bottom:.4rem;left:.5rem;right:.5rem;font-size:.62rem;color:rgba(255,255,255,.7);font-weight:600;">${v.title}</div>
+            </div>`).join('')}
+        </div>
+      </div>`;
+  }
+
+  // Schedule HTML
+  function scheduleHtml(){
+    const days = ['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'];
+    const slots = ['06h','08h','10h','14h','16h','18h','20h'];
+    return `
+      <div class="section-label" style="margin-bottom:.8rem;">Disponibilidade semanal</div>
+      <div class="schedule-grid">
+        ${days.map((d,di)=>`
+          <div class="sched-day">
+            <div class="sched-day-name">${d}</div>
+            <div class="sched-slots">
+              ${slots.map((s,si)=>{
+                const avail = Math.random() > 0.4 && !(di>=5 && si>3);
+                return `<div class="sched-slot ${avail?'avail':'busy'}">${avail?s:'—'}</div>`;
+              }).join('')}
+            </div>
+          </div>`).join('')}
+      </div>
+      <p style="font-size:.72rem;color:var(--muted);margin-top:.5rem;">
+        <span style="display:inline-flex;align-items:center;gap:4px;"><span style="width:8px;height:8px;background:rgba(16,185,129,.3);border-radius:2px;display:inline-block;"></span>Disponível</span>
+        &nbsp;&nbsp;
+        <span style="display:inline-flex;align-items:center;gap:4px;"><span style="width:8px;height:8px;background:var(--border);border-radius:2px;display:inline-block;"></span>Indisponível</span>
+      </p>`;
+  }
+
+  wrap.innerHTML = `
+    <!-- COVER -->
+    <div class="cover fade-up" style="background:${t.coverBg}">
+      <div class="cover-overlay" style="background:linear-gradient(to bottom,rgba(0,0,0,.1),rgba(0,0,0,.5))"></div>
+      <!-- Plan banner inside cover -->
+      <div class="plan-banner" style="background:${t.planColor};position:absolute;bottom:0;left:0;right:0;">
+        <div class="plan-banner-left">
+          <span>${t.planIcon}</span>
+          <span>Plano ${t.planLabel}</span>
+          ${t.badge?`<span style="margin-left:8px;background:rgba(0,0,0,.2);padding:2px 8px;border-radius:20px;font-size:.58rem;">${t.badge}</span>`:''}
+        </div>
+        <div class="plan-banner-right">${
+          isElite?'Máxima visibilidade & recursos':
+          isPremium?'Alta visibilidade & perfil completo':
+          isPro?'Visibilidade ampliada':
+          'Perfil básico'
+        }</div>
+      </div>
+    </div>
+
+    <!-- PROFILE CARD -->
+    <div class="profile-card fade-up" style="border:1.5px solid ${t.planBorder};border-top:none;background:${t.planBg}">
+
+      <!-- Avatar row -->
+      <div class="avatar-row">
+        <div class="avatar-wrap">
+          <div class="big-avatar" style="background:${t.color}">
+            ${t.avatar}
+            ${t.hasVideo?`<div class="avatar-video-badge"><svg width="8" height="8" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>`:''}
+          </div>
+          <div class="avatar-online"></div>
+        </div>
+        <div class="avatar-row-actions">
+          <button class="btn-fav">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            Favoritar
+          </button>
+          <button class="btn-share">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+            Compartilhar
+          </button>
+        </div>
+      </div>
+
+      <!-- Name & info -->
+      <div class="profile-name-row">
+        <span class="profile-name">${t.name}</span>
+        <span class="badge-verified">✓ CREF Verificado</span>
+        <span class="badge-plan" style="background:${t.planColor};color:white;">${t.planIcon} ${t.planLabel}</span>
+      </div>
+      <div class="profile-spec">${t.spec}</div>
+      <div class="profile-meta">
+        <div class="meta-item">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          ${t.distance} de você
+        </div>
+        <div class="meta-item">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          Responde em ${t.responseTime}
+        </div>
+        <div class="meta-item" style="color:var(--green);font-weight:700;">
+          <span style="width:6px;height:6px;background:var(--green);border-radius:50%;display:inline-block;"></span>
+          Online agora
+        </div>
+      </div>
+
+      <!-- Stats bar -->
+      <div class="stats-bar">
+        <div class="stat-cell">
+          <div class="stat-val" style="color:var(--red);">${t.rating.toFixed(1)}</div>
+          <div class="stat-lbl">Avaliação</div>
+        </div>
+        <div class="stat-cell">
+          <div class="stat-val">${t.sessions}</div>
+          <div class="stat-lbl">Aulas feitas</div>
+        </div>
+        <div class="stat-cell">
+          <div class="stat-val" style="color:var(--green);">${t.acceptRate}%</div>
+          <div class="stat-lbl">Taxa aceite</div>
+        </div>
+        <div class="stat-cell">
+          <div class="stat-val">${t.experience}</div>
+          <div class="stat-lbl">Experiência</div>
+        </div>
+      </div>
+
+      <!-- Highlights -->
+      ${t.highlights.length>0?`
+      <div style="display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:.8rem;">
+        ${t.highlights.map(h=>`<span style="display:inline-flex;align-items:center;gap:4px;background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.2);color:#059669;font-size:.65rem;font-weight:700;padding:.25rem .7rem;border-radius:100px;">⚡ ${h}</span>`).join('')}
+      </div>`:''}
+
+      <!-- TABS -->
+      <div class="tabs">
+        <button class="tab active" onclick="switchTab(this,'about')">Sobre</button>
+        <button class="tab" onclick="switchTab(this,'photos')">Fotos ${t.hasPhotos?`(${t.photoCount})`:'🔒'}</button>
+        <button class="tab" onclick="switchTab(this,'video')">Vídeo ${t.hasVideo?'▶':'🔒'}</button>
+        <button class="tab" onclick="switchTab(this,'reviews')">Avaliações (${t.reviews.length})</button>
+        <button class="tab" onclick="switchTab(this,'schedule')">Agenda</button>
+      </div>
+
+      <!-- TAB: SOBRE -->
+      <div class="tab-content active" id="tab-about">
+        <div class="about-bio">${t.bio}</div>
+
+        <div class="section-label">Especialidades</div>
+        <div class="spec-chips">
+          ${t.specs.map((s,i)=>`<span class="spec-chip${i<2?' highlight':''}">${s}</span>`).join('')}
+        </div>
+
+        <div class="section-label">Formação & Certificações</div>
+        <div class="cert-list">
+          ${t.certs.map(c=>`
+            <div class="cert-item">
+              <div class="cert-icon" style="background:${t.planAccent}22;">${c.icon}</div>
+              <div>
+                <div class="cert-name">${c.name}</div>
+                <div class="cert-issuer">${c.issuer}</div>
+              </div>
+            </div>`).join('')}
+        </div>
+
+        ${(isElite||isPremium)?`
+        <div class="section-label">Bairros atendidos</div>
+        <div class="areas-grid">
+          ${t.neighborhoods.map(n=>`<span class="area-chip">📍 ${n}</span>`).join('')}
+        </div>`:
+        `<div class="upgrade-notice" style="margin-top:.5rem;">
+          <span class="un-icon">📍</span>
+          <div>
+            <div class="un-title">Bairros não listados neste plano</div>
+            <div class="un-desc">Trainers com plano Premium+ exibem todos os bairros onde atendem.</div>
+          </div>
+        </div>`}
+      </div>
+
+      <!-- TAB: FOTOS -->
+      <div class="tab-content" id="tab-photos">
+        ${photosHtml()}
+      </div>
+
+      <!-- TAB: VÍDEO -->
+      <div class="tab-content" id="tab-video">
+        ${videoHtml()}
+      </div>
+
+      <!-- TAB: AVALIAÇÕES -->
+      <div class="tab-content" id="tab-reviews">
+        <div class="review-summary">
+          <div style="text-align:center;">
+            <div class="review-big-num">${t.rating.toFixed(1)}</div>
+            <div class="review-stars-big">${'★'.repeat(Math.floor(t.rating))}</div>
+            <div class="review-count">${t.sessions} avaliações</div>
+          </div>
+          <div class="rating-bars">
+            ${[5,4,3,2,1].map((star,i)=>`
+              <div class="rating-bar-row">
+                <span class="rb-num">${star}</span>
+                <div class="rb-track"><div class="rb-fill" style="width:${t.ratingBars[i]}%"></div></div>
+                <span class="rb-pct">${t.ratingBars[i]}%</span>
+              </div>`).join('')}
+          </div>
+        </div>
+        ${t.reviews.map(r=>`
+          <div class="review-card">
+            <div class="rc-header">
+              <div class="rc-avatar" style="background:${r.color}">${r.initials}</div>
+              <div style="flex:1;">
+                <div class="rc-name">${r.name}</div>
+                <div class="rc-date">${r.date}</div>
+              </div>
+              <div class="rc-stars">${'★'.repeat(r.rating)}</div>
+            </div>
+            <div class="rc-text">${r.text}</div>
+          </div>`).join('')}
+        <p style="text-align:center;font-size:.75rem;color:var(--muted);margin-top:.5rem;">Exibindo ${t.reviews.length} avaliações mais recentes</p>
+      </div>
+
+      <!-- TAB: AGENDA -->
+      <div class="tab-content" id="tab-schedule">
+        ${scheduleHtml()}
+        <div style="margin-top:1.2rem;padding:1rem;background:var(--off);border-radius:12px;border:1px solid var(--border);">
+          <div style="font-size:.78rem;font-weight:700;color:var(--text);margin-bottom:.3rem;">📅 Solicitar horário específico</div>
+          <div style="font-size:.75rem;color:var(--muted);">Para agendar um horário, volte ao fluxo de Treino Avulso e selecione a data e horário desejados. O trainer confirmará a disponibilidade em até 30 minutos.</div>
+        </div>
+      </div>
+
+    </div><!-- /profile-card -->
+    <div style="height:90px;"></div>
+  `;
+
+  // Sticky CTA
+  document.getElementById('stickyCta').innerHTML = `
+    <div class="sticky-inner">
+      <div class="sticky-trainer">
+        <div class="sticky-av" style="background:${t.color}">${t.avatar}</div>
+        <div>
+          <div class="sticky-name">${t.name}</div>
+          <div class="sticky-price">R$${t.price} por aula · ${t.distance}</div>
+        </div>
+      </div>
+      <div class="sticky-btns">
+        <button class="btn-msg">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Mensagem
+        </button>
+        <button class="btn-request" style="background:${t.planColor};" onclick="alert('Solicitação enviada para ${t.name}!')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          Solicitar Agora
+        </button>
+      </div>
+    </div>
+  `;
+}
+
+function switchTab(btn, tabId){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tab-'+tabId)?.classList.add('active');
+}
+
+// Load elite by default
+loadPlan('elite', document.querySelector('.pdemo-btn'));
+</script>
+</body>
+</html>

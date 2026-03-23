@@ -1,0 +1,79 @@
+═══════════════════════════════════════════════════════════
+  LINKEGYM — PROJETO COMPLETO DE TELAS
+  Desenvolvido com Claude (Anthropic) · Março 2026
+═══════════════════════════════════════════════════════════
+
+📁 ARQUIVOS DO PROJETO
+──────────────────────
+
+01_HOME_Principal.html
+   → Página inicial completa com:
+   - Topbar com redes sociais (Instagram, YouTube, TikTok,
+     Facebook, WhatsApp, LinkedIn, App Store, Google Play)
+   - Modal de login/cadastro (Auth Gate)
+   - Hero com foto de academia + 3 botões (Encontrar Personal,
+     Treino Avulso, Sou Personal Trainer)
+   - Seções: Stats, Como Funciona, Para Alunos vs Trainers,
+     Segurança, Depoimentos, Planos, CTA Final, Footer
+   - Logo e slogan "Conectando você à saúde" em todas as seções
+
+02_TREINO_AVULSO_Fluxo.html
+   → Fluxo completo de solicitação de aula avulsa:
+   - Passo 1: CEP com busca automática (ViaCEP)
+   - Passo 2: Tipo de local + Calendário + 24 horários + Duração
+   - Passo 3: Preferências (especialidade, preço, gênero, avaliação)
+   - Passo 4: Trainers filtrados por plano (Elite/Premium/Pro/Free)
+   - Modal de confirmação + Tela de sucesso com cronômetro 30min
+
+03_PERFIL_Personal_Trainer.html
+   → Perfil completo do personal com diferenciação por plano:
+   - Plano Elite: foto, vídeo, bio, bairros, métricas, highlights
+   - Plano Premium: foto, bio, bairros, métricas
+   - Plano Profissional: foto, bio, taxa de aceite
+   - Plano Free: perfil básico, sem foto/vídeo
+   - Abas: Sobre, Fotos, Vídeo, Avaliações, Agenda
+   - Sticky CTA com botão "Solicitar Aula" (sem botão de mensagem)
+
+04_FLUXO_Solicitacao_Completo.html
+   → Todas as telas pós-solicitação (11 telas):
+   - Tela 1: Perfil (só botão Solicitar, sem Mensagem)
+   - Tela 2: Confirmação de envio ao aluno
+   - Tela 3: Mockup WhatsApp ao Personal (com botões)
+   - Tela 4: Cronômetro 30min aguardando
+   - Tela 5: Timeout / Próximo personal da fila
+   - Tela 6: Aula confirmada + Política de cancelamento
+   - Tela 7: Pagamento (Pix + QR Code / Cartão)
+   - Tela 8: Contatos revelados após pagamento
+   - Tela 9: Pós-aula — confirmar conclusão (30min)
+   - Tela 10: Avaliação mútua (aluno e personal)
+   - Tela 11: Fluxo concluído + indicação
+
+05_NOTIFICACOES_WhatsApp_Email.html
+   → Estratégia e templates de notificação (5 abas):
+   - Estratégia: comparativo WA vs Email + decisão final
+   - WhatsApp: mockup real com logo + botões de ação
+   - E-mail Personal: template HTML completo
+   - E-mail Aluno: template de confirmação
+   - Fluxo Completo: todos os disparos T+0 até conclusão
+
+Home.tsx
+   → Arquivo React pronto para substituir no projeto Manus:
+   - client/src/pages/Home.tsx
+   - Inclui AuthGateModal, hero com 3 botões, stats, etc.
+
+═══════════════════════════════════════════════════════════
+
+💡 COMO USAR OS ARQUIVOS HTML
+──────────────────────────────
+Abra qualquer arquivo .html diretamente no navegador.
+Não precisa de servidor — funcionam offline.
+
+💡 COMO USAR O HOME.TSX
+─────────────────────────
+Substitua o arquivo:
+  client/src/pages/Home.tsx
+no seu projeto do Manus pelo arquivo Home.tsx deste zip.
+
+═══════════════════════════════════════════════════════════
+  Dúvidas? Continue o desenvolvimento com Claude.
+═══════════════════════════════════════════════════════════

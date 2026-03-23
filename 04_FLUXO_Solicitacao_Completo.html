@@ -1,0 +1,1188 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>LinkeGym — Fluxo Completo de Solicitação</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --red:#e8173a;--red2:#c0102c;--orange:#f97316;--blue:#1a8fff;
+  --dark:#0d0d0d;--white:#fff;--off:#f8f7f4;--gray:#f1f0ed;
+  --border:#e8e6e1;--text:#1a1a1a;--muted:#8a8a8a;--green:#10b981;
+  --gold:#f59e0b;--purple:#7c3aed;--wa:#25D366;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--off);color:var(--text);min-height:100vh;}
+
+/* NAV */
+nav{background:white;border-bottom:1px solid var(--border);padding:0 5vw;height:64px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;box-shadow:0 2px 12px rgba(0,0,0,.04);}
+.nav-logo{display:flex;align-items:center;gap:10px;}
+.nav-logo img{width:34px;height:34px;object-fit:contain;}
+.nav-logo-name{font-size:1.15rem;font-weight:800;background:linear-gradient(90deg,var(--blue),var(--orange));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.nav-logo-tag{font-size:.6rem;color:var(--muted);font-style:italic;}
+.nav-back{display:flex;align-items:center;gap:6px;font-size:.82rem;font-weight:600;color:var(--muted);background:none;border:1px solid var(--border);cursor:pointer;font-family:inherit;padding:.45rem .9rem;border-radius:8px;transition:all .2s;}
+.nav-back:hover{background:var(--gray);color:var(--text);}
+
+/* DEMO BAR */
+.demo-bar{background:var(--dark);padding:.5rem 5vw;display:flex;align-items:center;justify-content:center;gap:.35rem;flex-wrap:wrap;position:sticky;top:64px;z-index:40;}
+.demo-label{font-size:.56rem;color:rgba(255,255,255,.25);font-weight:800;letter-spacing:.1em;text-transform:uppercase;margin-right:.2rem;}
+.db{padding:.26rem .65rem;border-radius:100px;font-size:.6rem;font-weight:800;cursor:pointer;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.04);color:rgba(255,255,255,.3);font-family:inherit;transition:all .2s;white-space:nowrap;}
+.db:hover{background:rgba(255,255,255,.1);color:rgba(255,255,255,.8);}
+.db.on{background:var(--red);color:white;border-color:var(--red);}
+
+/* SCREENS */
+.screen{display:none;max-width:500px;margin:0 auto;padding:2rem 5vw 8rem;animation:fadeUp .4s cubic-bezier(.16,1,.3,1);}
+.screen.active{display:block;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:translateY(0);}}
+
+/* CARDS */
+.card{background:white;border-radius:20px;border:1px solid var(--border);padding:1.8rem;box-shadow:0 4px 20px rgba(0,0,0,.04);margin-bottom:1rem;}
+
+/* SCREEN HEADER */
+.sh{text-align:center;margin-bottom:1.5rem;}
+.sh-icon{font-size:3rem;display:block;margin-bottom:.7rem;animation:pop .5s cubic-bezier(.175,.885,.32,1.275);}
+@keyframes pop{from{transform:scale(0);opacity:0;}to{transform:scale(1);opacity:1;}}
+.sh-title{font-size:1.3rem;font-weight:800;color:var(--text);letter-spacing:-.02em;line-height:1.2;margin-bottom:.35rem;}
+.sh-desc{font-size:.82rem;color:var(--muted);line-height:1.65;max-width:360px;margin:0 auto;}
+
+/* TRAINER MINI */
+.tm{display:flex;align-items:center;gap:.9rem;padding:1rem 1.1rem;background:var(--off);border-radius:14px;border:1px solid var(--border);margin-bottom:1.2rem;}
+.tm-av{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1rem;color:white;flex-shrink:0;}
+.tm-name{font-size:.9rem;font-weight:800;color:var(--text);}
+.tm-spec{font-size:.7rem;color:var(--muted);margin-top:1px;}
+.tm-stars{font-size:.68rem;color:var(--gold);margin-top:2px;}
+.tm-price{font-size:1.1rem;font-weight:800;color:var(--red);text-align:right;}
+.tm-price-sub{font-size:.6rem;color:var(--muted);text-align:right;}
+
+/* SUMMARY */
+.summary{background:var(--off);border-radius:14px;border:1px solid var(--border);overflow:hidden;margin-bottom:1.2rem;}
+.sr{display:flex;align-items:center;justify-content:space-between;padding:.72rem 1rem;border-bottom:1px solid var(--border);}
+.sr:last-child{border:none;}
+.sr-l{font-size:.74rem;color:var(--muted);display:flex;align-items:center;gap:6px;}
+.sr-r{font-size:.8rem;font-weight:700;color:var(--text);text-align:right;}
+
+/* BUTTONS */
+.btn{width:100%;padding:.95rem;border:none;border-radius:14px;font-size:.9rem;font-weight:800;cursor:pointer;font-family:inherit;transition:all .25s;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:.6rem;}
+.btn:last-child{margin-bottom:0;}
+.btn-red{background:var(--red);color:white;box-shadow:0 4px 16px rgba(232,23,58,.25);}
+.btn-red:hover{background:var(--red2);transform:translateY(-2px);box-shadow:0 8px 24px rgba(232,23,58,.3);}
+.btn-dark{background:var(--dark);color:white;}
+.btn-dark:hover{background:#222;transform:translateY(-1px);}
+.btn-green{background:var(--green);color:white;box-shadow:0 4px 16px rgba(16,185,129,.25);}
+.btn-green:hover{background:#059669;transform:translateY(-1px);}
+.btn-wa{background:var(--wa);color:white;box-shadow:0 4px 16px rgba(37,211,102,.25);}
+.btn-wa:hover{background:#1da851;transform:translateY(-1px);}
+.btn-outline{background:white;color:var(--text);border:1.5px solid var(--border);}
+.btn-outline:hover{border-color:#aaa;}
+.btn-ghost{background:transparent;color:var(--muted);border:1.5px solid var(--border);font-weight:600;}
+.btn-ghost:hover{color:var(--text);border-color:#bbb;}
+
+/* TIMELINE */
+.timeline{display:flex;flex-direction:column;}
+.tl-item{display:flex;gap:1rem;}
+.tl-item:not(:last-child){padding-bottom:1.1rem;}
+.tl-left{display:flex;flex-direction:column;align-items:center;flex-shrink:0;}
+.tl-dot{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.68rem;font-weight:800;flex-shrink:0;transition:all .4s;}
+.tl-dot.done{background:var(--green);color:white;}
+.tl-dot.active{background:var(--red);color:white;animation:pulse-dot 1.5s infinite;}
+.tl-dot.waiting{background:var(--gold);color:white;}
+.tl-dot.idle{background:white;color:var(--muted);border:2px solid var(--border);}
+@keyframes pulse-dot{0%{box-shadow:0 0 0 0 rgba(232,23,58,.4);}70%{box-shadow:0 0 0 8px rgba(232,23,58,0);}100%{box-shadow:0 0 0 0 rgba(232,23,58,0);}}
+.tl-line{width:2px;flex:1;margin:3px 0;border-radius:1px;}
+.tl-line.done{background:var(--green);}
+.tl-line.idle{background:var(--border);}
+.tl-right{flex:1;padding-top:4px;padding-bottom:.2rem;}
+.tl-title{font-size:.84rem;font-weight:800;margin-bottom:.12rem;}
+.tl-title.done{color:var(--green);}
+.tl-title.active{color:var(--red);}
+.tl-title.waiting{color:var(--gold);}
+.tl-title.idle{color:var(--muted);}
+.tl-desc{font-size:.73rem;color:var(--muted);line-height:1.5;}
+.tl-stamp{font-size:.63rem;font-weight:700;color:var(--green);margin-top:.2rem;}
+
+/* COUNTDOWN */
+.cd-card{background:linear-gradient(135deg,#0d0d0d,#1c1c2e);border-radius:18px;padding:1.8rem;text-align:center;margin-bottom:1rem;}
+.cd-label{font-size:.6rem;font-weight:800;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:.7rem;}
+.cd-time{font-size:4rem;font-weight:800;color:white;letter-spacing:-.05em;line-height:1;font-variant-numeric:tabular-nums;}
+.cd-time.urgent{color:#f87171;animation:blink 1s infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:.5;}}
+.cd-sub{font-size:.73rem;color:rgba(255,255,255,.3);margin-top:.5rem;line-height:1.5;}
+.cd-bar-wrap{height:4px;background:rgba(255,255,255,.07);border-radius:2px;margin-top:1.2rem;overflow:hidden;}
+.cd-bar{height:100%;border-radius:2px;transition:width 1s linear,background .5s;}
+
+/* WHATSAPP MOCKUP */
+.wa-phone{background:#e5ddd5;border-radius:16px;overflow:hidden;border:1px solid rgba(0,0,0,.08);margin-bottom:1rem;}
+.wa-top{background:#075e54;padding:.7rem 1rem;display:flex;align-items:center;gap:.7rem;}
+.wa-av{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.75rem;color:white;flex-shrink:0;}
+.wa-info .wa-name{font-size:.84rem;font-weight:700;color:white;}
+.wa-info .wa-status{font-size:.62rem;color:rgba(255,255,255,.55);}
+.wa-body{padding:.85rem;display:flex;flex-direction:column;gap:.55rem;}
+.wa-bubble{max-width:88%;border-radius:12px;padding:.75rem .9rem;font-size:.76rem;line-height:1.6;box-shadow:0 1px 2px rgba(0,0,0,.1);}
+.wa-bubble.recv{background:white;border-radius:4px 12px 12px 12px;align-self:flex-start;}
+.wa-bubble.sent{background:#dcf8c6;border-radius:12px 4px 12px 12px;align-self:flex-end;}
+.wa-bubble b{display:block;color:#075e54;font-size:.78rem;margin-bottom:.3rem;}
+.wa-tick{font-size:.6rem;color:rgba(0,0,0,.3);text-align:right;margin-top:.3rem;}
+.wa-action-row{display:grid;grid-template-columns:1fr 1fr;gap:.4rem;margin-top:.5rem;}
+.wa-confirm-btn{padding:.55rem;background:#25D366;color:white;border:none;border-radius:8px;font-size:.72rem;font-weight:800;cursor:pointer;font-family:inherit;transition:all .2s;}
+.wa-confirm-btn:hover{background:#1da851;}
+.wa-refuse-btn{padding:.55rem;background:#e8173a;color:white;border:none;border-radius:8px;font-size:.72rem;font-weight:800;cursor:pointer;font-family:inherit;transition:all .2s;}
+.wa-refuse-btn:hover{background:#c0102c;}
+
+/* NOTIFICATION */
+.notif{display:flex;align-items:flex-start;gap:.8rem;padding:1rem 1.1rem;background:white;border-radius:14px;border:1px solid var(--border);margin-bottom:.6rem;box-shadow:0 2px 8px rgba(0,0,0,.04);}
+.notif-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;}
+.notif-title{font-size:.82rem;font-weight:800;color:var(--text);margin-bottom:.18rem;}
+.notif-desc{font-size:.73rem;color:var(--muted);line-height:1.5;}
+.notif-time{font-size:.6rem;color:var(--muted);margin-top:.2rem;}
+
+/* PAYMENT */
+.price-box{background:linear-gradient(135deg,rgba(232,23,58,.05),rgba(249,115,22,.03));border:1px solid rgba(232,23,58,.12);border-radius:16px;padding:1.3rem;margin-bottom:1.2rem;}
+.pb-row{display:flex;justify-content:space-between;align-items:center;padding:.38rem 0;font-size:.8rem;}
+.pb-row+.pb-row{border-top:1px dashed rgba(0,0,0,.06);}
+.pb-label{color:var(--muted);}
+.pb-value{font-weight:700;color:var(--text);}
+.pb-total{display:flex;justify-content:space-between;align-items:center;padding:.8rem 0 0;margin-top:.4rem;border-top:1.5px solid rgba(232,23,58,.15);}
+.pb-total-label{font-size:.88rem;font-weight:800;color:var(--text);}
+.pb-total-value{font-size:1.4rem;font-weight:800;color:var(--red);}
+.pb-note{font-size:.67rem;color:var(--muted);margin-top:.6rem;text-align:center;line-height:1.55;}
+
+.pay-methods{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:1.2rem;}
+.pm{padding:1rem .7rem;border:1.5px solid var(--border);border-radius:14px;background:white;cursor:pointer;text-align:center;transition:all .2s;font-family:inherit;}
+.pm:hover{border-color:rgba(232,23,58,.3);}
+.pm.on{border-color:var(--red);background:rgba(232,23,58,.03);box-shadow:0 0 0 3px rgba(232,23,58,.07);}
+.pm-ico{font-size:1.6rem;display:block;margin-bottom:.3rem;}
+.pm-name{font-size:.78rem;font-weight:800;color:var(--text);}
+.pm-sub{font-size:.62rem;color:var(--muted);margin-top:1px;}
+
+.pix-box{text-align:center;padding:1.2rem;background:var(--off);border-radius:14px;border:1px solid var(--border);}
+.pix-qr{width:130px;height:130px;margin:0 auto .7rem;background:white;border-radius:12px;border:2px solid var(--border);padding:8px;display:grid;place-items:center;}
+.pix-code-text{font-size:.65rem;color:var(--muted);word-break:break-all;line-height:1.5;margin-bottom:.6rem;padding:0 .4rem;}
+.pix-copy-btn{padding:.5rem 1.2rem;background:var(--dark);color:white;border:none;border-radius:8px;font-size:.73rem;font-weight:700;cursor:pointer;font-family:inherit;transition:background .2s;}
+.pix-copy-btn:hover{background:#222;}
+.pix-expires{font-size:.68rem;color:var(--red);font-weight:700;margin-top:.5rem;display:flex;align-items:center;justify-content:center;gap:4px;}
+
+.card-area{background:var(--off);border-radius:14px;padding:1.1rem;border:1px solid var(--border);}
+.ci-field{margin-bottom:.8rem;}
+.ci-label{display:block;font-size:.72rem;font-weight:700;color:#555;margin-bottom:.35rem;}
+.ci-inp{width:100%;padding:.7rem .9rem;border:1.5px solid var(--border);border-radius:10px;font-size:.85rem;font-family:inherit;color:var(--text);outline:none;transition:all .2s;background:white;}
+.ci-inp:focus{border-color:var(--red);box-shadow:0 0 0 3px rgba(232,23,58,.07);}
+.ci-row{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;}
+
+/* ESCROW */
+.escrow-box{background:linear-gradient(135deg,rgba(16,185,129,.07),rgba(16,185,129,.02));border:1px solid rgba(16,185,129,.2);border-radius:14px;padding:1rem 1.1rem;display:flex;gap:.8rem;align-items:flex-start;margin-bottom:1rem;}
+.escrow-icon{font-size:1.3rem;flex-shrink:0;margin-top:1px;}
+.escrow-title{font-size:.8rem;font-weight:800;color:var(--text);margin-bottom:.15rem;}
+.escrow-desc{font-size:.73rem;color:var(--muted);line-height:1.5;}
+
+/* CONTACT REVEAL */
+.contact-card{border-radius:16px;overflow:hidden;border:1px solid var(--border);margin-bottom:.8rem;}
+.cc-header{padding:.65rem 1rem;display:flex;align-items:center;gap:.5rem;font-size:.65rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;}
+.cc-body{padding:1rem;display:flex;align-items:center;gap:.9rem;}
+.cc-av{width:44px;height:44px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.9rem;color:white;flex-shrink:0;}
+.cc-name{font-size:.88rem;font-weight:800;color:var(--text);}
+.cc-role{font-size:.68rem;color:var(--muted);}
+.cc-wa-btn{margin-left:auto;padding:.5rem 1rem;background:var(--wa);color:white;border:none;border-radius:9px;font-size:.72rem;font-weight:800;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:5px;transition:all .2s;flex-shrink:0;}
+.cc-wa-btn:hover{background:#1da851;}
+
+/* SECURITY BADGE */
+.security-row{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1rem;}
+.sec-badge{display:flex;align-items:center;gap:4px;background:rgba(16,185,129,.07);border:1px solid rgba(16,185,129,.15);color:#059669;font-size:.65rem;font-weight:700;padding:.25rem .65rem;border-radius:100px;}
+
+/* RATING STARS */
+.stars-row{display:flex;gap:.4rem;justify-content:center;margin:1rem 0;}
+.star-btn{font-size:2.2rem;background:none;border:none;cursor:pointer;transition:transform .15s;filter:grayscale(1);opacity:.4;}
+.star-btn.on{filter:grayscale(0);opacity:1;}
+.star-btn:hover{transform:scale(1.2);}
+.rating-aspects{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin:1rem 0;}
+.ra-item{background:var(--off);border:1px solid var(--border);border-radius:12px;padding:.7rem .8rem;text-align:center;}
+.ra-label{font-size:.68rem;font-weight:700;color:var(--muted);margin-bottom:.35rem;}
+.ra-stars{display:flex;gap:.15rem;justify-content:center;}
+.ra-star{font-size:1.1rem;cursor:pointer;filter:grayscale(1);opacity:.3;transition:all .1s;}
+.ra-star.on{filter:grayscale(0);opacity:1;}
+.comment-area{width:100%;padding:.8rem .9rem;border:1.5px solid var(--border);border-radius:12px;font-size:.82rem;font-family:inherit;color:var(--text);outline:none;transition:all .2s;resize:vertical;min-height:80px;background:white;}
+.comment-area:focus{border-color:var(--red);box-shadow:0 0 0 3px rgba(232,23,58,.07);}
+
+/* SUCCESS FINAL */
+.confetti-wrap{position:relative;overflow:hidden;border-radius:20px;}
+.confetti-dot{position:absolute;width:8px;height:8px;border-radius:50%;animation:confettiFall linear infinite;}
+@keyframes confettiFall{0%{transform:translateY(-20px) rotate(0deg);opacity:1;}100%{transform:translateY(300px) rotate(360deg);opacity:0;}}
+
+/* ANTIFRAUDE NOTICE */
+.antifraude{background:linear-gradient(135deg,rgba(26,143,255,.07),rgba(26,143,255,.02));border:1px solid rgba(26,143,255,.15);border-radius:12px;padding:.85rem 1rem;display:flex;gap:.7rem;margin-bottom:.8rem;}
+.af-icon{font-size:1.1rem;flex-shrink:0;}
+.af-text{font-size:.73rem;color:#1a6bb5;line-height:1.55;font-weight:500;}
+
+/* INFO BOX */
+.info-box{background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.18);border-radius:12px;padding:.85rem 1rem;display:flex;gap:.7rem;margin-bottom:.8rem;}
+.ib-icon{font-size:1.1rem;flex-shrink:0;}
+.ib-text{font-size:.73rem;color:#92400e;line-height:1.55;}
+
+/* SECTION LABEL */
+.slabel{font-size:.62rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:.7rem;display:flex;align-items:center;gap:5px;}
+.slabel::before{content:'';width:10px;height:2px;background:var(--red);}
+
+/* DIVIDER */
+.divider{height:1px;background:var(--border);margin:1rem 0;}
+
+@media(max-width:480px){
+  .pay-methods{grid-template-columns:1fr 1fr;}
+  .rating-aspects{grid-template-columns:1fr 1fr;}
+  .ci-row{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">
+    <img src="https://d2xsxph8kpxj0f.cloudfront.net/310519663402727665/W9B2DZe626mJSzUHcntkhr/linkegym-icon-correct-7iSBeGTmGXpGGLSH7wpVF5.webp" alt="LinkeGym"/>
+    <div>
+      <div class="nav-logo-name">LinkeGym</div>
+      <div class="nav-logo-tag">Conectando você à saúde</div>
+    </div>
+  </div>
+  <button class="nav-back" onclick="history.back()">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+    Voltar
+  </button>
+</nav>
+
+<!-- DEMO BAR -->
+<div class="demo-bar">
+  <span class="demo-label">Simular tela:</span>
+  <button class="db on" onclick="show('s1',this)">1· Perfil</button>
+  <button class="db" onclick="show('s2',this)">2· Enviada</button>
+  <button class="db" onclick="show('s3',this)">3· WhatsApp PT</button>
+  <button class="db" onclick="show('s4',this)">4· Aguardando</button>
+  <button class="db" onclick="show('s5',this)">5· Timeout</button>
+  <button class="db" onclick="show('s6',this)">6· Confirmado</button>
+  <button class="db" onclick="show('s7',this)">7· Pagamento</button>
+  <button class="db" onclick="show('s8',this)">8· Contatos</button>
+  <button class="db" onclick="show('s9',this)">9· Pós-Aula</button>
+  <button class="db" onclick="show('s10',this)">10· Avaliação</button>
+  <button class="db" onclick="show('s11',this)">11· Concluído</button>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     TELA 1 — PERFIL DO PERSONAL (VISÃO DO ALUNO)
+═══════════════════════════════════════════════ -->
+<div class="screen active" id="s1">
+  <div class="sh">
+    <span class="sh-icon">👤</span>
+    <div class="sh-title">Perfil do Personal</div>
+    <div class="sh-desc">Visão do aluno — apenas o botão de solicitar aula aparece</div>
+  </div>
+
+  <div class="card">
+    <!-- Trainer header -->
+    <div style="display:flex;align-items:flex-start;gap:1rem;margin-bottom:1.2rem;">
+      <div style="position:relative;">
+        <div style="width:64px;height:64px;border-radius:16px;background:linear-gradient(135deg,#e8173a,#f97316);display:flex;align-items:center;justify-content:center;font-size:1.2rem;font-weight:800;color:white;">RC</div>
+        <div style="position:absolute;bottom:-2px;right:-2px;width:14px;height:14px;background:var(--green);border-radius:50%;border:2px solid white;"></div>
+      </div>
+      <div style="flex:1;">
+        <div style="display:flex;align-items:center;gap:.4rem;flex-wrap:wrap;margin-bottom:2px;">
+          <span style="font-size:1rem;font-weight:800;">Rafael Costa</span>
+          <span style="background:#ecfdf5;color:var(--green);font-size:.58rem;font-weight:800;padding:2px 7px;border-radius:20px;">✓ CREF</span>
+          <span style="background:linear-gradient(90deg,#f59e0b,#f97316);color:white;font-size:.58rem;font-weight:800;padding:2px 8px;border-radius:20px;">👑 ELITE</span>
+        </div>
+        <div style="font-size:.75rem;color:var(--muted);margin-bottom:.3rem;">Musculação · Funcional · HIIT</div>
+        <div style="font-size:.75rem;color:var(--gold);">★★★★★ <span style="color:var(--muted);">5.0 · 142 aulas</span></div>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-size:1.3rem;font-weight:800;color:var(--red);">R$80</div>
+        <div style="font-size:.62rem;color:var(--muted);">por aula</div>
+      </div>
+    </div>
+
+    <div class="summary">
+      <div class="sr"><span class="sr-l">📍 Distância</span><span class="sr-r">0.8km de você</span></div>
+      <div class="sr"><span class="sr-l">⚡ Resposta</span><span class="sr-r" style="color:var(--green);">~5 minutos</span></div>
+      <div class="sr"><span class="sr-l">✅ Taxa de aceite</span><span class="sr-r">98%</span></div>
+      <div class="sr"><span class="sr-l">📅 Disponível</span><span class="sr-r">Hoje · 18h00</span></div>
+    </div>
+
+    <!-- AVISO TAXA ACADEMIA -->
+    <div style="display:flex;align-items:flex-start;gap:.7rem;background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.2);border-radius:12px;padding:.8rem 1rem;margin-bottom:1rem;">
+      <span style="font-size:1.1rem;flex-shrink:0;">⚠️</span>
+      <div>
+        <div style="font-size:.76rem;font-weight:800;color:#92400e;margin-bottom:.12rem;">O valor da aula não inclui taxa de academia</div>
+        <div style="font-size:.7rem;color:#a16207;line-height:1.5;">O honorário do personal trainer é R$80. Caso o treino seja em academia, condomínio ou espaço pago, a taxa de acesso é por conta do aluno.</div>
+      </div>
+    </div>
+
+    <!-- ANTIFRAUDE NOTICE -->
+    <div class="antifraude">
+      <span class="af-icon">🔒</span>
+      <div class="af-text">Por segurança, o contato do personal só é liberado após a confirmação e pagamento da aula. Toda negociação ocorre dentro da plataforma.</div>
+    </div>
+
+    <!-- APENAS SOLICITAR — SEM BOTÃO DE MENSAGEM -->
+    <button class="btn btn-red" onclick="show('s2',null);scrollToTop();">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      Solicitar Aula Agora
+    </button>
+    <p style="text-align:center;font-size:.68rem;color:var(--muted);margin-top:.4rem;">Sem cobrança agora · Pague só após o aceite</p>
+  </div>
+
+  <div class="info-box">
+    <span class="ib-icon">💡</span>
+    <div class="ib-text">O botão "Enviar mensagem" foi removido para evitar negociações fora da plataforma e garantir a segurança de alunos e trainers.</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     TELA 2 — SOLICITAÇÃO ENVIADA (ALUNO)
+═══════════════════════════════════════════════ -->
+<div class="screen" id="s2">
+  <div class="sh">
+    <span class="sh-icon">✅</span>
+    <div class="sh-title">Solicitação enviada!</div>
+    <div class="sh-desc">Aguarde a confirmação do personal trainer. Você será notificado assim que houver uma resposta.</div>
+  </div>
+
+  <div class="card">
+    <div class="slabel">Resumo da solicitação</div>
+    <div class="tm">
+      <div class="tm-av" style="background:linear-gradient(135deg,#e8173a,#f97316)">RC</div>
+      <div style="flex:1;">
+        <div class="tm-name">Rafael Costa</div>
+        <div class="tm-spec">Musculação · Funcional · HIIT</div>
+        <div class="tm-stars">★★★★★ 5.0</div>
+      </div>
+      <div>
+        <div class="tm-price">R$80</div>
+        <div class="tm-price-sub">por aula</div>
+      </div>
+    </div>
+
+    <div class="summary">
+      <div class="sr"><span class="sr-l">📅 Data</span><span class="sr-r">Hoje, 23/03/2026</span></div>
+      <div class="sr"><span class="sr-l">⏰ Horário</span><span class="sr-r">18h00</span></div>
+      <div class="sr"><span class="sr-l">⏱️ Duração</span><span class="sr-r">1 hora</span></div>
+      <div class="sr"><span class="sr-l">🏋️ Local</span><span class="sr-r">Academia Smart Fit</span></div>
+      <div class="sr"><span class="sr-l">📍 Endereço</span><span class="sr-r">Av. Paulista, 900</span></div>
+      <div class="sr"><span class="sr-l">🎯 Especialidade</span><span class="sr-r">Musculação</span></div>
+    </div>
+
+    <!-- AVISO TAXA -->
+    <div style="display:flex;align-items:flex-start;gap:.7rem;background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.2);border-radius:12px;padding:.8rem 1rem;margin-bottom:1.1rem;">
+      <span style="font-size:1rem;flex-shrink:0;">⚠️</span>
+      <div style="font-size:.72rem;color:#a16207;line-height:1.5;"><strong style="color:#92400e;">Lembrete:</strong> O valor R$80 é apenas o honorário do personal trainer. A taxa de acesso à academia Smart Fit é por conta do aluno.</div>
+    </div>
+
+    <!-- Timeline status -->
+    <div class="slabel" style="margin-top:.3rem;">Status em tempo real</div>
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-left"><div class="tl-dot done">✓</div><div class="tl-line done"></div></div>
+        <div class="tl-right">
+          <div class="tl-title done">Solicitação enviada</div>
+          <div class="tl-desc">Sua solicitação foi registrada com sucesso.</div>
+          <div class="tl-stamp">Agora mesmo · 17h32</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-left"><div class="tl-dot active">2</div><div class="tl-line idle"></div></div>
+        <div class="tl-right">
+          <div class="tl-title active">Aguardando personal</div>
+          <div class="tl-desc">Rafael tem 30 minutos para confirmar ou recusar. Você será notificado pelo WhatsApp.</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-left"><div class="tl-dot idle">3</div><div class="tl-line idle"></div></div>
+        <div class="tl-right"><div class="tl-title idle">Pagamento</div><div class="tl-desc">Após confirmação, você realiza o pagamento com segurança.</div></div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-left"><div class="tl-dot idle">4</div><div class="tl-line idle"></div></div>
+        <div class="tl-right"><div class="tl-title idle">Treino realizado</div><div class="tl-desc">Você e o personal confirmam a conclusão da aula.</div></div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-left"><div class="tl-dot idle">5</div></div>
+        <div class="tl-right"><div class="tl-title idle">Avaliação</div><div class="tl-desc">Ambos avaliam a experiência.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="notif">
+    <div class="notif-icon" style="background:rgba(37,211,102,.1);">📱</div>
+    <div>
+      <div class="notif-title">WhatsApp enviado ao personal</div>
+      <div class="notif-desc">Rafael recebeu sua solicitação e tem 30 minutos para responder.</div>
+      <div class="notif-time">Agora mesmo</div>
+    </div>
+  </div>
+
+  <button class="btn btn-ghost" onclick="show('s4',null);scrollToTop();">Acompanhar em tempo real →</button>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     TELA 3 — WHATSAPP DO PERSONAL TRAINER
+═══════════════════════════════════════════════ -->
+<div class="screen" id="s3">
+  <div class="sh">
+    <span class="sh-icon">📲</span>
+    <div class="sh-title">Notificação ao Personal</div>
+    <div class="sh-desc">Rafael recebe esta mensagem automática no WhatsApp com todos os detalhes</div>
+  </div>
+
+  <div class="wa-phone">
+    <div class="wa-top">
+      <div class="wa-av" style="background:linear-gradient(135deg,#e8173a,#f97316);">LG</div>
+      <div class="wa-info">
+        <div class="wa-name">LinkeGym 🏋️</div>
+        <div class="wa-status">Online agora</div>
+      </div>
+    </div>
+    <div class="wa-body">
+      <div class="wa-bubble recv">
+        <b>📋 NOVA SOLICITAÇÃO DE AULA</b>
+        Olá, <strong>Rafael</strong>! Você recebeu uma nova solicitação de treino avulso.<br><br>
+        <b>👤 Aluno:</b> Camila Mendes<br>
+        <b>📅 Data:</b> Hoje, 23/03/2026<br>
+        <b>⏰ Horário:</b> 18h00 (1 hora)<br>
+        <b>🏋️ Local:</b> Academia Smart Fit<br>
+        <b>📍 Endereço:</b> Av. Paulista, 900 — SP<br>
+        <b>🎯 Tipo:</b> Musculação / Hipertrofia<br>
+        <b>💬 Obs:</b> Foco em membros superiores, sem lesões.<br>
+        <b>💰 Valor da aula:</b> R$80,00<br>
+        <b>💵 Você recebe:</b> R$64,00 (80%)<br><br>
+        ⏱️ Você tem <strong>30 minutos</strong> para responder.
+        <div class="wa-tick">17:32 ✓✓</div>
+        <div class="wa-action-row" style="margin-top:.8rem;">
+          <button class="wa-confirm-btn" onclick="show('s6',null);scrollToTop();">✅ CONFIRMAR AULA</button>
+          <button class="wa-refuse-btn" onclick="show('s5',null);scrollToTop();">❌ RECUSAR AULA</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="info-box">
+    <span class="ib-icon">⚡</span>
+    <div class="ib-text">A mensagem é enviada automaticamente via API do WhatsApp (Twilio). Os botões de confirmar/recusar funcionam diretamente no WhatsApp ou redirecionam para o app.</div>
+  </div>
+
+  <div class="antifraude">
+    <span class="af-icon">🔒</span>
+    <div class="af-text"><strong>Antifraude ativo:</strong> o contato do aluno NÃO aparece nesta mensagem. Ele só é revelado após confirmação + pagamento.</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     TELA 4 — CRONÔMETRO (ALUNO AGUARDANDO)
+═══════════════════════════════════════════════ -->
+<div class="screen" id="s4">
+  <div class="sh">
+    <span class="sh-icon">⏳</span>
+    <div class="sh-title">Aguardando confirmação</div>
+    <div class="sh-desc">Rafael está analisando sua solicitação</div>
+  </div>
+
+  <div class="cd-card">
+    <div class="cd-label">Tempo restante para resposta</div>
+    <div class="cd-time" id="cdTimer">28:47</div>
+    <div class="cd-sub">Rafael tem até as 18h02 para confirmar<br>Você será notificado pelo WhatsApp</div>
+    <div class="cd-bar-wrap">
+      <div class="cd-bar" id="cdBar" style="width:96%;background:linear-gradient(90deg,var(--green),var(--gold));"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="slabel">O que acontece agora</div>
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-left"><div class="tl-dot done">✓</div><div class="tl-line done"></div></div>
+        <div class="tl-right">
+          <div class="tl-title done">Solicitação enviada</div>
+          <div class="tl-stamp">17h32</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-left"><div class="tl-dot active">⏳</div><div class="tl-line idle"></div></div>
+        <div class="tl-right">
+          <div class="tl-title active">Aguardando Rafael</div>
+          <div class="tl-desc">Notificação enviada via WhatsApp. Aguardando resposta.</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-left"><div class="tl-dot idle">3</div><div class="tl-line idle"></div></div>
+        <div class="tl-right"><div class="tl-title idle">Pagamento seguro</div></div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-left"><div class="tl-dot idle">4</div></div>
+        <div class="tl-right"><div class="tl-title idle">Treino & confirmação</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem;">
+    <button class="btn btn-outline" style="margin:0;" onclick="show('s5',null);scrollToTop();">Simular Timeout ⏱️</button>
+    <button class="btn btn-green" style="margin:0;" onclick="show('s6',null);scrollToTop();">Simular Aceite ✅</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     TELA 5 — TIMEOUT / SEM RESPOSTA
+═══════════════════════════════════════════════ -->
+<div class="screen" id="s5">
+  <div class="sh">
+    <span class="sh-icon">⏰</span>
+    <div class="sh-title">Sem resposta no prazo</div>
+    <div class="sh-desc">Rafael não respondeu em 30 minutos. Não se preocupe — estamos resolvendo isso para você.</div>
+  </div>
+
+  <div class="card" style="border-color:rgba(232,23,58,.2);background:rgba(232,23,58,.02);">
+    <div style="display:flex;align-items:center;gap:.8rem;padding:.9rem;background:rgba(232,23,58,.06);border-radius:12px;margin-bottom:1.2rem;">
+      <span style="font-size:1.4rem;">❌</span>
+      <div>
+        <div style="font-size:.85rem;font-weight:800;color:var(--red);">Rafael não confirmou no prazo</div>
+        <div style="font-size:.73rem;color:var(--muted);">Solicitação expirada às 18h02</div>
+      </div>
+    </div>
+
+    <div class="slabel">O que acontece agora</div>
+
+    <div class="notif" style="border-color:rgba(249,115,22,.2);background:rgba(249,115,22,.04);">
+      <div class="notif-icon" style="background:rgba(249,115,22,.1);">🔄</div>
+      <div>
+        <div class="notif-title">Buscando próximo personal disponível</div>
+        <div class="notif-desc">Marcos Oliveira está sendo notificado agora. Ele tem 30 minutos para responder.</div>
+        <div class="notif-time">Automático · Agora</div>
+      </div>
+    </div>
+
+    <div class="notif">
+      <div class="notif-icon" style="background:rgba(37,211,102,.1);">📱</div>
+      <div>
+        <div class="notif-title">WhatsApp enviado para você</div>
+        <div class="notif-desc">Você recebeu uma notificação explicando a situação e informando o novo personal.</div>
+        <div class="notif-time">Automático · 18h02</div>
+      </div>
+    </div>
+
+    <div style="background:var(--off);border-radius:14px;padding:1rem;border:1px solid var(--border);">
+      <div style="font-size:.75rem;font-weight:800;color:var(--text);margin-bottom:.5rem;">Fila de profissionais disponíveis</div>
+      <div style="display:flex;flex-direction:column;gap:.5rem;">
+        <div style="display:flex;align-items:center;gap:.7rem;padding:.6rem .8rem;background:white;border-radius:10px;border:1.5px solid rgba(232,23,58,.2);">
+          <div style="width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#059669,#10b981);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.7rem;color:white;flex-shrink:0;">MO</div>
+          <div style="flex:1;"><div style="font-size:.78rem;font-weight:800;">Marcos Oliveira</div><div style="font-size:.65rem;color:var(--muted);">1.5km · R$75 · ★4.7</div></div>
+          <span style="font-size:.62rem;font-weight:800;background:rgba(232,23,58,.1);color:var(--red);padding:2px 8px;border-radius:20px;animation:pulse-dot 1.5s infinite;">Notificando...</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:.7rem;padding:.6rem .8rem;background:white;border-radius:10px;border:1px solid var(--border);opacity:.5;">
+          <div style="width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#db2777,#e879f9);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.7rem;color:white;flex-shrink:0;">FL</div>
+          <div style="flex:1;"><div style="font-size:.78rem;font-weight:800;">Fernanda Lima</div><div style="font-size:.65rem;color:var(--muted);">2.0km · R$85 · ★4.8</div></div>
+          <span style="font-size:.62rem;color:var(--muted);">Na fila</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem;">
+    <button class="btn btn-ghost" style="margin:0;font-size:.78rem;" onclick="alert('Solicitação cancelada. Nenhuma cobrança foi feita.')">Cancelar solicitação</button>
+    <button class="btn btn-green" style="margin:0;font-size:.78rem;" onclick="show('s6',null);scrollToTop();">Marcos aceitou ✅</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     TELA 6 — AULA CONFIRMADA (ALUNO)
+═══════════════════════════════════════════════ -->
+<div class="screen" id="s6">
+  <div class="sh">
+    <span class="sh-icon">🎉</span>
+    <div class="sh-title">Aula confirmada!</div>
+    <div class="sh-desc">Rafael confirmou sua solicitação. Realize o pagamento para garantir sua vaga.</div>
+  </div>
+
+  <div class="notif" style="border-color:rgba(37,211,102,.25);background:rgba(37,211,102,.05);">
+    <div class="notif-icon" style="background:rgba(37,211,102,.12);">📱</div>
+    <div>
+      <div class="notif-title">WhatsApp recebido de Rafael</div>
+      <div class="notif-desc">"Olá, Camila! Confirmei sua aula para hoje às 18h na Smart Fit Paulista. Me aguarde na recepção 😊"</div>
+      <div class="notif-time">Agora mesmo · 17h38</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="slabel">Detalhes confirmados</div>
+    <div class="tm">
+      <div class="tm-av" style="background:linear-gradient(135deg,#e8173a,#f97316)">RC</div>
+      <div style="flex:1;">
+        <div class="tm-name">Rafael Costa</div>
+        <div class="tm-spec">Confirmado · Hoje 18h00</div>
+        <div class="tm-stars">★★★★★ 5.0 · 142 aulas</div>
+      </div>
+      <div>
+        <div class="tm-price">R$80</div>
+        <div class="tm-price-sub">a pagar</div>
+      </div>
+    </div>
+
+    <div class="summary">
+      <div class="sr"><span class="sr-l">📅 Data</span><span class="sr-r">Hoje, 23/03/2026</span></div>
+      <div class="sr"><span class="sr-l">⏰ Horário</span><span class="sr-r">18h00 — 19h00</span></div>
+      <div class="sr"><span class="sr-l">🏋️ Local</span><span class="sr-r">Smart Fit Paulista</span></div>
+      <div class="sr"><span class="sr-l">📍 Endereço</span><span class="sr-r">Av. Paulista, 900</span></div>
+    </div>
+
+    <div style="display:flex;align-items:flex-start;gap:.7rem;background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.2);border-radius:12px;padding:.8rem 1rem;margin-bottom:1rem;">
+      <span style="font-size:1rem;flex-shrink:0;">⚠️</span>
+      <div style="font-size:.72rem;color:#a16207;line-height:1.5;"><strong style="color:#92400e;">Importante:</strong> O valor R$80 é o honorário do personal. A taxa de acesso à academia é por conta do aluno e deve ser paga diretamente no local.</div>
+    </div>
+
+    <div class="info-box">
+      <span class="ib-icon">💡</span>
+      <div class="ib-text">O contato do personal só será liberado após o pagamento ser confirmado. Isso garante segurança para ambos os lados.</div>
+    </div>
+
+    <button class="btn btn-red" onclick="show('s7',null);scrollToTop();">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+      Realizar Pagamento Agora
+    </button>
+
+    <div style="text-align:center;margin-top:.5rem;">
+      <span style="font-size:.65rem;color:var(--muted);">⏱️ Pague em até <strong style="color:var(--red);">15 minutos</strong> para garantir sua vaga</span>
+    </div>
+  </div>
+
+  <!-- Política de cancelamento -->
+  <div class="card" style="padding:1.2rem;">
+    <div class="slabel">Política de cancelamento</div>
+    <div style="display:flex;flex-direction:column;gap:.5rem;">
+      <div style="display:flex;align-items:flex-start;gap:.6rem;font-size:.75rem;">
+        <span style="color:var(--green);font-weight:800;flex-shrink:0;">✓</span>
+        <span style="color:#555;">Cancelamento gratuito até <strong>2 horas antes</strong> da aula</span>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:.6rem;font-size:.75rem;">
+        <span style="color:var(--gold);font-weight:800;flex-shrink:0;">⚠️</span>
+        <span style="color:#555;">Cancelamento entre 2h e 30min antes: <strong>taxa de 50%</strong></span>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:.6rem;font-size:.75rem;">
+        <span style="color:var(--red);font-weight:800;flex-shrink:0;">✕</span>
+        <span style="color:#555;">No-show (falta sem cancelamento): <strong>100% liberado ao personal</strong></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     TELA 7 — PAGAMENTO
+═══════════════════════════════════════════════ -->
+<div class="screen" id="s7">
+  <div class="sh">
+    <span class="sh-icon">💳</span>
+    <div class="sh-title">Pagamento seguro</div>
+    <div class="sh-desc">Valor fica retido em custódia até a aula ser confirmada</div>
+  </div>
+
+  <!-- Price breakdown -->
+  <div class="price-box">
+    <div class="slabel" style="margin-bottom:.8rem;">Resumo do pagamento</div>
+    <div class="pb-row"><span class="pb-label">Valor da aula</span><span class="pb-value">R$80,00</span></div>
+    <div class="pb-row"><span class="pb-label">Comissão LinkeGym (20%)</span><span class="pb-value" style="color:var(--muted);">−R$16,00</span></div>
+    <div class="pb-row"><span class="pb-label">Personal recebe (80%)</span><span class="pb-value" style="color:var(--green);">R$64,00</span></div>
+    <div class="pb-total">
+      <span class="pb-total-label">Você paga agora</span>
+      <span class="pb-total-value">R$80,00</span>
+    </div>
+    <div class="pb-note">🔒 Valor em custódia segura — liberado ao personal somente após confirmação da aula</div>
+    <div style="display:flex;align-items:flex-start;gap:.6rem;background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.18);border-radius:10px;padding:.7rem .8rem;margin-top:.8rem;">
+      <span style="font-size:.95rem;flex-shrink:0;">⚠️</span>
+      <div style="font-size:.7rem;color:#a16207;line-height:1.5;"><strong style="color:#92400e;">Atenção:</strong> Este valor cobre apenas o honorário do personal trainer. A taxa de acesso à academia ou ao espaço de treino não está incluída e é responsabilidade do aluno.</div>
+    </div>
+  </div>
+
+  <!-- Payment method -->
+  <div class="slabel">Forma de pagamento</div>
+  <div class="pay-methods">
+    <button class="pm on" id="pmPix" onclick="selectPM('pix')">
+      <span class="pm-ico">⚡</span>
+      <div class="pm-name">Pix</div>
+      <div class="pm-sub">Aprovação imediata</div>
+    </button>
+    <button class="pm" id="pmCard" onclick="selectPM('card')">
+      <span class="pm-ico">💳</span>
+      <div class="pm-name">Cartão</div>
+      <div class="pm-sub">Crédito ou débito</div>
+    </button>
+  </div>
+
+  <!-- PIX -->
+  <div id="pixArea">
+    <div class="pix-box">
+      <div class="pix-qr">
+        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <rect width="100" height="100" fill="white"/>
+          <g fill="black">
+            <rect x="10" y="10" width="30" height="30"/><rect x="15" y="15" width="20" height="20" fill="white"/><rect x="18" y="18" width="14" height="14"/>
+            <rect x="60" y="10" width="30" height="30"/><rect x="65" y="15" width="20" height="20" fill="white"/><rect x="68" y="18" width="14" height="14"/>
+            <rect x="10" y="60" width="30" height="30"/><rect x="15" y="65" width="20" height="20" fill="white"/><rect x="18" y="68" width="14" height="14"/>
+            <rect x="45" y="10" width="5" height="5"/><rect x="52" y="10" width="5" height="5"/><rect x="45" y="17" width="5" height="5"/>
+            <rect x="60" y="45" width="5" height="5"/><rect x="67" y="45" width="5" height="5"/><rect x="74" y="45" width="5" height="5"/>
+            <rect x="45" y="60" width="5" height="5"/><rect x="52" y="60" width="5" height="5"/><rect x="45" y="67" width="5" height="5"/><rect x="52" y="67" width="5" height="5"/>
+            <rect x="60" y="60" width="5" height="5"/><rect x="74" y="60" width="5" height="5"/><rect x="60" y="67" width="5" height="5"/><rect x="67" y="74" width="5" height="5"/>
+            <rect x="45" y="45" width="7" height="7"/>
+          </g>
+        </svg>
+      </div>
+      <div class="pix-code-text">00020126580014BR.GOV.BCB.PIX0136linkegym-chave-pix-2026@pag.com5204000053039865802BR5913LinkeGym Ltda6009SAO PAULO62070503***6304ABCD</div>
+      <button class="pix-copy-btn" onclick="copyPix()">📋 Copiar código Pix</button>
+      <div class="pix-expires">⏱️ Código expira em <span id="pixTimer" style="font-variant-numeric:tabular-nums;">14:58</span></div>
+    </div>
+  </div>
+
+  <!-- CARD -->
+  <div id="cardArea" style="display:none;">
+    <div class="card-area">
+      <div class="ci-field">
+        <label class="ci-label">Número do cartão</label>
+        <input class="ci-inp" type="text" placeholder="0000 0000 0000 0000" maxlength="19" oninput="formatCard(this)"/>
+      </div>
+      <div class="ci-field">
+        <label class="ci-label">Nome no cartão</label>
+        <input class="ci-inp" type="text" placeholder="Como aparece no cartão"/>
+      </div>
+      <div class="ci-row">
+        <div class="ci-field" style="margin:0;">
+          <label class="ci-label">Validade</label>
+          <input class="ci-inp" type="text" placeholder="MM/AA" maxlength="5"/>
+        </div>
+        <div class="ci-field" style="margin:0;">
+          <label class="ci-label">CVV</label>
+          <input class="ci-inp" type="text" placeholder="000" maxlength="3"/>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="escrow-box" style="margin-top:1rem;">
+    <span class="escrow-icon">🔒</span>
+    <div>
+      <div class="escrow-title">Pagamento em custódia segura</div>
+      <div class="escrow-desc">O valor fica retido na LinkeGym até a confirmação da aula. Você está 100% protegido.</div>
+    </div>
+  </div>
+
+  <div class="security-row">
+    <span class="sec-badge">🔐 SSL seguro</span>
+    <span class="sec-badge">✅ Dados criptografados</span>
+    <span class="sec-badge">🛡️ Pagamento protegido</span>
+  </div>
+
+  <button class="btn btn-red" onclick="show('s8',null);scrollToTop();">
+    🔒 Confirmar Pagamento de R$80,00
+  </button>
+  <p style="text-align:center;font-size:.68rem;color:var(--muted);margin-top:.3rem;">Ao confirmar, você concorda com os Termos de Uso da LinkeGym</p>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     TELA 8 — CONTATOS REVELADOS (ALUNO + PERSONAL)
+═══════════════════════════════════════════════ -->
+<div class="screen" id="s8">
+  <div class="sh">
+    <span class="sh-icon">🤝</span>
+    <div class="sh-title">Tudo certo! Pagamento confirmado</div>
+    <div class="sh-desc">Agora você e Rafael têm acesso ao contato um do outro. Boa aula! 💪</div>
+  </div>
+
+  <!-- Notification received -->
+  <div class="notif" style="border-color:rgba(37,211,102,.25);background:rgba(37,211,102,.05);margin-bottom:1rem;">
+    <div class="notif-icon" style="background:rgba(37,211,102,.12);">📱</div>
+    <div>
+      <div class="notif-title">WhatsApp enviado para ambos</div>
+      <div class="notif-desc">Você e Rafael receberam os contatos um do outro automaticamente.</div>
+      <div class="notif-time">Agora mesmo · 17h41</div>
+    </div>
+  </div>
+
+  <!-- CONTACT CARDS -->
+  <div class="card">
+    <div class="slabel">Contatos desbloqueados</div>
+
+    <!-- Trainer contact -->
+    <div class="contact-card" style="margin-bottom:.8rem;">
+      <div class="cc-header" style="background:linear-gradient(90deg,#f59e0b,#f97316);color:white;">
+        👑 Seu Personal Trainer
+      </div>
+      <div class="cc-body">
+        <div class="cc-av" style="background:linear-gradient(135deg,#e8173a,#f97316);">RC</div>
+        <div>
+          <div class="cc-name">Rafael Costa</div>
+          <div class="cc-role">CREF 012345 · ★5.0 · 142 aulas</div>
+          <div style="font-size:.72rem;color:var(--green);font-weight:700;margin-top:3px;">📱 +55 (11) 99999-1234</div>
+        </div>
+        <button class="cc-wa-btn">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+          Chamar
+        </button>
+      </div>
+    </div>
+
+    <!-- Summary final -->
+    <div class="summary">
+      <div class="sr"><span class="sr-l">📅 Data</span><span class="sr-r" style="color:var(--green);font-weight:800;">Hoje · 23/03/2026</span></div>
+      <div class="sr"><span class="sr-l">⏰ Horário</span><span class="sr-r">18h00 — 19h00</span></div>
+      <div class="sr"><span class="sr-l">🏋️ Local</span><span class="sr-r">Smart Fit Paulista</span></div>
+      <div class="sr"><span class="sr-l">📍 Endereço</span><span class="sr-r">Av. Paulista, 900 — SP</span></div>
+      <div class="sr"><span class="sr-l">💰 Pago</span><span class="sr-r" style="color:var(--green);">R$80,00 ✓</span></div>
+      <div class="sr"><span class="sr-l">🔒 Custódia</span><span class="sr-r">Liberado após confirmação</span></div>
+    </div>
+
+    <button class="btn btn-wa" onclick="show('s9',null);scrollToTop();">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+      Abrir WhatsApp do Personal
+    </button>
+  </div>
+
+  <div class="antifraude">
+    <span class="af-icon">🛡️</span>
+    <div class="af-text">O contato foi liberado somente após pagamento confirmado. Caso tenha qualquer problema, acione o suporte da LinkeGym antes de resolver diretamente com o trainer.</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     TELA 9 — PÓS-AULA: CONFIRMAR CONCLUSÃO
+═══════════════════════════════════════════════ -->
+<div class="screen" id="s9">
+  <div class="sh">
+    <span class="sh-icon">🏋️</span>
+    <div class="sh-title">A aula foi realizada?</div>
+    <div class="sh-desc">Rafael marcou a aula como concluída. Confirme para liberar o pagamento ao personal.</div>
+  </div>
+
+  <div class="cd-card">
+    <div class="cd-label">Tempo para confirmação</div>
+    <div class="cd-time" id="confirmTimer">29:12</div>
+    <div class="cd-sub">Se você não confirmar em 30 minutos<br>o pagamento será liberado automaticamente ao personal</div>
+    <div class="cd-bar-wrap">
+      <div class="cd-bar" id="confirmBar" style="width:97%;background:linear-gradient(90deg,var(--green),var(--gold));"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="slabel">Aula realizada</div>
+    <div class="tm">
+      <div class="tm-av" style="background:linear-gradient(135deg,#e8173a,#f97316)">RC</div>
+      <div style="flex:1;">
+        <div class="tm-name">Rafael Costa</div>
+        <div class="tm-spec">Hoje · 18h00 — 19h05</div>
+        <div class="tm-stars">Smart Fit Paulista · Av. Paulista</div>
+      </div>
+      <div>
+        <div class="tm-price">R$80</div>
+        <div class="tm-price-sub">em custódia</div>
+      </div>
+    </div>
+
+    <div style="background:var(--off);border-radius:12px;padding:1rem;border:1px solid var(--border);margin-bottom:1.2rem;">
+      <div style="font-size:.78rem;font-weight:800;color:var(--text);margin-bottom:.4rem;">O que acontece ao confirmar:</div>
+      <div style="display:flex;flex-direction:column;gap:.35rem;">
+        <div style="font-size:.74rem;color:#555;display:flex;gap:.5rem;"><span style="color:var(--green);">✓</span>R$64,00 são liberados para Rafael imediatamente</div>
+        <div style="font-size:.74rem;color:#555;display:flex;gap:.5rem;"><span style="color:var(--green);">✓</span>R$16,00 ficam com a LinkeGym (comissão 20%)</div>
+        <div style="font-size:.74rem;color:#555;display:flex;gap:.5rem;"><span style="color:var(--green);">✓</span>Você será convidado a avaliar o profissional</div>
+      </div>
+    </div>
+
+    <button class="btn btn-green" onclick="show('s10',null);scrollToTop();">
+      ✅ Confirmar que a aula foi realizada
+    </button>
+    <button class="btn btn-ghost" onclick="openDispute()">
+      ⚠️ Reportar problema
+    </button>
+  </div>
+
+  <div class="info-box">
+    <span class="ib-icon">⚡</span>
+    <div class="ib-text">Se você não confirmar em 30 minutos, o sistema libera o pagamento automaticamente ao personal. Isso protege o profissional de atrasos injustos.</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     TELA 10 — AVALIAÇÃO MÚTUA
+═══════════════════════════════════════════════ -->
+<div class="screen" id="s10">
+  <div class="sh">
+    <span class="sh-icon">⭐</span>
+    <div class="sh-title">Como foi sua aula?</div>
+    <div class="sh-desc">Sua avaliação ajuda outros alunos a escolherem os melhores profissionais</div>
+  </div>
+
+  <div class="card">
+    <div class="tm" style="margin-bottom:1.5rem;">
+      <div class="tm-av" style="background:linear-gradient(135deg,#e8173a,#f97316)">RC</div>
+      <div style="flex:1;">
+        <div class="tm-name">Rafael Costa</div>
+        <div class="tm-spec">Hoje · 18h00 — 19h05 · Smart Fit</div>
+      </div>
+    </div>
+
+    <div class="slabel">Avaliação geral</div>
+    <div class="stars-row" id="mainStars">
+      <button class="star-btn" onclick="setMainStar(1)">⭐</button>
+      <button class="star-btn" onclick="setMainStar(2)">⭐</button>
+      <button class="star-btn" onclick="setMainStar(3)">⭐</button>
+      <button class="star-btn" onclick="setMainStar(4)">⭐</button>
+      <button class="star-btn" onclick="setMainStar(5)">⭐</button>
+    </div>
+    <div id="starLabel" style="text-align:center;font-size:.82rem;font-weight:700;color:var(--muted);margin-bottom:1.2rem;">Toque para avaliar</div>
+
+    <div class="slabel">Avaliação por critério</div>
+    <div class="rating-aspects">
+      <div class="ra-item">
+        <div class="ra-label">Pontualidade</div>
+        <div class="ra-stars">
+          <span class="ra-star on" onclick="setAspect(this,1,1)">⭐</span>
+          <span class="ra-star on" onclick="setAspect(this,1,2)">⭐</span>
+          <span class="ra-star on" onclick="setAspect(this,1,3)">⭐</span>
+          <span class="ra-star on" onclick="setAspect(this,1,4)">⭐</span>
+          <span class="ra-star on" onclick="setAspect(this,1,5)">⭐</span>
+        </div>
+      </div>
+      <div class="ra-item">
+        <div class="ra-label">Qualidade do treino</div>
+        <div class="ra-stars">
+          <span class="ra-star on" onclick="setAspect(this,2,1)">⭐</span>
+          <span class="ra-star on" onclick="setAspect(this,2,2)">⭐</span>
+          <span class="ra-star on" onclick="setAspect(this,2,3)">⭐</span>
+          <span class="ra-star on" onclick="setAspect(this,2,4)">⭐</span>
+          <span class="ra-star on" onclick="setAspect(this,2,5)">⭐</span>
+        </div>
+      </div>
+      <div class="ra-item">
+        <div class="ra-label">Comunicação</div>
+        <div class="ra-stars">
+          <span class="ra-star on" onclick="setAspect(this,3,1)">⭐</span>
+          <span class="ra-star on" onclick="setAspect(this,3,2)">⭐</span>
+          <span class="ra-star on" onclick="setAspect(this,3,3)">⭐</span>
+          <span class="ra-star on" onclick="setAspect(this,3,4)">⭐</span>
+          <span class="ra-star on" onclick="setAspect(this,3,5)">⭐</span>
+        </div>
+      </div>
+      <div class="ra-item">
+        <div class="ra-label">Resultado</div>
+        <div class="ra-stars">
+          <span class="ra-star on" onclick="setAspect(this,4,1)">⭐</span>
+          <span class="ra-star on" onclick="setAspect(this,4,2)">⭐</span>
+          <span class="ra-star on" onclick="setAspect(this,4,3)">⭐</span>
+          <span class="ra-star on" onclick="setAspect(this,4,4)">⭐</span>
+          <span class="ra-star on" onclick="setAspect(this,4,5)">⭐</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:1rem;">
+      <div class="slabel">Comentário público</div>
+      <textarea class="comment-area" placeholder="Conte como foi sua experiência com Rafael. Sua avaliação será publicada no perfil dele."></textarea>
+    </div>
+
+    <div style="margin-top:.8rem;">
+      <div class="slabel">Você voltaria a treinar com Rafael?</div>
+      <div style="display:flex;gap:.5rem;">
+        <button id="btn-sim" onclick="selectRepeat('sim')" style="flex:1;padding:.65rem;border:1.5px solid var(--border);border-radius:10px;background:white;font-size:.8rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s;">👍 Sim, com certeza!</button>
+        <button id="btn-talvez" onclick="selectRepeat('talvez')" style="flex:1;padding:.65rem;border:1.5px solid var(--border);border-radius:10px;background:white;font-size:.8rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s;">🤔 Talvez</button>
+        <button id="btn-nao" onclick="selectRepeat('nao')" style="flex:1;padding:.65rem;border:1.5px solid var(--border);border-radius:10px;background:white;font-size:.8rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s;">👎 Não</button>
+      </div>
+    </div>
+
+    <button class="btn btn-red" style="margin-top:1.2rem;" onclick="show('s11',null);scrollToTop();">
+      Enviar avaliação →
+    </button>
+    <button class="btn btn-ghost" onclick="show('s11',null);scrollToTop();">Pular por agora</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     TELA 11 — CONCLUÍDO 🎉
+═══════════════════════════════════════════════ -->
+<div class="screen" id="s11">
+  <div class="sh" style="margin-bottom:1rem;">
+    <span class="sh-icon">🏆</span>
+    <div class="sh-title">Fluxo concluído!</div>
+    <div class="sh-desc">Parabéns pela aula! Tudo foi finalizado com sucesso.</div>
+  </div>
+
+  <div class="card" style="background:linear-gradient(135deg,rgba(16,185,129,.06),rgba(16,185,129,.02));border-color:rgba(16,185,129,.2);">
+    <div style="text-align:center;margin-bottom:1.2rem;">
+      <div style="font-size:2rem;margin-bottom:.4rem;">🎉</div>
+      <div style="font-size:1rem;font-weight:800;color:var(--text);">Aula concluída com sucesso!</div>
+      <div style="font-size:.8rem;color:var(--muted);margin-top:.3rem;">Rafael recebeu R$64,00 na conta</div>
+    </div>
+
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-left"><div class="tl-dot done">✓</div><div class="tl-line done"></div></div>
+        <div class="tl-right"><div class="tl-title done">Solicitação enviada</div><div class="tl-stamp">17h32</div></div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-left"><div class="tl-dot done">✓</div><div class="tl-line done"></div></div>
+        <div class="tl-right"><div class="tl-title done">Personal confirmou</div><div class="tl-stamp">17h38</div></div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-left"><div class="tl-dot done">✓</div><div class="tl-line done"></div></div>
+        <div class="tl-right"><div class="tl-title done">Pagamento realizado</div><div class="tl-stamp">17h41 · R$80,00</div></div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-left"><div class="tl-dot done">✓</div><div class="tl-line done"></div></div>
+        <div class="tl-right"><div class="tl-title done">Aula realizada</div><div class="tl-stamp">19h05 · 1h05 de treino</div></div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-left"><div class="tl-dot done">✓</div><div class="tl-line done"></div></div>
+        <div class="tl-right"><div class="tl-title done">Avaliação enviada</div><div class="tl-stamp">19h12 · ★★★★★</div></div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-left"><div class="tl-dot done">✓</div></div>
+        <div class="tl-right"><div class="tl-title done">Pagamento liberado ao personal</div><div class="tl-stamp">19h12 · R$64,00 → Rafael</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="padding:1.2rem;">
+    <div class="slabel">Próximo treino com Rafael?</div>
+    <button class="btn btn-red" onclick="show('s1',document.querySelector('.db'));scrollToTop();">
+      ⚡ Solicitar novo treino avulso
+    </button>
+    <button class="btn btn-outline" onclick="alert('Indo para área do aluno...')">
+      🏠 Ir para minha área
+    </button>
+  </div>
+
+  <div style="text-align:center;padding:1rem;background:white;border-radius:16px;border:1px solid var(--border);">
+    <div style="font-size:.75rem;color:var(--muted);margin-bottom:.5rem;">Indique a LinkeGym e ganhe</div>
+    <div style="font-size:1rem;font-weight:800;color:var(--red);">R$10 de desconto</div>
+    <div style="font-size:.7rem;color:var(--muted);margin-top:.2rem;">na sua próxima aula avulsa</div>
+    <button style="margin-top:.8rem;padding:.5rem 1.2rem;background:var(--dark);color:white;border:none;border-radius:8px;font-size:.72rem;font-weight:700;cursor:pointer;font-family:inherit;" onclick="alert('Link de indicação copiado! Compartilhe com amigos.')">
+      📋 Copiar link de indicação
+    </button>
+  </div>
+</div>
+
+<script>
+// ── Navigation ──
+function show(id, btn) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if (btn) {
+    document.querySelectorAll('.db').forEach(b => b.classList.remove('on'));
+    btn.classList.add('on');
+  } else {
+    // Auto-highlight correct demo button
+    const map = {s1:0,s2:1,s3:2,s4:3,s5:4,s6:5,s7:6,s8:7,s9:8,s10:9,s11:10};
+    document.querySelectorAll('.db').forEach((b,i) => b.classList.toggle('on', i === map[id]));
+  }
+  scrollToTop();
+}
+
+function scrollToTop() {
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+// ── Countdown Timer (Screen 4) ──
+let cdSeconds = 28 * 60 + 47;
+let cdTotal = 30 * 60;
+function updateCountdown() {
+  if (cdSeconds <= 0) return;
+  cdSeconds--;
+  const m = Math.floor(cdSeconds / 60);
+  const s = cdSeconds % 60;
+  const el = document.getElementById('cdTimer');
+  const bar = document.getElementById('cdBar');
+  if (el) {
+    el.textContent = `${m}:${s.toString().padStart(2,'0')}`;
+    el.classList.toggle('urgent', cdSeconds < 300);
+  }
+  if (bar) {
+    const pct = (cdSeconds / cdTotal) * 100;
+    bar.style.width = pct + '%';
+    bar.style.background = cdSeconds < 300
+      ? 'linear-gradient(90deg,#f87171,#ef4444)'
+      : cdSeconds < 600
+      ? 'linear-gradient(90deg,var(--gold),var(--orange))'
+      : 'linear-gradient(90deg,var(--green),var(--gold))';
+  }
+}
+setInterval(updateCountdown, 1000);
+
+// ── Confirm Timer (Screen 9) ──
+let cfSeconds = 29 * 60 + 12;
+let cfTotal = 30 * 60;
+function updateConfirmTimer() {
+  if (cfSeconds <= 0) return;
+  cfSeconds--;
+  const m = Math.floor(cfSeconds / 60);
+  const s = cfSeconds % 60;
+  const el = document.getElementById('confirmTimer');
+  const bar = document.getElementById('confirmBar');
+  if (el) el.textContent = `${m}:${s.toString().padStart(2,'0')}`;
+  if (bar) bar.style.width = ((cfSeconds / cfTotal) * 100) + '%';
+}
+setInterval(updateConfirmTimer, 1000);
+
+// ── Pix Timer ──
+let pixSeconds = 14 * 60 + 58;
+function updatePixTimer() {
+  if (pixSeconds <= 0) return;
+  pixSeconds--;
+  const m = Math.floor(pixSeconds / 60);
+  const s = pixSeconds % 60;
+  const el = document.getElementById('pixTimer');
+  if (el) el.textContent = `${m}:${s.toString().padStart(2,'0')}`;
+}
+setInterval(updatePixTimer, 1000);
+
+// ── Payment method ──
+function selectPM(method) {
+  document.getElementById('pmPix').classList.toggle('on', method === 'pix');
+  document.getElementById('pmCard').classList.toggle('on', method === 'card');
+  document.getElementById('pixArea').style.display = method === 'pix' ? 'block' : 'none';
+  document.getElementById('cardArea').style.display = method === 'card' ? 'block' : 'none';
+}
+
+function copyPix() {
+  const code = 'linkegym-pix-2026-camila-80brl';
+  if (navigator.clipboard) navigator.clipboard.writeText(code);
+  alert('✅ Código Pix copiado!\nCole no app do seu banco para finalizar o pagamento.');
+}
+
+function formatCard(inp) {
+  let v = inp.value.replace(/\D/g,'').slice(0,16);
+  inp.value = v.replace(/(.{4})/g,'$1 ').trim();
+}
+
+// ── Rating stars ──
+const starLabels = ['','Muito ruim 😞','Ruim 😕','Regular 😐','Bom 😊','Excelente! 🤩'];
+let mainStarVal = 0;
+
+function setMainStar(n) {
+  mainStarVal = n;
+  document.querySelectorAll('#mainStars .star-btn').forEach((s,i) => s.classList.toggle('on', i < n));
+  document.getElementById('starLabel').textContent = starLabels[n];
+  document.getElementById('starLabel').style.color = n >= 4 ? 'var(--green)' : n >= 3 ? 'var(--gold)' : 'var(--red)';
+}
+
+function setAspect(el, group, val) {
+  const row = el.parentElement;
+  row.querySelectorAll('.ra-star').forEach((s,i) => s.classList.toggle('on', i < val));
+}
+
+function selectRepeat(val) {
+  ['sim','talvez','nao'].forEach(v => {
+    const b = document.getElementById('btn-'+v);
+    if (b) {
+      b.style.borderColor = v === val ? 'var(--red)' : 'var(--border)';
+      b.style.background = v === val ? 'rgba(232,23,58,.05)' : 'white';
+    }
+  });
+}
+
+// ── Dispute ──
+function openDispute() {
+  alert('⚠️ REPORTAR PROBLEMA\n\nNosso time de suporte será acionado imediatamente.\n\nO pagamento ficará retido até a resolução do caso.\n\nEm breve esta tela de disputa estará implementada.');
+}
+
+// Init
+scrollToTop();
+</script>
+</body>
+</html>

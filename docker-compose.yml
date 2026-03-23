@@ -1,0 +1,25 @@
+version: "3.9"
+
+services:
+  frontend:
+    build: .
+    image: linkegym-frontend:latest
+    container_name: linkegym-frontend
+    restart: unless-stopped
+    ports:
+      - "3080:80"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.linkegym.rule=Host(`linkegymbrasil.com.br`) || Host(`www.linkegymbrasil.com.br`)"
+      - "traefik.http.routers.linkegym.entrypoints=websecure"
+      - "traefik.http.routers.linkegym.tls.certresolver=letsencrypt"
+      - "traefik.http.services.linkegym.loadbalancer.server.port=80"
+      # Redirect www to non-www
+      - "traefik.http.middlewares.linkegym-www.redirectregex.regex=^https://www\\.linkegymbrasil\\.com\\.br/(.*)"
+      - "traefik.http.middlewares.linkegym-www.redirectregex.replacement=https://linkegymbrasil.com.br/$${1}"
+      - "traefik.http.routers.linkegym.middlewares=linkegym-www"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
