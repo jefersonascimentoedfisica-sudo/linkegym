@@ -53,11 +53,11 @@ jobs:
             -d "{\"json\":{\"applicationId\":\"4CjGACpjgfBSw_rphiXOP\",\"buildArgs\":\"IMAGE_TAG=${{ steps.tag.outputs.IMAGE_TAG }}\"}}"
           echo "Dokploy build args updated: IMAGE_TAG=${{ steps.tag.outputs.IMAGE_TAG }}"
 
-      - name: Trigger Dokploy redeploy
+      - name: Trigger Dokploy full deploy
         continue-on-error: true
         run: |
-          curl -s -X POST "http://31.97.28.78:3000/api/trpc/application.redeploy" \
+          curl -s -X POST "http://31.97.28.78:3000/api/trpc/application.deploy" \
             -H "x-api-key: claude_codeYwEQfDFPMWVCZUtQcKhOQzxJRiCPkZARdCRiIOUWANWdvLuKnqwrEhYRKfdobrUQ" \
             -H "Content-Type: application/json" \
             -d '{"json":{"applicationId":"4CjGACpjgfBSw_rphiXOP"}}'
-          echo "Dokploy redeploy triggered"
+          echo "Dokploy full deploy triggered"
