@@ -5,7 +5,7 @@ on:
     branches: [main]
 
 jobs:
-  build-and-push:
+  build-and-deploy:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -26,21 +26,25 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
+          file: Dockerfile.ci
           push: true
           tags: |
             ghcr.io/jefersonascimentoedfisica-sudo/linkegym:latest
             ghcr.io/jefersonascimentoedfisica-sudo/linkegym:${{ github.sha }}
 
+      - name: Make package public
+        continue-on-error: true
+        run: |
+          curl -s -X PATCH "https://api.github.com/user/packages/container/linkegym" \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            -d '{"visibility":"public"}'
+
       - name: Trigger Dokploy redeploy
         continue-on-error: true
         run: |
-          curl -s -X POST "http://31.97.28.78:3000/api/trpc/application.update" \
-            -H "x-api-key: claude_codeYwEQfDFPMWVCZUtQcKhOQzxJRiCPkZARdCRiIOUWANWdvLuKnqwrEhYRKfdobrUQ" \
-            -H "Content-Type: application/json" \
-            -d '{"json":{"applicationId":"4CjGACpjgfBSw_rphiXOP","buildType":"docker","dockerImage":"ghcr.io/jefersonascimentoedfisica-sudo/linkegym:latest"}}'
-          sleep 5
           curl -s -X POST "http://31.97.28.78:3000/api/trpc/application.redeploy" \
             -H "x-api-key: claude_codeYwEQfDFPMWVCZUtQcKhOQzxJRiCPkZARdCRiIOUWANWdvLuKnqwrEhYRKfdobrUQ" \
             -H "Content-Type: application/json" \
             -d '{"json":{"applicationId":"4CjGACpjgfBSw_rphiXOP"}}'
-          echo "Deploy triggered!"
+          echo "Dokploy redeploy triggered"
