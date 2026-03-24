@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>LinkeGym — Cadastro Personal Trainer</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --red:#e8173a;--red2:#c0102c;--orange:#f97316;--blue:#1a8fff;
+  --dark:#0d0d0d;--white:#fff;--off:#f8f7f4;--gray:#f1f0ed;
+  --border:#e8e6e1;--text:#1a1a1a;--muted:#8a8a8a;--green:#10b981;
+  --gold:#f59e0b;--purple:#7c3aed;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--off);color:var(--text);min-height:100vh;}
+
+/* NAV */
+nav{background:white;border-bottom:1px solid var(--border);padding:0 5vw;height:64px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;box-shadow:0 2px 12px rgba(0,0,0,.04);}
+.nav-logo-name{font-size:1.15rem;font-weight:800;background:linear-gradient(90deg,var(--blue),var(--orange));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.nav-logo-tag{font-size:.6rem;color:var(--muted);font-style:italic;}
+.nav-back{display:flex;align-items:center;gap:6px;font-size:.82rem;font-weight:600;color:var(--muted);background:none;border:1px solid var(--border);cursor:pointer;font-family:inherit;padding:.45rem .9rem;border-radius:8px;transition:all .2s;}
+.nav-back:hover{background:var(--gray);color:var(--text);}
+
+/* HERO */
+.page-hero{background:linear-gradient(135deg,#0d0d0d 0%,#1a1040 100%);padding:2rem 5vw;text-align:center;position:relative;overflow:hidden;}
+.page-hero::before{content:'';position:absolute;width:350px;height:350px;background:radial-gradient(circle,rgba(124,58,237,.2),transparent 70%);top:-80px;right:-30px;pointer-events:none;}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.3);color:#fbbf24;font-size:.65rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;padding:.3rem .85rem;border-radius:100px;margin-bottom:.8rem;}
+.page-hero h1{font-size:clamp(1.4rem,3vw,1.9rem);font-weight:800;color:white;letter-spacing:-.02em;margin-bottom:.35rem;}
+.page-hero p{font-size:.82rem;color:rgba(255,255,255,.4);max-width:420px;margin:0 auto;}
+
+/* PROGRESS */
+.progress-wrap{background:white;border-bottom:1px solid var(--border);padding:.75rem 5vw;position:sticky;top:64px;z-index:40;overflow-x:auto;}
+.progress-steps{display:flex;align-items:center;min-width:600px;max-width:800px;margin:0 auto;}
+.ps{display:flex;flex-direction:column;align-items:center;flex:1;position:relative;}
+.ps:not(:last-child)::after{content:'';position:absolute;top:14px;left:55%;right:-55%;height:2px;background:var(--border);z-index:0;transition:background .4s;}
+.ps.done:not(:last-child)::after{background:var(--purple);}
+.ps-c{width:28px;height:28px;border-radius:50%;border:2px solid var(--border);background:white;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:800;color:var(--muted);position:relative;z-index:1;transition:all .3s;flex-shrink:0;}
+.ps.active .ps-c{border-color:var(--purple);background:var(--purple);color:white;}
+.ps.done .ps-c{border-color:var(--purple);background:var(--purple);color:white;}
+.ps-l{font-size:.55rem;font-weight:700;color:var(--muted);margin-top:.25rem;text-align:center;white-space:nowrap;}
+.ps.active .ps-l,.ps.done .ps-l{color:var(--purple);}
+
+/* WIZARD */
+.wizard{max-width:700px;margin:1.8rem auto 5rem;padding:0 5vw;}
+.step-card{background:white;border-radius:20px;border:1px solid var(--border);padding:2rem;box-shadow:0 4px 20px rgba(0,0,0,.04);animation:slideIn .35s cubic-bezier(.16,1,.3,1);}
+.step-card.hidden{display:none;}
+@keyframes slideIn{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:translateY(0);}}
+.s-tag{font-size:.6rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--purple);margin-bottom:.4rem;display:flex;align-items:center;gap:5px;}
+.s-tag::before{content:'';width:12px;height:2px;background:var(--purple);}
+.s-title{font-size:1.2rem;font-weight:800;color:var(--text);letter-spacing:-.02em;}
+.s-desc{font-size:.8rem;color:var(--muted);margin-top:.25rem;margin-bottom:1.5rem;line-height:1.55;}
+
+/* FIELDS */
+.field{margin-bottom:1rem;}
+.field label{display:block;font-size:.75rem;font-weight:700;color:#444;margin-bottom:.4rem;}
+.inp{width:100%;padding:.78rem 1rem;border:1.5px solid var(--border);border-radius:12px;font-size:.88rem;font-family:inherit;color:var(--text);outline:none;transition:all .2s;background:white;}
+.inp:focus{border-color:var(--purple);box-shadow:0 0 0 3px rgba(124,58,237,.07);}
+.inp-sm{padding:.65rem .9rem;font-size:.82rem;}
+.inp-select{appearance:none;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238a8a8a' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right .9rem center;padding-right:2.2rem;}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;}
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.7rem;}
+.req{color:var(--red);}
+.field-hint{font-size:.68rem;color:var(--muted);margin-top:.3rem;line-height:1.4;}
+
+/* PHOTO UPLOAD */
+.photo-upload{border:2px dashed var(--border);border-radius:16px;padding:2rem;text-align:center;cursor:pointer;transition:all .25s;background:var(--off);}
+.photo-upload:hover{border-color:var(--purple);background:#f9f7ff;}
+.photo-upload-icon{font-size:2.5rem;margin-bottom:.5rem;}
+.photo-upload-text{font-size:.82rem;font-weight:700;color:var(--text);}
+.photo-upload-sub{font-size:.7rem;color:var(--muted);margin-top:.2rem;}
+
+/* SPEC / TAG BUTTONS */
+.tag-grid{display:flex;flex-wrap:wrap;gap:.45rem;margin-top:.5rem;}
+.tag-btn{padding:.4rem .85rem;border:1.5px solid var(--border);border-radius:100px;font-size:.75rem;font-weight:600;cursor:pointer;transition:all .18s;background:white;font-family:inherit;color:#555;}
+.tag-btn:hover{border-color:var(--purple);color:var(--purple);}
+.tag-btn.on{background:var(--purple);color:white;border-color:var(--purple);}
+
+/* DAYS GRID */
+.days-row{display:flex;gap:.35rem;flex-wrap:wrap;}
+.day-chip{padding:.4rem .6rem;border:1.5px solid var(--border);border-radius:8px;font-size:.72rem;font-weight:700;cursor:pointer;transition:all .18s;background:white;font-family:inherit;color:var(--muted);min-width:42px;text-align:center;}
+.day-chip:hover{border-color:var(--purple);}
+.day-chip.on{background:var(--purple);color:white;border-color:var(--purple);}
+
+/* TIME RANGE */
+.time-range{display:flex;align-items:center;gap:.5rem;}
+.time-range .inp{text-align:center;}
+.time-sep{font-size:.78rem;color:var(--muted);font-weight:700;white-space:nowrap;}
+
+/* ACADEMIA CARD */
+.academia-card{border:1.5px solid var(--border);border-radius:16px;padding:1.3rem;margin-bottom:1rem;background:var(--off);position:relative;}
+.academia-card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;}
+.academia-card-title{font-size:.82rem;font-weight:800;color:var(--text);}
+.btn-remove{background:none;border:none;cursor:pointer;color:var(--muted);font-size:.78rem;padding:.2rem .5rem;border-radius:6px;transition:all .2s;font-family:inherit;}
+.btn-remove:hover{background:#fff5f5;color:var(--red);}
+.btn-add-academia{width:100%;padding:.85rem;background:white;border:2px dashed var(--border);border-radius:14px;font-family:inherit;font-size:.84rem;font-weight:700;cursor:pointer;color:var(--purple);display:flex;align-items:center;justify-content:center;gap:6px;transition:all .2s;margin-top:.3rem;}
+.btn-add-academia:hover{border-color:var(--purple);background:#f9f7ff;}
+
+/* PIX */
+.pix-type-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem;margin-top:.5rem;}
+.pix-type-btn{padding:.65rem .4rem;border:1.5px solid var(--border);border-radius:10px;text-align:center;font-size:.72rem;font-weight:700;cursor:pointer;transition:all .18s;background:white;font-family:inherit;color:var(--text);}
+.pix-type-btn:hover{border-color:var(--green);}
+.pix-type-btn.on{background:var(--green);color:white;border-color:var(--green);}
+.pix-type-ico{font-size:1.2rem;display:block;margin-bottom:.25rem;}
+
+/* PLAN CARDS */
+.plan-grid{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-top:.5rem;}
+.plan-card{border:2px solid var(--border);border-radius:18px;padding:1.3rem;cursor:pointer;transition:all .25s;position:relative;background:white;}
+.plan-card:hover{transform:translateY(-2px);}
+.plan-card.selected{transform:translateY(-2px);}
+.plan-card.free.selected{border-color:#94a3b8;box-shadow:0 6px 20px rgba(148,163,184,.2);}
+.plan-card.pro.selected{border-color:var(--green);box-shadow:0 6px 20px rgba(16,185,129,.2);}
+.plan-card.premium.selected{border-color:var(--purple);box-shadow:0 6px 20px rgba(124,58,237,.2);}
+.plan-card.elite.selected{border-color:var(--gold);box-shadow:0 6px 20px rgba(245,158,11,.25);}
+.plan-badge{display:inline-block;font-size:.6rem;font-weight:800;padding:2px 8px;border-radius:20px;letter-spacing:.06em;margin-bottom:.5rem;}
+.plan-price{font-size:1.4rem;font-weight:800;color:var(--text);line-height:1;margin-bottom:.15rem;}
+.plan-price-sub{font-size:.65rem;color:var(--muted);}
+.plan-name{font-size:.88rem;font-weight:800;margin:.5rem 0 .3rem;}
+.plan-perks{list-style:none;font-size:.72rem;color:#555;display:flex;flex-direction:column;gap:.25rem;}
+.plan-perks li::before{content:'✓ ';}
+.plan-perks li.no::before{content:'✗ ';color:#ccc;}
+.plan-perks li.no{color:#ccc;}
+.plan-recommended{position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:linear-gradient(90deg,var(--purple),var(--blue));color:white;font-size:.58rem;font-weight:800;padding:2px 10px;border-radius:20px;white-space:nowrap;letter-spacing:.06em;}
+.plan-check{position:absolute;top:.8rem;right:.8rem;width:22px;height:22px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;transition:all .2s;}
+.plan-card.selected .plan-check{background:var(--green);border-color:var(--green);color:white;}
+
+/* REVIEW SECTION */
+.review-section{background:var(--off);border-radius:14px;padding:1.2rem;margin-bottom:1rem;}
+.review-section-title{font-size:.65rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:.8rem;}
+.review-row{display:flex;justify-content:space-between;align-items:flex-start;padding:.4rem 0;border-bottom:1px solid var(--border);font-size:.8rem;}
+.review-row:last-child{border:none;}
+.review-label{color:var(--muted);font-size:.72rem;flex-shrink:0;margin-right:.5rem;}
+.review-value{font-weight:700;color:var(--text);text-align:right;}
+.btn-edit-section{font-size:.7rem;color:var(--purple);background:none;border:none;cursor:pointer;font-family:inherit;font-weight:700;padding:0;margin-left:.5rem;}
+
+/* SUCCESS */
+.success-wrap{text-align:center;padding:2.5rem 1rem;}
+.success-anim{font-size:4rem;margin-bottom:1rem;animation:bounce .6s ease;}
+@keyframes bounce{0%,100%{transform:scale(1);}50%{transform:scale(1.2);}}
+
+/* BUTTONS */
+.btn-next{width:100%;margin-top:1.5rem;padding:1rem;background:var(--purple);color:white;border:none;border-radius:14px;font-size:.92rem;font-weight:800;cursor:pointer;font-family:inherit;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;}
+.btn-next:hover{background:#6d28d9;transform:translateY(-1px);box-shadow:0 6px 20px rgba(124,58,237,.3);}
+.btn-next:disabled{background:var(--border);color:var(--muted);cursor:not-allowed;transform:none;box-shadow:none;}
+.btn-back-step{background:none;border:1.5px solid var(--border);border-radius:14px;padding:.9rem;font-size:.85rem;font-weight:700;color:var(--muted);cursor:pointer;font-family:inherit;transition:all .2s;margin-top:.6rem;width:100%;}
+.btn-back-step:hover{border-color:#aaa;color:var(--text);}
+.btn-publish{width:100%;margin-top:1.5rem;padding:1.1rem;background:linear-gradient(90deg,var(--purple),var(--blue));color:white;border:none;border-radius:14px;font-size:1rem;font-weight:800;cursor:pointer;font-family:inherit;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;}
+.btn-publish:hover{opacity:.92;transform:translateY(-1px);box-shadow:0 8px 24px rgba(124,58,237,.3);}
+
+.info-box{background:rgba(26,143,255,.06);border:1px solid rgba(26,143,255,.15);border-radius:10px;padding:.75rem 1rem;font-size:.76rem;color:#1a6bb5;display:flex;align-items:flex-start;gap:8px;line-height:1.5;margin:.8rem 0;}
+.warn-box{background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.2);border-radius:10px;padding:.75rem 1rem;font-size:.76rem;color:#92400e;display:flex;align-items:flex-start;gap:8px;line-height:1.5;margin:.8rem 0;}
+.divider{border:none;border-top:1px solid var(--border);margin:1.2rem 0;}
+
+/* LOADING */
+.loading-overlay{position:fixed;inset:0;background:rgba(255,255,255,.92);backdrop-filter:blur(4px);z-index:900;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;}
+.loading-overlay.hidden{display:none;}
+.spinner{width:44px;height:44px;border:3px solid var(--border);border-top-color:var(--purple);border-radius:50%;animation:spin 0.8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+@media(max-width:580px){
+  .two-col,.three-col,.plan-grid{grid-template-columns:1fr;}
+  .pix-type-grid{grid-template-columns:repeat(2,1fr);}
+}
+</style>
+</head>
+<body>
+
+<div class="loading-overlay hidden" id="loadingOverlay">
+  <div class="spinner"></div>
+  <div style="font-size:.88rem;font-weight:700;color:var(--text);">Publicando seu perfil...</div>
+  <div style="font-size:.75rem;color:var(--muted);">Aguarde alguns instantes</div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <div style="display:flex;align-items:center;gap:10px;">
+    <div>
+      <div class="nav-logo-name">LinkeGym</div>
+      <div class="nav-logo-tag">Para Personal Trainers</div>
+    </div>
+  </div>
+  <button class="nav-back" onclick="window.location.href='01_HOME_Principal.html'">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+    Voltar
+  </button>
+</nav>
+
+<!-- HERO -->
+<div class="page-hero">
+  <div class="hero-badge">💪 Seja um Personal LinkeGym</div>
+  <h1>Cadastre seu perfil e comece a receber alunos</h1>
+  <p>Preencha seus dados, defina suas academias e horários. Leva menos de 5 minutos.</p>
+</div>
+
+<!-- PROGRESS -->
+<div class="progress-wrap">
+  <div class="progress-steps">
+    <div class="ps active" id="ps1"><div class="ps-c">1</div><div class="ps-l">Pessoal</div></div>
+    <div class="ps" id="ps2"><div class="ps-c">2</div><div class="ps-l">Profissional</div></div>
+    <div class="ps" id="ps3"><div class="ps-c">3</div><div class="ps-l">Locais</div></div>
+    <div class="ps" id="ps4"><div class="ps-c">4</div><div class="ps-l">Valores</div></div>
+    <div class="ps" id="ps5"><div class="ps-c">5</div><div class="ps-l">Financeiro</div></div>
+    <div class="ps" id="ps6"><div class="ps-c">6</div><div class="ps-l">Plano</div></div>
+    <div class="ps" id="ps7"><div class="ps-c">7</div><div class="ps-l">Revisão</div></div>
+  </div>
+</div>
+
+<!-- WIZARD -->
+<div class="wizard">
+
+  <!-- ══ STEP 1: DADOS PESSOAIS ══ -->
+  <div class="step-card" id="step1">
+    <div class="s-tag">Passo 1 de 7</div>
+    <div class="s-title">Dados pessoais</div>
+    <div class="s-desc">Informações básicas do seu perfil público.</div>
+
+    <div style="display:flex;justify-content:center;margin-bottom:1.5rem;">
+      <div class="photo-upload" style="width:140px;" onclick="triggerPhotoUpload()">
+        <div class="photo-upload-icon">📸</div>
+        <div class="photo-upload-text">Foto de perfil</div>
+        <div class="photo-upload-sub">JPG ou PNG · máx 5MB</div>
+        <input type="file" id="photoInput" accept="image/*" style="display:none;" onchange="previewPhoto(this)"/>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="field">
+        <label>Nome completo <span class="req">*</span></label>
+        <input type="text" class="inp" id="f_name" placeholder="Seu nome completo" oninput="checkStep1()"/>
+      </div>
+      <div class="field">
+        <label>Nome de exibição <span class="req">*</span></label>
+        <input type="text" class="inp" id="f_display" placeholder="Como aparece no perfil"/>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="field">
+        <label>CPF <span class="req">*</span></label>
+        <input type="text" class="inp" id="f_cpf" placeholder="000.000.000-00" maxlength="14" oninput="formatCPF(this);checkStep1()"/>
+      </div>
+      <div class="field">
+        <label>Data de nascimento <span class="req">*</span></label>
+        <input type="date" class="inp" id="f_birth" oninput="checkStep1()"/>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="field">
+        <label>WhatsApp <span class="req">*</span></label>
+        <input type="tel" class="inp" id="f_phone" placeholder="(11) 99999-9999" maxlength="15" oninput="formatPhone(this);checkStep1()"/>
+        <div class="field-hint">📲 Alunos vão entrar em contato por aqui</div>
+      </div>
+      <div class="field">
+        <label>E-mail <span class="req">*</span></label>
+        <input type="email" class="inp" id="f_email" placeholder="seu@email.com" oninput="checkStep1()"/>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>CEP da sua região <span class="req">*</span></label>
+      <div style="display:flex;gap:.6rem;">
+        <input type="text" class="inp" id="f_cep" placeholder="00000-000" maxlength="9" style="flex:1;" oninput="formatCEPField(this)" onblur="lookupCEPField(this.value)"/>
+        <button onclick="lookupCEPField(document.getElementById('f_cep').value)" style="padding:.78rem 1.2rem;background:var(--purple);color:white;border:none;border-radius:12px;font-size:.8rem;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;">Buscar</button>
+      </div>
+    </div>
+
+    <div class="two-col" id="addressFields" style="display:none;">
+      <div class="field">
+        <label>Cidade</label>
+        <input type="text" class="inp" id="f_city" placeholder="—" readonly style="background:var(--off);"/>
+      </div>
+      <div class="field">
+        <label>Estado</label>
+        <input type="text" class="inp" id="f_state" placeholder="—" readonly style="background:var(--off);"/>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Raio de atendimento</label>
+      <div style="display:flex;align-items:center;gap:1rem;">
+        <input type="range" id="f_radius" min="1" max="30" value="10" style="flex:1;" oninput="document.getElementById('radiusVal').textContent=this.value+'km'"/>
+        <span id="radiusVal" style="font-size:.88rem;font-weight:800;color:var(--purple);min-width:40px;">10km</span>
+      </div>
+      <div class="field-hint">Distância máxima que você atende a partir do seu CEP</div>
+    </div>
+
+    <button class="btn-next" id="btn1" onclick="goStep(2)" disabled>
+      Continuar <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </button>
+  </div>
+
+  <!-- ══ STEP 2: DADOS PROFISSIONAIS ══ -->
+  <div class="step-card hidden" id="step2">
+    <div class="s-tag">Passo 2 de 7</div>
+    <div class="s-title">Dados profissionais</div>
+    <div class="s-desc">Suas qualificações e especialidades aparecem no seu perfil público.</div>
+
+    <div class="two-col">
+      <div class="field">
+        <label>CREF <span class="req">*</span></label>
+        <input type="text" class="inp" id="f_cref" placeholder="000000-G/SP" oninput="checkStep2()"/>
+        <div class="field-hint">Será verificado e exibido como ✓ CREF no perfil</div>
+      </div>
+      <div class="field">
+        <label>Gênero</label>
+        <select class="inp inp-select" id="f_gender">
+          <option value="">Selecione</option>
+          <option value="m">Masculino</option>
+          <option value="f">Feminino</option>
+          <option value="nb">Não-binário</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Formação acadêmica <span class="req">*</span></label>
+      <input type="text" class="inp" id="f_edu" placeholder="Ex: Bacharel em Educação Física — USP (2018)" oninput="checkStep2()"/>
+    </div>
+
+    <div class="field">
+      <label>Anos de experiência</label>
+      <select class="inp inp-select" id="f_exp">
+        <option value="1">Menos de 1 ano</option>
+        <option value="2">1–2 anos</option>
+        <option value="5" selected>3–5 anos</option>
+        <option value="8">6–10 anos</option>
+        <option value="10">Mais de 10 anos</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>Especialidades <span class="req">*</span> <span style="font-weight:400;color:var(--muted);">(selecione todas que aplica)</span></label>
+      <div class="tag-grid" id="specGrid">
+        <button class="tag-btn" onclick="toggleTag(this)">Musculação</button>
+        <button class="tag-btn" onclick="toggleTag(this)">Funcional</button>
+        <button class="tag-btn" onclick="toggleTag(this)">HIIT</button>
+        <button class="tag-btn" onclick="toggleTag(this)">CrossFit</button>
+        <button class="tag-btn" onclick="toggleTag(this)">Pilates</button>
+        <button class="tag-btn" onclick="toggleTag(this)">Yoga</button>
+        <button class="tag-btn" onclick="toggleTag(this)">Emagrecimento</button>
+        <button class="tag-btn" onclick="toggleTag(this)">Hipertrofia</button>
+        <button class="tag-btn" onclick="toggleTag(this)">Reabilitação</button>
+        <button class="tag-btn" onclick="toggleTag(this)">Corrida</button>
+        <button class="tag-btn" onclick="toggleTag(this)">Natação</button>
+        <button class="tag-btn" onclick="toggleTag(this)">Gestantes</button>
+        <button class="tag-btn" onclick="toggleTag(this)">Idosos</button>
+        <button class="tag-btn" onclick="toggleTag(this)">Performance</button>
+        <button class="tag-btn" onclick="toggleTag(this)">Saúde Feminina</button>
+        <button class="tag-btn" onclick="toggleTag(this)">Pós-parto</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Certificações adicionais</label>
+      <input type="text" class="inp" id="f_certs" placeholder="Ex: NSCA-CPT, Nutrição Esportiva, CrossFit L1 (separados por vírgula)"/>
+    </div>
+
+    <div class="field">
+      <label>Bio / Apresentação <span class="req">*</span></label>
+      <textarea class="inp" id="f_bio" rows="4" placeholder="Conte sua história, metodologia e o que diferencia você dos demais. Esta é sua apresentação para os alunos..." style="resize:vertical;line-height:1.6;" oninput="checkStep2();updateBioCount(this)"></textarea>
+      <div style="display:flex;justify-content:space-between;margin-top:.3rem;">
+        <div class="field-hint">Mínimo 80 caracteres. Seja autêntico!</div>
+        <div style="font-size:.68rem;color:var(--muted);" id="bioCount">0/500</div>
+      </div>
+    </div>
+
+    <hr class="divider"/>
+    <div style="font-size:.78rem;font-weight:700;color:var(--text);margin-bottom:.8rem;">📱 Redes sociais <span style="font-weight:400;color:var(--muted);">(opcional)</span></div>
+
+    <div class="two-col">
+      <div class="field">
+        <label>Instagram</label>
+        <div style="position:relative;">
+          <span style="position:absolute;left:.9rem;top:50%;transform:translateY(-50%);font-size:.8rem;color:var(--muted);font-weight:700;">@</span>
+          <input type="text" class="inp" id="f_insta" placeholder="seuperfil" style="padding-left:2rem;"/>
+        </div>
+      </div>
+      <div class="field">
+        <label>YouTube / TikTok</label>
+        <input type="text" class="inp" id="f_youtube" placeholder="Link do canal ou perfil"/>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Vídeo de apresentação</label>
+      <input type="text" class="inp" id="f_video" placeholder="Link do YouTube ou Vimeo"/>
+      <div class="field-hint">📹 Trainers com vídeo recebem até 3× mais contatos</div>
+    </div>
+
+    <button class="btn-next" id="btn2" onclick="goStep(3)" disabled>
+      Continuar <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </button>
+    <button class="btn-back-step" onclick="goStep(1)">← Voltar</button>
+  </div>
+
+  <!-- ══ STEP 3: LOCAIS DE ATENDIMENTO ══ -->
+  <div class="step-card hidden" id="step3">
+    <div class="s-tag">Passo 3 de 7</div>
+    <div class="s-title">Locais & disponibilidade</div>
+    <div class="s-desc">Cadastre as academias onde você atende com dias e horários específicos de cada uma.</div>
+
+    <!-- Academias dinâmicas -->
+    <div id="academiasList"></div>
+    <button class="btn-add-academia" onclick="addAcademia()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Adicionar academia / local de treino
+    </button>
+
+    <hr class="divider"/>
+
+    <!-- Atendimento a domicílio -->
+    <div class="field">
+      <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+        <input type="checkbox" id="f_homevisit" style="width:18px;height:18px;accent-color:var(--purple);cursor:pointer;"/>
+        Também atendo em residências / condomínios
+      </label>
+      <div class="field-hint" style="margin-left:26px;">O aluno informa o endereço no momento da solicitação</div>
+    </div>
+
+    <div class="field">
+      <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+        <input type="checkbox" id="f_online" style="width:18px;height:18px;accent-color:var(--purple);cursor:pointer;"/>
+        Ofereço treino online / videoconferência
+      </label>
+    </div>
+
+    <div class="info-box">
+      <span>💡</span>
+      <span>Quanto mais locais e horários cadastrados, maior a chance de aparecer nas buscas dos alunos.</span>
+    </div>
+
+    <button class="btn-next" onclick="goStep(4)">
+      Continuar <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </button>
+    <button class="btn-back-step" onclick="goStep(2)">← Voltar</button>
+  </div>
+
+  <!-- ══ STEP 4: VALORES & ATENDIMENTO ══ -->
+  <div class="step-card hidden" id="step4">
+    <div class="s-tag">Passo 4 de 7</div>
+    <div class="s-title">Valores & atendimento</div>
+    <div class="s-desc">Defina seus preços, pacotes e configurações de agenda.</div>
+
+    <div class="two-col">
+      <div class="field">
+        <label>Valor por aula avulsa <span class="req">*</span></label>
+        <div style="position:relative;">
+          <span style="position:absolute;left:.9rem;top:50%;transform:translateY(-50%);font-size:.82rem;color:var(--muted);font-weight:700;">R$</span>
+          <input type="number" class="inp" id="f_price" placeholder="80" min="30" max="500" style="padding-left:2.4rem;" oninput="calcPrices();checkStep4()"/>
+        </div>
+      </div>
+      <div class="field">
+        <label>Duração padrão da aula</label>
+        <select class="inp inp-select" id="f_duration">
+          <option value="45">45 minutos</option>
+          <option value="60" selected>60 minutos (1h)</option>
+          <option value="90">90 minutos (1h30)</option>
+          <option value="120">120 minutos (2h)</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Calculated packages -->
+    <div id="packageCalc" style="display:none;background:linear-gradient(135deg,rgba(124,58,237,.06),rgba(26,143,255,.04));border:1px solid rgba(124,58,237,.15);border-radius:14px;padding:1.1rem;margin-bottom:1rem;">
+      <div style="font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--purple);margin-bottom:.7rem;">📦 Pacotes calculados automaticamente</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;" id="packagesGrid"></div>
+      <div class="field-hint" style="margin-top:.6rem;">Você pode ajustar esses valores na conversa com o aluno</div>
+    </div>
+
+    <!-- Trial -->
+    <div style="border:1.5px solid var(--border);border-radius:14px;padding:1.1rem;margin-bottom:1rem;">
+      <label style="display:flex;align-items:center;gap:8px;cursor:pointer;margin-bottom:.6rem;">
+        <input type="checkbox" id="f_trial" style="width:18px;height:18px;accent-color:var(--purple);cursor:pointer;" onchange="toggleTrialPrice()"/>
+        <span style="font-size:.84rem;font-weight:700;">Oferecer aula experimental com desconto</span>
+      </label>
+      <div id="trialPriceField" style="display:none;">
+        <div style="display:flex;align-items:center;gap:.6rem;">
+          <span style="font-size:.78rem;color:var(--muted);white-space:nowrap;">Preço da experimental:</span>
+          <div style="position:relative;flex:1;">
+            <span style="position:absolute;left:.9rem;top:50%;transform:translateY(-50%);font-size:.78rem;color:var(--muted);font-weight:700;">R$</span>
+            <input type="number" class="inp inp-sm" id="f_trial_price" placeholder="50" style="padding-left:2.2rem;"/>
+          </div>
+        </div>
+        <div class="field-hint" style="margin-top:.4rem;">🎯 Trainers com experimental recebem 60% mais solicitações</div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="field">
+        <label>Máximo de alunos fixos</label>
+        <select class="inp inp-select" id="f_maxstudents">
+          <option value="5">Até 5 alunos</option>
+          <option value="10" selected>Até 10 alunos</option>
+          <option value="15">Até 15 alunos</option>
+          <option value="20">Até 20 alunos</option>
+          <option value="99">Sem limite</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Aceita treino avulso?</label>
+        <select class="inp inp-select" id="f_avulso">
+          <option value="yes" selected>✅ Sim, aceito</option>
+          <option value="no">❌ Não, só fixos</option>
+          <option value="sometimes">🔄 Apenas quando tenho vaga</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Tempo de resposta que você consegue manter</label>
+      <select class="inp inp-select" id="f_response">
+        <option value="5min">⚡ Menos de 5 minutos</option>
+        <option value="15min" selected>🕐 Até 15 minutos</option>
+        <option value="30min">🕑 Até 30 minutos</option>
+        <option value="1h">⏱️ Até 1 hora</option>
+        <option value="2h">⌛ Até 2 horas</option>
+      </select>
+    </div>
+
+    <button class="btn-next" id="btn4" onclick="goStep(5)" disabled>
+      Continuar <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </button>
+    <button class="btn-back-step" onclick="goStep(3)">← Voltar</button>
+  </div>
+
+  <!-- ══ STEP 5: DADOS FINANCEIROS ══ -->
+  <div class="step-card hidden" id="step5">
+    <div class="s-tag">Passo 5 de 7</div>
+    <div class="s-title">Dados financeiros</div>
+    <div class="s-desc">Para recebimento da sua assinatura e futuros pagamentos via plataforma.</div>
+
+    <div class="warn-box">
+      <span>🔒</span>
+      <span>Seus dados financeiros são criptografados e nunca são exibidos publicamente. Usados apenas para processamento de pagamentos.</span>
+    </div>
+
+    <!-- PIX -->
+    <div style="background:linear-gradient(135deg,rgba(16,185,129,.06),rgba(16,185,129,.02));border:1px solid rgba(16,185,129,.2);border-radius:16px;padding:1.3rem;margin-bottom:1.2rem;">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:1rem;">
+        <div style="width:32px;height:32px;background:var(--green);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1rem;">🏦</div>
+        <div>
+          <div style="font-size:.85rem;font-weight:800;">Chave PIX</div>
+          <div style="font-size:.68rem;color:var(--muted);">Forma de pagamento preferida</div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Tipo de chave PIX <span class="req">*</span></label>
+        <div class="pix-type-grid">
+          <button class="pix-type-btn on" onclick="selectPixType(this,'cpf')" id="pix_cpf">
+            <span class="pix-type-ico">🪪</span>CPF
+          </button>
+          <button class="pix-type-btn" onclick="selectPixType(this,'phone')" id="pix_phone">
+            <span class="pix-type-ico">📱</span>Celular
+          </button>
+          <button class="pix-type-btn" onclick="selectPixType(this,'email')" id="pix_email">
+            <span class="pix-type-ico">📧</span>E-mail
+          </button>
+          <button class="pix-type-btn" onclick="selectPixType(this,'random')" id="pix_random">
+            <span class="pix-type-ico">🔑</span>Aleatória
+          </button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Chave PIX <span class="req">*</span></label>
+        <input type="text" class="inp" id="f_pix" placeholder="Seu CPF" oninput="checkStep5()"/>
+        <div class="field-hint" id="pixHint">Digite seu CPF no formato 000.000.000-00</div>
+      </div>
+    </div>
+
+    <!-- Conta Bancária -->
+    <div style="border:1.5px solid var(--border);border-radius:16px;padding:1.3rem;margin-bottom:1rem;">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:1rem;">
+        <div style="width:32px;height:32px;background:var(--blue);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1rem;">🏛️</div>
+        <div>
+          <div style="font-size:.85rem;font-weight:800;">Conta bancária</div>
+          <div style="font-size:.68rem;color:var(--muted);">Para transferência ou boleto</div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Banco <span class="req">*</span></label>
+        <select class="inp inp-select" id="f_bank" onchange="checkStep5()">
+          <option value="">Selecione seu banco</option>
+          <option value="001">001 — Banco do Brasil</option>
+          <option value="033">033 — Santander</option>
+          <option value="104">104 — Caixa Econômica Federal</option>
+          <option value="237">237 — Bradesco</option>
+          <option value="341">341 — Itaú</option>
+          <option value="260">260 — Nubank</option>
+          <option value="290">290 — PagBank</option>
+          <option value="380">380 — PicPay</option>
+          <option value="077">077 — Inter</option>
+          <option value="212">212 — Banco Original</option>
+          <option value="336">336 — C6 Bank</option>
+          <option value="323">323 — Mercado Pago</option>
+          <option value="other">Outro banco</option>
+        </select>
+      </div>
+
+      <div class="three-col">
+        <div class="field">
+          <label>Tipo de conta</label>
+          <select class="inp inp-select" id="f_accounttype">
+            <option value="corrente">Corrente</option>
+            <option value="poupanca">Poupança</option>
+            <option value="pagamento">Pagamento</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Agência <span class="req">*</span></label>
+          <input type="text" class="inp" id="f_agency" placeholder="0000" maxlength="6" oninput="checkStep5()"/>
+        </div>
+        <div class="field">
+          <label>Conta + dígito <span class="req">*</span></label>
+          <input type="text" class="inp" id="f_account" placeholder="00000-0" oninput="checkStep5()"/>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Nome do titular</label>
+        <input type="text" class="inp" id="f_holder" placeholder="Igual ao cadastro no banco"/>
+      </div>
+    </div>
+
+    <div class="info-box">
+      <span>💡</span>
+      <span>A LinkeGym só cobra a mensalidade do seu plano. O valor das aulas é negociado e pago diretamente entre você e o aluno.</span>
+    </div>
+
+    <button class="btn-next" id="btn5" onclick="goStep(6)" disabled>
+      Continuar <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </button>
+    <button class="btn-back-step" onclick="goStep(4)">← Voltar</button>
+  </div>
+
+  <!-- ══ STEP 6: PLANO ══ -->
+  <div class="step-card hidden" id="step6">
+    <div class="s-tag">Passo 6 de 7</div>
+    <div class="s-title">Escolha seu plano</div>
+    <div class="s-desc">Quanto mais visibilidade, mais alunos você encontra. Cancele quando quiser.</div>
+
+    <div class="plan-grid">
+      <!-- FREE -->
+      <div class="plan-card free" onclick="selectPlan('free',this)">
+        <div class="plan-check" id="check_free">✓</div>
+        <div class="plan-badge" style="background:#f1f0ed;color:#888;">FREE</div>
+        <div class="plan-price">R$0<div class="plan-price-sub">para sempre</div></div>
+        <div class="plan-name">Gratuito</div>
+        <ul class="plan-perks">
+          <li>Perfil básico</li>
+          <li>Aparecer nos resultados</li>
+          <li class="no">Sem destaque</li>
+          <li class="no">Sem fotos</li>
+          <li class="no">Sem vídeo</li>
+          <li class="no">Sem bio longa</li>
+        </ul>
+      </div>
+
+      <!-- PRO -->
+      <div class="plan-card pro" onclick="selectPlan('pro',this)">
+        <div class="plan-check" id="check_pro">✓</div>
+        <div class="plan-badge" style="background:linear-gradient(90deg,#059669,#10b981);color:white;">PRO</div>
+        <div class="plan-price">R$49<div class="plan-price-sub">/mês</div></div>
+        <div class="plan-name">Profissional</div>
+        <ul class="plan-perks">
+          <li>Perfil completo</li>
+          <li>Boa visibilidade</li>
+          <li>Até 3 fotos</li>
+          <li>Bio detalhada</li>
+          <li>Taxa de aceite visível</li>
+          <li class="no">Sem vídeo</li>
+        </ul>
+      </div>
+
+      <!-- PREMIUM -->
+      <div class="plan-card premium" onclick="selectPlan('premium',this)" style="position:relative;">
+        <div class="plan-recommended">⭐ MAIS POPULAR</div>
+        <div class="plan-check" id="check_premium">✓</div>
+        <div class="plan-badge" style="background:linear-gradient(90deg,#7c3aed,#4f46e5);color:white;">PREMIUM</div>
+        <div class="plan-price">R$89<div class="plan-price-sub">/mês</div></div>
+        <div class="plan-name">Premium</div>
+        <ul class="plan-perks">
+          <li>Alta visibilidade</li>
+          <li>Destaque nos resultados</li>
+          <li>Até 8 fotos</li>
+          <li>Vídeo de apresentação</li>
+          <li>Bio + certificações</li>
+          <li>Bairros de atuação</li>
+        </ul>
+      </div>
+
+      <!-- ELITE -->
+      <div class="plan-card elite" onclick="selectPlan('elite',this)">
+        <div class="plan-check" id="check_elite">✓</div>
+        <div class="plan-badge" style="background:linear-gradient(90deg,#f59e0b,#f97316);color:white;">👑 ELITE</div>
+        <div class="plan-price">R$149<div class="plan-price-sub">/mês</div></div>
+        <div class="plan-name">Elite</div>
+        <ul class="plan-perks">
+          <li>Topo dos resultados</li>
+          <li>Patrocinado / Destaque</li>
+          <li>Fotos ilimitadas</li>
+          <li>Vídeo em destaque</li>
+          <li>Todas as informações</li>
+          <li>Badge "Top da Semana"</li>
+        </ul>
+      </div>
+    </div>
+
+    <div id="planSelected" style="display:none;background:linear-gradient(135deg,rgba(124,58,237,.07),rgba(26,143,255,.04));border:1px solid rgba(124,58,237,.2);border-radius:14px;padding:1rem;margin-top:1rem;text-align:center;">
+      <div style="font-size:.78rem;font-weight:800;color:var(--purple);" id="planSelectedText">—</div>
+      <div style="font-size:.7rem;color:var(--muted);margin-top:.2rem;">Você pode trocar de plano a qualquer momento</div>
+    </div>
+
+    <button class="btn-next" id="btn6" onclick="goStep(7)" disabled>
+      Revisar cadastro <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </button>
+    <button class="btn-back-step" onclick="goStep(5)">← Voltar</button>
+  </div>
+
+  <!-- ══ STEP 7: REVISÃO ══ -->
+  <div class="step-card hidden" id="step7">
+    <div class="s-tag">Passo 7 de 7</div>
+    <div class="s-title">Revise seu cadastro</div>
+    <div class="s-desc">Confira tudo antes de publicar. Você pode editar depois pelo painel.</div>
+
+    <!-- Perfil pessoal -->
+    <div class="review-section" id="rev_personal">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <div class="review-section-title">👤 Dados pessoais</div>
+        <button class="btn-edit-section" onclick="goStep(1)">✏️ Editar</button>
+      </div>
+      <div id="rev_personal_content"></div>
+    </div>
+
+    <!-- Dados profissionais -->
+    <div class="review-section" id="rev_prof">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <div class="review-section-title">🎓 Dados profissionais</div>
+        <button class="btn-edit-section" onclick="goStep(2)">✏️ Editar</button>
+      </div>
+      <div id="rev_prof_content"></div>
+    </div>
+
+    <!-- Locais -->
+    <div class="review-section">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <div class="review-section-title">📍 Locais de atendimento</div>
+        <button class="btn-edit-section" onclick="goStep(3)">✏️ Editar</button>
+      </div>
+      <div id="rev_locals_content"></div>
+    </div>
+
+    <!-- Valores -->
+    <div class="review-section">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <div class="review-section-title">💰 Valores & atendimento</div>
+        <button class="btn-edit-section" onclick="goStep(4)">✏️ Editar</button>
+      </div>
+      <div id="rev_values_content"></div>
+    </div>
+
+    <!-- Financeiro (mascarado) -->
+    <div class="review-section">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <div class="review-section-title">🏦 Dados financeiros</div>
+        <button class="btn-edit-section" onclick="goStep(5)">✏️ Editar</button>
+      </div>
+      <div id="rev_finance_content"></div>
+    </div>
+
+    <!-- Plano -->
+    <div class="review-section">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <div class="review-section-title">📦 Plano escolhido</div>
+        <button class="btn-edit-section" onclick="goStep(6)">✏️ Editar</button>
+      </div>
+      <div id="rev_plan_content"></div>
+    </div>
+
+    <div class="info-box">
+      <span>✅</span>
+      <span>Ao publicar, você concorda com os <a href="#" style="color:var(--blue);">Termos de Uso</a> e a <a href="#" style="color:var(--blue);">Política de Privacidade</a> da LinkeGym.</span>
+    </div>
+
+    <button class="btn-publish" onclick="publishProfile()">
+      🚀 Publicar meu perfil agora
+    </button>
+    <button class="btn-back-step" onclick="goStep(6)">← Voltar</button>
+  </div>
+
+  <!-- ══ SUCCESS ══ -->
+  <div class="step-card hidden" id="stepSuccess">
+    <div class="success-wrap">
+      <div class="success-anim">🎉</div>
+      <div style="font-size:1.5rem;font-weight:800;color:var(--text);margin-bottom:.5rem;">Perfil publicado!</div>
+      <div style="font-size:.88rem;color:var(--muted);max-width:380px;margin:0 auto 1.5rem;line-height:1.65;">Seu perfil já está visível para os alunos da LinkeGym. Você receberá notificações por WhatsApp e e-mail quando um aluno entrar em contato.</div>
+
+      <div style="background:var(--off);border-radius:16px;padding:1.3rem;text-align:left;margin-bottom:1.5rem;">
+        <div style="font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:.8rem;">📋 Próximos passos</div>
+        <div style="display:flex;flex-direction:column;gap:.7rem;">
+          <div style="display:flex;align-items:flex-start;gap:10px;font-size:.82rem;">
+            <div style="width:28px;height:28px;border-radius:8px;background:#ecfdf5;display:flex;align-items:center;justify-content:center;flex-shrink:0;">✅</div>
+            <div><strong>Perfil publicado</strong> — Já aparece nas buscas</div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:10px;font-size:.82rem;">
+            <div style="width:28px;height:28px;border-radius:8px;background:#fff7ed;display:flex;align-items:center;justify-content:center;flex-shrink:0;">📱</div>
+            <div><strong>Ative as notificações</strong> — Baixe o app LinkeGym</div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:10px;font-size:.82rem;">
+            <div style="width:28px;height:28px;border-radius:8px;background:#eff6ff;display:flex;align-items:center;justify-content:center;flex-shrink:0;">🖼️</div>
+            <div><strong>Adicione fotos</strong> — Perfis com fotos recebem 5× mais contatos</div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:10px;font-size:.82rem;">
+            <div style="width:28px;height:28px;border-radius:8px;background:#f5f3ff;display:flex;align-items:center;justify-content:center;flex-shrink:0;">🎥</div>
+            <div><strong>Grave um vídeo</strong> — Apresentação de 60s aumenta conversão em 3×</div>
+          </div>
+        </div>
+      </div>
+
+      <button onclick="window.location.href='03_PERFIL_Personal_Trainer.html'" style="width:100%;padding:.95rem;background:linear-gradient(90deg,var(--purple),var(--blue));color:white;border:none;border-radius:14px;font-size:.92rem;font-weight:800;cursor:pointer;font-family:inherit;margin-bottom:.6rem;">
+        👤 Ver meu perfil publicado
+      </button>
+      <button onclick="window.location.href='01_HOME_Principal.html'" style="width:100%;padding:.85rem;background:white;border:1.5px solid var(--border);border-radius:14px;font-size:.85rem;font-weight:700;cursor:pointer;font-family:inherit;color:var(--muted);">
+        Voltar ao início
+      </button>
+    </div>
+  </div>
+
+</div><!-- /wizard -->
+
+<script>
+// ── State ──
+const data = {
+  pixType: 'cpf', selectedPlan: null, academias: [],
+  specs: [], goals: []
+};
+let academiaCount = 0;
+
+// ── Photo ──
+function triggerPhotoUpload(){ document.getElementById('photoInput').click(); }
+function previewPhoto(input){
+  if(!input.files.length) return;
+  const url = URL.createObjectURL(input.files[0]);
+  const wrap = input.closest('.photo-upload');
+  wrap.innerHTML = `<img src="${url}" style="width:100px;height:100px;border-radius:50%;object-fit:cover;"/>
+    <div style="font-size:.72rem;color:var(--green);font-weight:700;margin-top:.4rem;">✓ Foto selecionada</div>`;
+}
+
+// ── Formatters ──
+function formatCPF(inp){
+  let v=inp.value.replace(/\D/g,'');
+  if(v.length>3) v=v.slice(0,3)+'.'+v.slice(3);
+  if(v.length>7) v=v.slice(0,7)+'.'+v.slice(7);
+  if(v.length>11) v=v.slice(0,11)+'-'+v.slice(11,13);
+  inp.value=v.slice(0,14);
+}
+function formatPhone(inp){
+  let v=inp.value.replace(/\D/g,'');
+  if(v.length>2) v='('+v.slice(0,2)+') '+v.slice(2);
+  if(v.length>10) v=v.slice(0,10)+'-'+v.slice(10,14);
+  inp.value=v.slice(0,15);
+}
+function formatCEPField(inp){
+  let v=inp.value.replace(/\D/g,'');
+  if(v.length>5) v=v.slice(0,5)+'-'+v.slice(5,8);
+  inp.value=v;
+}
+async function lookupCEPField(cep){
+  const c=cep.replace(/\D/g,'');
+  if(c.length!==8) return;
+  try{
+    const r=await fetch(`https://viacep.com.br/ws/${c}/json/`);
+    const d=await r.json();
+    if(!d.erro){
+      document.getElementById('f_city').value=d.localidade||'';
+      document.getElementById('f_state').value=d.uf||'';
+      document.getElementById('addressFields').style.display='grid';
+      checkStep1();
+    }
+  }catch(e){
+    document.getElementById('f_city').value='São Paulo';
+    document.getElementById('f_state').value='SP';
+    document.getElementById('addressFields').style.display='grid';
+    checkStep1();
+  }
+}
+
+// ── Validations ──
+function checkStep1(){
+  const ok = v('f_name') && v('f_cpf',11) && v('f_phone',11) && v('f_email') && v('f_cep',8);
+  document.getElementById('btn1').disabled=!ok;
+}
+function checkStep2(){
+  const bioLen = (document.getElementById('f_bio').value||'').length;
+  const ok = v('f_cref',6) && v('f_edu') && bioLen>=80 && document.querySelectorAll('#specGrid .tag-btn.on').length>0;
+  document.getElementById('btn2').disabled=!ok;
+}
+function checkStep4(){
+  document.getElementById('btn4').disabled = !v('f_price');
+}
+function checkStep5(){
+  const ok = v('f_pix') && v('f_bank') && v('f_agency') && v('f_account');
+  document.getElementById('btn5').disabled=!ok;
+}
+function v(id,minLen=1){
+  const el=document.getElementById(id);
+  return el && el.value.replace(/\D/g,'').length>=minLen || (el && el.value.trim().length>=minLen);
+}
+
+function updateBioCount(ta){
+  const n=ta.value.length;
+  const el=document.getElementById('bioCount');
+  el.textContent=`${n}/500`;
+  el.style.color=n>=80?'var(--green)':'var(--muted)';
+}
+
+// ── Tags ──
+function toggleTag(btn){
+  btn.classList.toggle('on');
+  checkStep2();
+}
+
+// ── PIX type ──
+function selectPixType(btn, type){
+  document.querySelectorAll('.pix-type-btn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  data.pixType = type;
+  const hints = {cpf:'Digite seu CPF no formato 000.000.000-00',phone:'Digite seu celular com DDD: (11) 99999-9999',email:'Digite o e-mail cadastrado no seu banco',random:'Cole sua chave aleatória PIX'};
+  const placeholders = {cpf:'000.000.000-00',phone:'(11) 99999-9999',email:'seu@email.com',random:'xxxx-xxxx-xxxx-xxxx'};
+  document.getElementById('pixHint').textContent=hints[type];
+  document.getElementById('f_pix').placeholder=placeholders[type];
+  document.getElementById('f_pix').value='';
+  checkStep5();
+}
+
+// ── Academia cards ──
+function addAcademia(){
+  academiaCount++;
+  const id = `ac_${academiaCount}`;
+  const div = document.createElement('div');
+  div.className='academia-card'; div.id=id;
+  div.innerHTML=`
+    <div class="academia-card-header">
+      <div class="academia-card-title">🏋️ Academia / Local ${academiaCount}</div>
+      <button class="btn-remove" onclick="removeAcademia('${id}')">✕ Remover</button>
+    </div>
+    <div class="field">
+      <label>Nome da academia <span class="req">*</span></label>
+      <input type="text" class="inp inp-sm" placeholder="Ex: Smart Fit Paulista"/>
+    </div>
+    <div class="field">
+      <label>Endereço completo <span class="req">*</span></label>
+      <input type="text" class="inp inp-sm" placeholder="Rua, número, bairro, cidade"/>
+    </div>
+    <div class="field">
+      <label>Dias que você atende neste local</label>
+      <div class="days-row" style="margin-top:.4rem;">
+        ${['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'].map(d=>`<button class="day-chip" onclick="this.classList.toggle('on')">${d}</button>`).join('')}
+      </div>
+    </div>
+    <div class="two-col" style="margin-top:.8rem;">
+      <div class="field">
+        <label>Horário de início</label>
+        <input type="time" class="inp inp-sm" value="06:00"/>
+      </div>
+      <div class="field">
+        <label>Horário de término</label>
+        <input type="time" class="inp inp-sm" value="20:00"/>
+      </div>
+    </div>
+    <div class="field">
+      <label>Observação <span style="font-weight:400;color:var(--muted);">(opcional)</span></label>
+      <input type="text" class="inp inp-sm" placeholder="Ex: Apenas por agendamento prévio, acesso livre pela portaria"/>
+    </div>
+  `;
+  document.getElementById('academiasList').appendChild(div);
+}
+function removeAcademia(id){
+  document.getElementById(id)?.remove();
+}
+
+// ── Trial ──
+function toggleTrialPrice(){
+  const show = document.getElementById('f_trial').checked;
+  document.getElementById('trialPriceField').style.display = show?'block':'none';
+}
+
+// ── Package calc ──
+function calcPrices(){
+  const p = parseInt(document.getElementById('f_price').value)||0;
+  if(!p){ document.getElementById('packageCalc').style.display='none'; return; }
+  document.getElementById('packageCalc').style.display='block';
+  const monthly8 = Math.round(p*8*0.9);
+  const monthly12 = Math.round(p*12*0.85);
+  const quarterly = Math.round(p*36*0.8);
+  document.getElementById('packagesGrid').innerHTML=`
+    <div style="text-align:center;background:white;border-radius:10px;padding:.7rem .4rem;">
+      <div style="font-size:.65rem;font-weight:800;color:var(--muted);">8 AULAS/MÊS</div>
+      <div style="font-size:1.05rem;font-weight:800;color:var(--purple);">R$${monthly8}</div>
+      <div style="font-size:.6rem;color:var(--green);">−10%</div>
+    </div>
+    <div style="text-align:center;background:white;border-radius:10px;padding:.7rem .4rem;">
+      <div style="font-size:.65rem;font-weight:800;color:var(--muted);">12 AULAS/MÊS</div>
+      <div style="font-size:1.05rem;font-weight:800;color:var(--purple);">R$${monthly12}</div>
+      <div style="font-size:.6rem;color:var(--green);">−15%</div>
+    </div>
+    <div style="text-align:center;background:white;border-radius:10px;padding:.7rem .4rem;">
+      <div style="font-size:.65rem;font-weight:800;color:var(--muted);">TRIMESTRAL</div>
+      <div style="font-size:1.05rem;font-weight:800;color:var(--purple);">R$${quarterly}</div>
+      <div style="font-size:.6rem;color:var(--green);">−20%</div>
+    </div>`;
+}
+
+// ── Plan select ──
+function selectPlan(plan, card){
+  document.querySelectorAll('.plan-card').forEach(c=>c.classList.remove('selected'));
+  document.querySelectorAll('.plan-check').forEach(c=>{c.style.background='';c.style.borderColor='';c.style.color='';});
+  card.classList.add('selected');
+  data.selectedPlan = plan;
+  const planNames = {free:'Gratuito — R$0/mês',pro:'Profissional — R$49/mês',premium:'Premium — R$89/mês',elite:'Elite — R$149/mês'};
+  document.getElementById('planSelected').style.display='block';
+  document.getElementById('planSelectedText').textContent=`✓ Plano ${planNames[plan]} selecionado`;
+  document.getElementById('btn6').disabled=false;
+}
+
+// ── Review builder ──
+function buildReview(){
+  const name = document.getElementById('f_name').value||'—';
+  const email = document.getElementById('f_email').value||'—';
+  const phone = document.getElementById('f_phone').value||'—';
+  const city = document.getElementById('f_city').value||'—';
+  document.getElementById('rev_personal_content').innerHTML=`
+    <div class="review-row"><span class="review-label">Nome</span><span class="review-value">${name}</span></div>
+    <div class="review-row"><span class="review-label">Contato</span><span class="review-value">${phone} · ${email}</span></div>
+    <div class="review-row"><span class="review-label">Cidade</span><span class="review-value">${city}</span></div>
+    <div class="review-row"><span class="review-label">Raio</span><span class="review-value">${document.getElementById('radiusVal').textContent}</span></div>`;
+
+  const cref = document.getElementById('f_cref').value||'—';
+  const edu = document.getElementById('f_edu').value||'—';
+  const specs = [...document.querySelectorAll('#specGrid .tag-btn.on')].map(b=>b.textContent).join(', ')||'—';
+  document.getElementById('rev_prof_content').innerHTML=`
+    <div class="review-row"><span class="review-label">CREF</span><span class="review-value">${cref}</span></div>
+    <div class="review-row"><span class="review-label">Formação</span><span class="review-value">${edu}</span></div>
+    <div class="review-row"><span class="review-label">Especialidades</span><span class="review-value">${specs}</span></div>`;
+
+  const acs = document.querySelectorAll('.academia-card');
+  let locHtml='';
+  if(acs.length===0){ locHtml='<div class="review-row"><span class="review-label">Academias</span><span class="review-value">Nenhuma cadastrada</span></div>'; }
+  else { acs.forEach((ac,i)=>{ const nm=ac.querySelectorAll('input')[0]?.value||`Academia ${i+1}`; locHtml+=`<div class="review-row"><span class="review-label">Local ${i+1}</span><span class="review-value">${nm}</span></div>`; }); }
+  if(document.getElementById('f_homevisit').checked) locHtml+=`<div class="review-row"><span class="review-label">Domicílio</span><span class="review-value">✓ Sim</span></div>`;
+  if(document.getElementById('f_online').checked) locHtml+=`<div class="review-row"><span class="review-label">Online</span><span class="review-value">✓ Sim</span></div>`;
+  document.getElementById('rev_locals_content').innerHTML=locHtml;
+
+  const price = document.getElementById('f_price').value||'—';
+  const dur = document.getElementById('f_duration').value;
+  const trial = document.getElementById('f_trial').checked;
+  const trialP = document.getElementById('f_trial_price').value||'—';
+  document.getElementById('rev_values_content').innerHTML=`
+    <div class="review-row"><span class="review-label">Aula avulsa</span><span class="review-value">R$${price} · ${dur}min</span></div>
+    <div class="review-row"><span class="review-label">Experimental</span><span class="review-value">${trial?`✓ R$${trialP}`:'Não oferece'}</span></div>
+    <div class="review-row"><span class="review-label">Vagas</span><span class="review-value">Até ${document.getElementById('f_maxstudents').value} alunos</span></div>`;
+
+  const bank = document.getElementById('f_bank');
+  const bankName = bank.options[bank.selectedIndex]?.text||'—';
+  const pix = document.getElementById('f_pix').value||'—';
+  const pixMasked = pix.length>4 ? pix.slice(0,3)+'*'.repeat(pix.length-6)+pix.slice(-3) : pix;
+  const agency = document.getElementById('f_agency').value||'—';
+  const account = document.getElementById('f_account').value||'—';
+  const acMasked = account.length>3 ? '***-'+account.slice(-2) : account;
+  document.getElementById('rev_finance_content').innerHTML=`
+    <div class="review-row"><span class="review-label">PIX (${data.pixType})</span><span class="review-value">${pixMasked}</span></div>
+    <div class="review-row"><span class="review-label">Banco</span><span class="review-value">${bankName}</span></div>
+    <div class="review-row"><span class="review-label">Ag / Conta</span><span class="review-value">${agency} / ${acMasked}</span></div>`;
+
+  const planNames={free:'Gratuito',pro:'Profissional R$49/mês',premium:'Premium R$89/mês',elite:'Elite R$149/mês'};
+  document.getElementById('rev_plan_content').innerHTML=`
+    <div class="review-row"><span class="review-label">Plano</span><span class="review-value">${planNames[data.selectedPlan]||'—'}</span></div>`;
+}
+
+// ── Steps ──
+function goStep(n){
+  if(n===7) buildReview();
+  const ids=['step1','step2','step3','step4','step5','step6','step7','stepSuccess'];
+  ids.forEach(id=>{const el=document.getElementById(id);if(el){el.classList.add('hidden');el.classList.remove('step-card');}});
+  const target=n==='success'?'stepSuccess':`step${n}`;
+  const el=document.getElementById(target);
+  if(el){el.classList.remove('hidden');el.classList.add('step-card');}
+  for(let i=1;i<=7;i++){
+    const ps=document.getElementById('ps'+i);
+    if(!ps) continue;
+    ps.classList.remove('active','done');
+    const nNum=typeof n==='number'?n:8;
+    if(i<nNum) ps.classList.add('done');
+    else if(i===nNum) ps.classList.add('active');
+  }
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ── Publish ──
+function publishProfile(){
+  document.getElementById('loadingOverlay').classList.remove('hidden');
+  setTimeout(()=>{
+    document.getElementById('loadingOverlay').classList.add('hidden');
+    goStep('success');
+  }, 2500);
+}
+
+// ── Init ──
+addAcademia();
+</script>
+</body>
+</html>

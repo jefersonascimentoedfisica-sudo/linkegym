@@ -581,9 +581,9 @@ footer{background:var(--dark2);padding:4rem 5vw 2rem;}
       <div class="auth-form" id="fLogin">
         <div class="field"><label>E-mail</label><input type="email" placeholder="seu@email.com"/></div>
         <div class="field"><label>Senha</label><input type="password" placeholder="••••••••"/></div>
-        <button class="btn-auth" onclick="closeAuth()">Entrar na plataforma →</button>
+        <button class="btn-auth" onclick="doLogin()">Entrar na plataforma →</button>
         <div class="divider"><span>ou</span></div>
-        <button class="btn-google" onclick="closeAuth()">
+        <button class="btn-google" onclick="doLogin()">
           <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
           Continuar com Google
         </button>
@@ -598,9 +598,9 @@ footer{background:var(--dark2);padding:4rem 5vw 2rem;}
         <div class="field"><label>Nome completo</label><input type="text" placeholder="Seu nome"/></div>
         <div class="field"><label>E-mail</label><input type="email" placeholder="seu@email.com"/></div>
         <div class="field"><label>Senha</label><input type="password" placeholder="Mín. 8 caracteres"/></div>
-        <button class="btn-auth" onclick="closeAuth()">Criar conta grátis →</button>
+        <button class="btn-auth" onclick="doLogin()">Criar conta grátis →</button>
         <div class="divider"><span>ou</span></div>
-        <button class="btn-google" onclick="closeAuth()">
+        <button class="btn-google" onclick="doLogin()">
           <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
           Cadastrar com Google
         </button>
@@ -716,7 +716,7 @@ footer{background:var(--dark2);padding:4rem 5vw 2rem;}
       </p>
       <div class="hero-btns">
         <!-- Botão 1: Contratação contínua -->
-        <button class="btn-main" onclick="openAuth()">
+        <button class="btn-main" onclick="openAuth('06_ENCONTRAR_PERSONAL_Fluxo.html')">
           <div class="btn-main-left">
             <span class="btn-main-title">Encontrar Personal Trainer</span>
             <span class="btn-main-sub">Acompanhamento contínuo</span>
@@ -724,7 +724,7 @@ footer{background:var(--dark2);padding:4rem 5vw 2rem;}
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </button>
         <!-- Botão 2: Treino avulso -->
-        <button class="btn-avulso" onclick="openAuth()">
+        <button class="btn-avulso" onclick="openAuth('02_TREINO_AVULSO_Fluxo.html')">
           <div class="btn-avulso-left">
             <div class="btn-avulso-icon">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
@@ -737,7 +737,7 @@ footer{background:var(--dark2);padding:4rem 5vw 2rem;}
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </button>
         <!-- Botão 3: Personal trainer -->
-        <button class="btn-trainer" onclick="openAuth()">Sou Personal Trainer — Quero me cadastrar</button>
+        <button class="btn-trainer" onclick="openAuth('07_CADASTRO_PERSONAL_TRAINER.html')">Sou Personal Trainer — Quero me cadastrar</button>
       </div>
       <div class="hero-trust">
         <div class="trust-badge">
@@ -1136,8 +1136,11 @@ footer{background:var(--dark2);padding:4rem 5vw 2rem;}
           <li>Selo Elite verificado</li>
           <li>Relatórios completos</li>
           <li>Suporte prioritário</li>
+          <li>🏋️ Montador de Treinos completo</li>
+          <li>📲 Envio de treinos por WhatsApp/Email</li>
+          <li>📁 Templates e periodização</li>
         </ul>
-        <button class="plan-btn" onclick="openAuth()">Assinar Elite</button>
+        <button class="plan-btn" onclick="openAuth('08_MONTADOR_TREINOS.html')">Assinar Elite</button>
       </div>
     </div>
     <div class="plan-note reveal">A plataforma retém 20% de comissão por aula realizada. Você recebe 80% diretamente na sua conta.</div>
@@ -1162,7 +1165,7 @@ footer{background:var(--dark2);padding:4rem 5vw 2rem;}
     </div>
     <div class="cta-btns">
       <button class="cta-btn-white" onclick="openAuth()">Sou Aluno — Começar Agora →</button>
-      <button class="cta-btn-outline" onclick="openAuth()">Sou Personal — Me Cadastrar</button>
+      <button class="cta-btn-outline" onclick="openAuth('07_CADASTRO_PERSONAL_TRAINER.html')">Sou Personal — Me Cadastrar</button>
     </div>
   </div>
 </div>
@@ -1262,8 +1265,10 @@ const logoSrc = LOGO_B64 ? `data:image/png;base64,${LOGO_B64}` : '';
 });
 
 // ── Auth ──
-function openAuth(){ document.getElementById('authModal').classList.remove('hidden'); document.body.style.overflow='hidden'; }
-function closeAuth(){ document.getElementById('authModal').classList.add('hidden'); document.body.style.overflow=''; }
+let _pendingRedirect = null;
+function openAuth(redirect){ _pendingRedirect = redirect || null; document.getElementById('authModal').classList.remove('hidden'); document.body.style.overflow='hidden'; }
+function closeAuth(){ document.getElementById('authModal').classList.add('hidden'); document.body.style.overflow=''; _pendingRedirect=null; }
+function doLogin(){ document.getElementById('authModal').classList.add('hidden'); document.body.style.overflow=''; if(_pendingRedirect){ window.location.href=_pendingRedirect; _pendingRedirect=null; } }
 function authTab(t){
   ['fLogin','fReg'].forEach(id => document.getElementById(id).classList.add('hidden'));
   document.getElementById(t==='login'?'fLogin':'fReg').classList.remove('hidden');
@@ -1275,8 +1280,7 @@ function selType(t){
 }
 document.getElementById('authModal').addEventListener('click',function(e){if(e.target===this)closeAuth();});
 
-// Show auth gate on load if not logged in
-setTimeout(()=> openAuth(), 600);
+// Auth gate only on explicit user action
 
 // ── Nav scroll ──
 window.addEventListener('scroll',()=>{

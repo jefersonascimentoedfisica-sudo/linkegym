@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>LinkeGym Elite — Montador de Treinos</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --red:#e8173a;--orange:#f97316;--blue:#1a8fff;
+  --dark:#0d0d0d;--dark2:#111827;--white:#fff;--off:#f8f7f4;--gray:#f1f0ed;
+  --border:#e8e6e1;--text:#1a1a1a;--muted:#8a8a8a;--green:#10b981;
+  --gold:#f59e0b;--gold2:#d97706;--purple:#7c3aed;--purple2:#6d28d9;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--off);color:var(--text);min-height:100vh;overflow-x:hidden;}
+
+/* ── NAV ── */
+nav{background:var(--dark2);border-bottom:1px solid rgba(255,255,255,.07);padding:0 1.5rem;height:58px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+.nav-left{display:flex;align-items:center;gap:14px;}
+.nav-logo{font-size:1.1rem;font-weight:800;background:linear-gradient(90deg,var(--gold),var(--orange));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.elite-badge{display:inline-flex;align-items:center;gap:5px;background:linear-gradient(90deg,rgba(245,158,11,.15),rgba(249,115,22,.1));border:1px solid rgba(245,158,11,.35);color:#fbbf24;font-size:.6rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;padding:.25rem .7rem;border-radius:20px;}
+.nav-title{font-size:.88rem;font-weight:700;color:rgba(255,255,255,.6);margin-left:4px;}
+.nav-right{display:flex;align-items:center;gap:8px;}
+.nav-btn{padding:.45rem .9rem;border-radius:8px;font-size:.76rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s;border:none;}
+.nav-btn-ghost{background:rgba(255,255,255,.07);color:rgba(255,255,255,.6);}
+.nav-btn-ghost:hover{background:rgba(255,255,255,.12);color:white;}
+.nav-btn-gold{background:linear-gradient(90deg,var(--gold),var(--orange));color:white;}
+.nav-btn-gold:hover{opacity:.9;transform:translateY(-1px);}
+
+/* ── 3-PANEL LAYOUT ── */
+.app-layout{display:grid;grid-template-columns:280px 1fr 340px;height:calc(100vh - 58px);overflow:hidden;}
+
+/* ── PANEL: LIBRARY ── */
+.panel-library{background:var(--dark2);border-right:1px solid rgba(255,255,255,.07);display:flex;flex-direction:column;overflow:hidden;}
+.panel-header{padding:1rem 1rem .75rem;border-bottom:1px solid rgba(255,255,255,.07);}
+.panel-title{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,.35);margin-bottom:.6rem;}
+.search-wrap{position:relative;}
+.search-inp{width:100%;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:.55rem .9rem .55rem 2.2rem;font-size:.78rem;color:white;font-family:inherit;outline:none;transition:all .2s;}
+.search-inp::placeholder{color:rgba(255,255,255,.25);}
+.search-inp:focus{border-color:rgba(245,158,11,.4);background:rgba(255,255,255,.09);}
+.search-icon{position:absolute;left:.7rem;top:50%;transform:translateY(-50%);font-size:.85rem;opacity:.4;}
+.filter-row{display:flex;gap:.3rem;padding:.6rem 1rem;overflow-x:auto;flex-shrink:0;}
+.filter-row::-webkit-scrollbar{height:2px;}
+.filter-row::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);}
+.filter-chip{padding:.3rem .65rem;border-radius:20px;font-size:.66rem;font-weight:700;cursor:pointer;white-space:nowrap;transition:all .18s;border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.4);background:transparent;font-family:inherit;}
+.filter-chip.on{background:rgba(245,158,11,.15);border-color:rgba(245,158,11,.4);color:#fbbf24;}
+.exercise-list{flex:1;overflow-y:auto;padding:.5rem;}
+.exercise-list::-webkit-scrollbar{width:3px;}
+.exercise-list::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:2px;}
+.ex-card{display:flex;align-items:center;gap:.7rem;padding:.65rem .75rem;border-radius:12px;cursor:pointer;transition:all .18s;border:1px solid transparent;margin-bottom:.3rem;}
+.ex-card:hover{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.08);}
+.ex-card.added{opacity:.4;pointer-events:none;}
+.ex-ico{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;}
+.ex-info{flex:1;min-width:0;}
+.ex-name{font-size:.78rem;font-weight:700;color:rgba(255,255,255,.85);line-height:1.2;}
+.ex-meta{font-size:.62rem;color:rgba(255,255,255,.3);margin-top:.1rem;}
+.ex-add{width:24px;height:24px;border-radius:6px;background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.2);color:#fbbf24;font-size:.9rem;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .18s;font-family:inherit;}
+.ex-add:hover{background:rgba(245,158,11,.25);border-color:var(--gold);}
+
+/* ── PANEL: BUILDER ── */
+.panel-builder{display:flex;flex-direction:column;overflow:hidden;background:var(--white);}
+.builder-top{padding:1rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:1rem;flex-wrap:wrap;}
+.builder-meta{flex:1;display:flex;gap:.7rem;align-items:center;flex-wrap:wrap;}
+.inp-builder{padding:.55rem .9rem;border:1.5px solid var(--border);border-radius:10px;font-size:.82rem;font-family:inherit;color:var(--text);outline:none;transition:all .2s;background:white;}
+.inp-builder:focus{border-color:var(--gold);}
+.inp-workout-name{font-weight:700;width:200px;}
+.inp-student{width:160px;}
+.week-select{width:120px;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238a8a8a' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right .6rem center;padding-right:1.8rem;cursor:pointer;}
+.builder-stats{display:flex;gap:.6rem;font-size:.72rem;color:var(--muted);}
+.builder-stat{display:flex;align-items:center;gap:.3rem;}
+.workout-area{flex:1;overflow-y:auto;padding:1rem 1.5rem;}
+.workout-area::-webkit-scrollbar{width:3px;}
+.workout-area::-webkit-scrollbar-thumb{background:var(--border);}
+.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;text-align:center;color:var(--muted);}
+.empty-ico{font-size:3rem;margin-bottom:.8rem;opacity:.4;}
+.empty-title{font-size:.9rem;font-weight:700;margin-bottom:.3rem;}
+.empty-desc{font-size:.75rem;line-height:1.5;}
+
+/* WORKOUT ITEM */
+.workout-item{background:var(--off);border:1.5px solid var(--border);border-radius:16px;margin-bottom:.75rem;overflow:hidden;transition:all .2s;}
+.workout-item.superset{border-color:var(--purple);background:#f9f7ff;}
+.workout-item.superset .wi-header{background:linear-gradient(90deg,rgba(124,58,237,.06),transparent);}
+.wi-header{display:flex;align-items:center;gap:.7rem;padding:.75rem 1rem;cursor:default;}
+.wi-drag{color:var(--muted);font-size:1rem;cursor:grab;opacity:.4;flex-shrink:0;}
+.wi-order{width:26px;height:26px;border-radius:8px;background:var(--dark);color:white;font-size:.65rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.workout-item.superset .wi-order{background:var(--purple);}
+.wi-ico{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;}
+.wi-name{flex:1;font-size:.85rem;font-weight:800;color:var(--text);}
+.wi-muscle{font-size:.62rem;font-weight:600;color:var(--muted);background:var(--gray);padding:2px 7px;border-radius:20px;}
+.wi-actions{display:flex;gap:.3rem;}
+.wi-btn{width:26px;height:26px;border-radius:7px;border:none;cursor:pointer;font-size:.75rem;display:flex;align-items:center;justify-content:center;transition:all .18s;font-family:inherit;}
+.wi-btn-ss{background:rgba(124,58,237,.1);color:var(--purple);}
+.wi-btn-ss:hover,.wi-btn-ss.on{background:var(--purple);color:white;}
+.wi-btn-up,.wi-btn-down{background:var(--gray);color:var(--muted);}
+.wi-btn-up:hover,.wi-btn-down:hover{background:#e5e3de;color:var(--text);}
+.wi-btn-del{background:#fff5f5;color:#f87171;}
+.wi-btn-del:hover{background:var(--red);color:white;}
+.wi-fields{display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem;padding:.5rem 1rem .75rem;}
+.wi-field{display:flex;flex-direction:column;gap:.25rem;}
+.wi-field label{font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);}
+.wi-inp{width:100%;padding:.45rem .65rem;border:1.5px solid var(--border);border-radius:9px;font-size:.8rem;font-family:inherit;color:var(--text);outline:none;transition:all .2s;background:white;text-align:center;}
+.wi-inp:focus{border-color:var(--gold);}
+.wi-notes{padding:0 1rem .75rem;display:flex;gap:.5rem;align-items:flex-start;}
+.wi-notes textarea{flex:1;padding:.45rem .75rem;border:1.5px solid var(--border);border-radius:9px;font-size:.75rem;font-family:inherit;color:var(--text);outline:none;resize:none;height:40px;transition:all .2s;}
+.wi-notes textarea:focus{border-color:var(--gold);}
+.wi-tip{font-size:.65rem;color:var(--muted);font-style:italic;line-height:1.4;padding:.3rem .5rem;background:rgba(245,158,11,.05);border-radius:8px;border-left:2px solid rgba(245,158,11,.3);flex:1;}
+.superset-label{font-size:.62rem;font-weight:800;color:var(--purple);background:rgba(124,58,237,.08);padding:2px 8px;border-radius:20px;margin-left:.3rem;}
+
+/* ── PANEL: RIGHT ── */
+.panel-right{background:var(--white);border-left:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;}
+.pr-section{padding:1rem 1.2rem;border-bottom:1px solid var(--border);}
+.pr-title{font-size:.62rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:.8rem;}
+
+/* STUDENT SELECTOR */
+.student-list{display:flex;flex-direction:column;gap:.4rem;max-height:160px;overflow-y:auto;}
+.student-item{display:flex;align-items:center;gap:.6rem;padding:.5rem .6rem;border-radius:10px;cursor:pointer;border:1.5px solid var(--border);transition:all .18s;}
+.student-item:hover{border-color:var(--gold);background:rgba(245,158,11,.04);}
+.student-item.selected{border-color:var(--gold);background:rgba(245,158,11,.07);}
+.st-avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:800;color:white;flex-shrink:0;}
+.st-info{flex:1;min-width:0;}
+.st-name{font-size:.78rem;font-weight:700;color:var(--text);}
+.st-meta{font-size:.62rem;color:var(--muted);}
+.st-check{color:var(--gold);font-size:.85rem;}
+.btn-add-student{width:100%;margin-top:.5rem;padding:.5rem;background:var(--off);border:1.5px dashed var(--border);border-radius:10px;font-size:.74rem;font-weight:700;color:var(--purple);cursor:pointer;font-family:inherit;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:5px;}
+.btn-add-student:hover{border-color:var(--purple);background:#f9f7ff;}
+
+/* TEMPLATES */
+.template-list{display:flex;flex-direction:column;gap:.4rem;}
+.template-item{padding:.5rem .7rem;border-radius:10px;border:1.5px solid var(--border);cursor:pointer;transition:all .18s;display:flex;align-items:center;justify-content:space-between;}
+.template-item:hover{border-color:var(--gold);background:rgba(245,158,11,.04);}
+.tmpl-name{font-size:.76rem;font-weight:700;color:var(--text);}
+.tmpl-meta{font-size:.6rem;color:var(--muted);}
+.tmpl-load{font-size:.68rem;color:var(--gold);font-weight:700;background:rgba(245,158,11,.1);padding:2px 8px;border-radius:20px;}
+
+/* SEND SECTION */
+.send-area{padding:1rem 1.2rem;margin-top:auto;border-top:1px solid var(--border);}
+.btn-send{width:100%;padding:.75rem;border-radius:12px;font-size:.82rem;font-weight:800;cursor:pointer;font-family:inherit;transition:all .2s;border:none;display:flex;align-items:center;justify-content:center;gap:7px;margin-bottom:.5rem;}
+.btn-whatsapp{background:#25d366;color:white;}
+.btn-whatsapp:hover{background:#1ebe5a;transform:translateY(-1px);box-shadow:0 6px 18px rgba(37,211,102,.3);}
+.btn-email{background:var(--blue);color:white;}
+.btn-email:hover{background:#1579d9;transform:translateY(-1px);box-shadow:0 6px 18px rgba(26,143,255,.3);}
+.btn-preview{background:linear-gradient(90deg,var(--gold),var(--orange));color:white;}
+.btn-preview:hover{opacity:.92;transform:translateY(-1px);box-shadow:0 6px 18px rgba(245,158,11,.3);}
+.btn-save-tmpl{width:100%;padding:.6rem;border-radius:10px;font-size:.76rem;font-weight:700;cursor:pointer;font-family:inherit;background:transparent;border:1.5px solid var(--border);color:var(--muted);transition:all .2s;display:flex;align-items:center;justify-content:center;gap:5px;}
+.btn-save-tmpl:hover{border-color:var(--purple);color:var(--purple);}
+
+/* ── MODALS ── */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.5);backdrop-filter:blur(4px);z-index:200;display:flex;align-items:center;justify-content:center;padding:1rem;}
+.modal-bg.hidden{display:none;}
+.modal{background:white;border-radius:24px;max-width:680px;width:100%;max-height:90vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 24px 80px rgba(0,0,0,.2);}
+.modal-header{padding:1.5rem 1.5rem 1rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.modal-title{font-size:1.05rem;font-weight:800;color:var(--text);}
+.modal-close{width:32px;height:32px;border-radius:8px;border:none;background:var(--gray);cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;}
+.modal-close:hover{background:#e5e3de;}
+.modal-body{flex:1;overflow-y:auto;padding:1.5rem;}
+
+/* PREVIEW MODAL */
+.workout-preview{font-family:'Plus Jakarta Sans',sans-serif;}
+.preview-header{background:linear-gradient(135deg,var(--dark2),#1a1040);border-radius:16px;padding:1.5rem;margin-bottom:1rem;color:white;text-align:center;}
+.preview-trainer{font-size:.7rem;color:rgba(255,255,255,.4);margin-bottom:.3rem;letter-spacing:.06em;}
+.preview-workout-name{font-size:1.3rem;font-weight:800;margin-bottom:.3rem;}
+.preview-student{font-size:.82rem;color:rgba(255,255,255,.6);}
+.preview-tags{display:flex;gap:.4rem;justify-content:center;flex-wrap:wrap;margin-top:.75rem;}
+.preview-tag{padding:3px 10px;border-radius:20px;font-size:.62rem;font-weight:700;background:rgba(255,255,255,.1);color:rgba(255,255,255,.7);}
+.preview-ex{background:var(--off);border-radius:14px;padding:1rem;margin-bottom:.75rem;display:flex;gap:.9rem;align-items:flex-start;}
+.preview-ex-num{width:32px;height:32px;border-radius:10px;background:var(--dark);color:white;font-size:.72rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.preview-ex.superset .preview-ex-num{background:var(--purple);}
+.preview-ex-body{flex:1;}
+.preview-ex-name{font-size:.9rem;font-weight:800;color:var(--text);margin-bottom:.25rem;}
+.preview-ex-stats{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.3rem;}
+.preview-stat-chip{padding:3px 8px;border-radius:6px;font-size:.65rem;font-weight:700;background:white;border:1px solid var(--border);color:#555;}
+.preview-ex-note{font-size:.72rem;color:var(--muted);font-style:italic;margin-top:.3rem;}
+.preview-ex-tip{font-size:.68rem;color:var(--muted);background:rgba(245,158,11,.07);border-left:2px solid var(--gold);padding:.3rem .5rem;border-radius:0 6px 6px 0;margin-top:.4rem;line-height:1.4;}
+.gif-placeholder{width:80px;height:60px;background:linear-gradient(135deg,#e0e0e0,#f5f5f5);border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;border:1px dashed var(--border);position:relative;overflow:hidden;}
+.gif-placeholder::after{content:'GIF';position:absolute;bottom:3px;right:4px;font-size:.5rem;font-weight:800;color:var(--muted);letter-spacing:.06em;}
+.preview-summary{background:linear-gradient(90deg,rgba(245,158,11,.08),rgba(249,115,22,.05));border:1px solid rgba(245,158,11,.2);border-radius:14px;padding:1rem;margin-top:1rem;display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;}
+.preview-sum-item{text-align:center;}
+.preview-sum-val{font-size:1.1rem;font-weight:800;color:var(--text);}
+.preview-sum-label{font-size:.62rem;color:var(--muted);}
+.preview-footer{text-align:center;font-size:.72rem;color:var(--muted);margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border);}
+.modal-footer{padding:1rem 1.5rem;border-top:1px solid var(--border);display:flex;gap:.6rem;flex-wrap:wrap;}
+.mf-btn{flex:1;padding:.8rem;border-radius:12px;font-size:.82rem;font-weight:800;cursor:pointer;font-family:inherit;border:none;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px;}
+
+/* EMAIL MODAL */
+.email-preview{background:#f8fafc;border:1px solid var(--border);border-radius:12px;padding:1.2rem;font-size:.78rem;line-height:1.7;color:#333;font-family:monospace;white-space:pre-wrap;max-height:280px;overflow-y:auto;}
+.copy-btn{width:100%;margin-top:.8rem;padding:.75rem;background:var(--blue);color:white;border:none;border-radius:12px;font-size:.82rem;font-weight:800;cursor:pointer;font-family:inherit;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px;}
+.copy-btn:hover{background:#1579d9;}
+.copy-btn.copied{background:var(--green);}
+
+/* QR CODE SECTION */
+.qr-wrap{text-align:center;padding:1rem;}
+.qr-box{display:inline-block;background:white;border:3px solid var(--dark);padding:10px;border-radius:12px;margin:.5rem auto;}
+.qr-grid{display:grid;grid-template-columns:repeat(15,8px);grid-template-rows:repeat(15,8px);gap:1px;}
+.qr-cell{border-radius:1px;}
+
+/* TOAST */
+.toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%) translateY(80px);background:var(--dark);color:white;padding:.7rem 1.4rem;border-radius:100px;font-size:.8rem;font-weight:700;z-index:500;transition:all .35s;opacity:0;white-space:nowrap;}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
+
+/* LOADING BAR */
+.progress-bar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--gold),var(--orange));transition:width .3s;z-index:300;width:0;}
+
+@media(max-width:900px){
+  .app-layout{grid-template-columns:1fr;grid-template-rows:auto 1fr auto;height:auto;}
+  .panel-library{max-height:240px;}
+  .panel-right{max-height:300px;}
+}
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar"></div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-left">
+    <div class="nav-logo">LinkeGym</div>
+    <div class="elite-badge">⭐ Elite</div>
+    <div class="nav-title">/ Montador de Treinos</div>
+  </div>
+  <div class="nav-right">
+    <span id="navStats" style="font-size:.72rem;color:rgba(255,255,255,.35);"></span>
+    <button class="nav-btn nav-btn-ghost" onclick="window.location.href='01_HOME_Principal.html'">← Início</button>
+    <button class="nav-btn nav-btn-gold" onclick="openPreview()">👁 Visualizar Treino</button>
+  </div>
+</nav>
+
+<!-- LAYOUT -->
+<div class="app-layout">
+
+  <!-- ── PANEL 1: LIBRARY ── -->
+  <div class="panel-library">
+    <div class="panel-header">
+      <div class="panel-title">📚 Biblioteca de Exercícios</div>
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input class="search-inp" id="searchInp" type="text" placeholder="Buscar exercício..." oninput="filterExercises()"/>
+      </div>
+    </div>
+    <div class="filter-row" id="filterRow">
+      <button class="filter-chip on" onclick="setFilter('Todos',this)">Todos</button>
+      <button class="filter-chip" onclick="setFilter('Peito',this)">Peito</button>
+      <button class="filter-chip" onclick="setFilter('Costas',this)">Costas</button>
+      <button class="filter-chip" onclick="setFilter('Pernas',this)">Pernas</button>
+      <button class="filter-chip" onclick="setFilter('Ombros',this)">Ombros</button>
+      <button class="filter-chip" onclick="setFilter('Bíceps',this)">Bíceps</button>
+      <button class="filter-chip" onclick="setFilter('Tríceps',this)">Tríceps</button>
+      <button class="filter-chip" onclick="setFilter('Core',this)">Core</button>
+      <button class="filter-chip" onclick="setFilter('Cardio',this)">Cardio</button>
+      <button class="filter-chip" onclick="setFilter('Glúteos',this)">Glúteos</button>
+      <button class="filter-chip" onclick="setFilter('Panturrilha',this)">Panturrilha</button>
+      <button class="filter-chip" onclick="setFilter('Funcional',this)">Funcional</button>
+      <button class="filter-chip" onclick="setFilter('Mobilidade',this)">Mobilidade</button>
+    </div>
+    <div class="exercise-list" id="exerciseList"></div>
+  </div>
+
+  <!-- ── PANEL 2: BUILDER ── -->
+  <div class="panel-builder">
+    <div class="builder-top">
+      <div class="builder-meta">
+        <input class="inp-builder inp-workout-name" id="workoutName" type="text" placeholder="Nome do treino (ex: Treino A — Peito)"/>
+        <select class="inp-builder week-select" id="weekSelect">
+          <option value="Semana 1">Semana 1</option>
+          <option value="Semana 2">Semana 2</option>
+          <option value="Semana 3">Semana 3</option>
+          <option value="Semana 4">Semana 4</option>
+          <option value="Semana de Descarga">Semana de Descarga</option>
+        </select>
+        <select class="inp-builder week-select" id="goalSelect">
+          <option value="Hipertrofia">Hipertrofia</option>
+          <option value="Emagrecimento">Emagrecimento</option>
+          <option value="Força">Força</option>
+          <option value="Resistência">Resistência</option>
+          <option value="Funcional">Funcional</option>
+          <option value="Reabilitação">Reabilitação</option>
+        </select>
+      </div>
+      <div class="builder-stats" id="builderStats">
+        <span class="builder-stat">📋 <span id="statExs">0</span> exercícios</span>
+        <span class="builder-stat">⏱️ ~<span id="statTime">0</span> min</span>
+        <span class="builder-stat">🔥 <span id="statSets">0</span> séries</span>
+      </div>
+    </div>
+    <div class="workout-area" id="workoutArea">
+      <div class="empty-state" id="emptyState">
+        <div class="empty-ico">🏋️</div>
+        <div class="empty-title">Nenhum exercício adicionado</div>
+        <div class="empty-desc">Clique nos exercícios na biblioteca<br>para montar o treino do seu aluno.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PANEL 3: RIGHT ── -->
+  <div class="panel-right">
+
+    <!-- STUDENTS -->
+    <div class="pr-section">
+      <div class="pr-title">👤 Selecionar Aluno</div>
+      <div class="student-list" id="studentList"></div>
+      <button class="btn-add-student" onclick="addStudentPrompt()">+ Adicionar aluno</button>
+    </div>
+
+    <!-- TEMPLATES -->
+    <div class="pr-section" style="flex:1;overflow:hidden;display:flex;flex-direction:column;">
+      <div class="pr-title" style="margin-bottom:.6rem;">📁 Templates Salvos</div>
+      <div class="template-list" id="templateList" style="flex:1;overflow-y:auto;"></div>
+      <button class="btn-save-tmpl" onclick="saveTemplate()" style="margin-top:.6rem;">💾 Salvar treino atual como template</button>
+    </div>
+
+    <!-- SEND -->
+    <div class="send-area">
+      <div class="pr-title" style="margin-bottom:.7rem;">📤 Enviar Treino</div>
+      <button class="btn-send btn-preview" onclick="openPreview()">👁 Preview completo do treino</button>
+      <button class="btn-send btn-whatsapp" onclick="sendWhatsApp()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        Enviar via WhatsApp
+      </button>
+      <button class="btn-send btn-email" onclick="openEmailModal()">
+        ✉️ Enviar por E-mail
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ── MODAL: PREVIEW ── -->
+<div class="modal-bg hidden" id="previewModal">
+  <div class="modal" style="max-width:720px;">
+    <div class="modal-header">
+      <div class="modal-title">👁 Preview do Treino</div>
+      <button class="modal-close" onclick="closeModal('previewModal')">✕</button>
+    </div>
+    <div class="modal-body" id="previewBody"></div>
+    <div class="modal-footer">
+      <button class="mf-btn" style="background:#25d366;color:white;" onclick="sendWhatsApp()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        WhatsApp
+      </button>
+      <button class="mf-btn" style="background:var(--blue);color:white;" onclick="openEmailModal();closeModal('previewModal')">✉️ Email</button>
+      <button class="mf-btn" style="background:var(--off);color:var(--text);border:1.5px solid var(--border);" onclick="printWorkout()">🖨️ Imprimir / PDF</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── MODAL: EMAIL ── -->
+<div class="modal-bg hidden" id="emailModal">
+  <div class="modal" style="max-width:560px;">
+    <div class="modal-header">
+      <div class="modal-title">✉️ Template de E-mail</div>
+      <button class="modal-close" onclick="closeModal('emailModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="font-size:.78rem;color:var(--muted);margin-bottom:.8rem;line-height:1.5;">
+        Copie o texto abaixo e cole no seu cliente de e-mail favorito. O treino ficará formatado e profissional.
+      </div>
+      <div class="email-preview" id="emailContent"></div>
+      <button class="copy-btn" id="copyBtn" onclick="copyEmail()">📋 Copiar texto do e-mail</button>
+      <div style="margin-top:.8rem;padding:.75rem;background:rgba(26,143,255,.06);border:1px solid rgba(26,143,255,.15);border-radius:10px;font-size:.74rem;color:#1a6bb5;line-height:1.5;">
+        💡 <strong>Dica Elite:</strong> Em breve você poderá enviar diretamente pela plataforma com template HTML bonito. Por ora, copie e cole no Gmail/Outlook!
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── MODAL: QR CODE ── -->
+<div class="modal-bg hidden" id="qrModal">
+  <div class="modal" style="max-width:380px;">
+    <div class="modal-header">
+      <div class="modal-title">📱 QR Code do Treino</div>
+      <button class="modal-close" onclick="closeModal('qrModal')">✕</button>
+    </div>
+    <div class="modal-body" style="text-align:center;">
+      <div style="font-size:.82rem;color:var(--muted);margin-bottom:1rem;line-height:1.5;">
+        O aluno escaneia o QR Code com o celular para ver o treino completo com GIFs.
+      </div>
+      <div class="qr-wrap">
+        <div class="qr-box" id="qrDisplay"></div>
+      </div>
+      <div style="font-size:.72rem;color:var(--muted);margin-top:.5rem;">Link válido por 30 dias</div>
+      <div style="margin-top:1rem;padding:.75rem;background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.2);border-radius:10px;font-size:.74rem;color:#92400e;line-height:1.5;">
+        🚀 <strong>Em breve:</strong> Link real e rastreável com visualizações do treino pelo aluno.
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════
+// EXERCISE DATABASE
+// ═══════════════════════════════════════════════════
+const EXERCISES = [
+  // PEITO
+  {id:'pe01',name:'Supino Reto com Barra',muscle:'Peito',equip:'Barra',ico:'💪',color:'#fee2e2',sets:4,reps:'8-10',rest:90,tip:'Mantenha os cotovelos a 45°. Desça controlado e exploda na subida.'},
+  {id:'pe02',name:'Supino Inclinado com Halteres',muscle:'Peito',equip:'Halteres',ico:'💪',color:'#fee2e2',sets:4,reps:'10-12',rest:75,tip:'Angulo de 30-45°. Foco na parte superior do peitoral.'},
+  {id:'pe03',name:'Crucifixo com Halteres',muscle:'Peito',equip:'Halteres',ico:'🦋',color:'#fee2e2',sets:3,reps:'12-15',rest:60,tip:'Leve flexão no cotovelo. Abra até sentir o alongamento.'},
+  {id:'pe04',name:'Peck Deck / Voador',muscle:'Peito',equip:'Máquina',ico:'🦋',color:'#fee2e2',sets:3,reps:'12-15',rest:60,tip:'Espreme no ponto de contração por 1 segundo.'},
+  {id:'pe05',name:'Flexão de Braço',muscle:'Peito',equip:'Peso Corporal',ico:'⬇️',color:'#fee2e2',sets:3,reps:'Máx.',rest:60,tip:'Corpo reto, mãos na largura dos ombros.'},
+  // COSTAS
+  {id:'co01',name:'Remada Curvada com Barra',muscle:'Costas',equip:'Barra',ico:'🔙',color:'#dcfce7',sets:4,reps:'8-10',rest:90,tip:'Tronco a 45°. Puxe em direção ao umbigo. Retração escapular.'},
+  {id:'co02',name:'Puxada Alta (Pulldown)',muscle:'Costas',equip:'Polia',ico:'⬇️',color:'#dcfce7',sets:4,reps:'10-12',rest:75,tip:'Puxe até o queixo. Não balance o tronco.'},
+  {id:'co03',name:'Barra Fixa',muscle:'Costas',equip:'Barra',ico:'🧲',color:'#dcfce7',sets:4,reps:'Máx.',rest:120,tip:'Puxada escápula antes de subir. Controle a descida.'},
+  {id:'co04',name:'Remada Unilateral',muscle:'Costas',equip:'Halteres',ico:'🔙',color:'#dcfce7',sets:3,reps:'10-12',rest:60,tip:'Apoie o joelho no banco. Cotovelo próximo ao corpo.'},
+  {id:'co05',name:'Levantamento Terra',muscle:'Costas',equip:'Barra',ico:'🏋️',color:'#dcfce7',sets:4,reps:'5-6',rest:180,tip:'Coluna neutra SEMPRE. Barra próxima ao corpo. Empurre o chão.'},
+  {id:'co06',name:'Hiperextensão Lombar',muscle:'Costas',equip:'Banco',ico:'🔙',color:'#dcfce7',sets:3,reps:'12-15',rest:60,tip:'Não hiperextenda excessivamente. Foco no glúteo e lombar.'},
+  // PERNAS
+  {id:'pg01',name:'Agachamento Livre',muscle:'Pernas',equip:'Barra',ico:'🦵',color:'#fef9c3',sets:4,reps:'8-10',rest:120,tip:'Joelhos na linha dos pés. Desça até a paralela ou abaixo.'},
+  {id:'pg02',name:'Leg Press 45°',muscle:'Pernas',equip:'Máquina',ico:'🦵',color:'#fef9c3',sets:4,reps:'10-12',rest:90,tip:'Não trave os joelhos. Pés em diferentes posições para variação.'},
+  {id:'pg03',name:'Cadeira Extensora',muscle:'Pernas',equip:'Máquina',ico:'🦵',color:'#fef9c3',sets:3,reps:'12-15',rest:60,tip:'Isolamento quadríceps. Segura 1s no topo.'},
+  {id:'pg04',name:'Mesa Flexora',muscle:'Pernas',equip:'Máquina',ico:'🦵',color:'#fef9c3',sets:3,reps:'12-15',rest:60,tip:'Dedos dos pés flexionados para maior ativação.'},
+  {id:'pg05',name:'Avanço com Halteres',muscle:'Pernas',equip:'Halteres',ico:'🚶',color:'#fef9c3',sets:3,reps:'10 cada',rest:75,tip:'Joelho traseiro quase toca o chão. Tronco ereto.'},
+  {id:'pg06',name:'Stiff (Deadlift Romeno)',muscle:'Pernas',equip:'Barra',ico:'🏋️',color:'#fef9c3',sets:3,reps:'10-12',rest:75,tip:'Foco na fase excêntrica. Sente o alongamento nos isquiotibiais.'},
+  // OMBROS
+  {id:'om01',name:'Desenvolvimento com Halteres',muscle:'Ombros',equip:'Halteres',ico:'💪',color:'#ede9fe',sets:4,reps:'10-12',rest:75,tip:'Sem arqueamento excessivo. Cotovelos a 90° no início.'},
+  {id:'om02',name:'Elevação Lateral',muscle:'Ombros',equip:'Halteres',ico:'✈️',color:'#ede9fe',sets:4,reps:'12-15',rest:60,tip:'Leve inclinação à frente. Polegar levemente para baixo.'},
+  {id:'om03',name:'Encolhimento de Ombros',muscle:'Ombros',equip:'Halteres',ico:'🤷',color:'#ede9fe',sets:3,reps:'12-15',rest:60,tip:'Movimento vertical puro. Segura 2s no topo.'},
+  // BÍCEPS
+  {id:'bi01',name:'Rosca Direta com Barra',muscle:'Bíceps',equip:'Barra',ico:'💪',color:'#dbeafe',sets:4,reps:'10-12',rest:60,tip:'Cotovelos fixos ao lado do corpo. Supinação completa.'},
+  {id:'bi02',name:'Rosca Alternada com Halteres',muscle:'Bíceps',equip:'Halteres',ico:'💪',color:'#dbeafe',sets:3,reps:'10-12',rest:60,tip:'Supina no final do movimento. Controla a descida.'},
+  {id:'bi03',name:'Rosca Martelo',muscle:'Bíceps',equip:'Halteres',ico:'🔨',color:'#dbeafe',sets:3,reps:'10-12',rest:60,tip:'Pega neutra. Trabalha bíceps e braquial simultaneamente.'},
+  {id:'bi04',name:'Rosca Concentrada',muscle:'Bíceps',equip:'Halteres',ico:'💪',color:'#dbeafe',sets:3,reps:'12-15',rest:60,tip:'Cotovelo apoiado na coxa interna. Máxima contração.'},
+  // TRÍCEPS
+  {id:'tr01',name:'Tríceps Pulley (Polia)',muscle:'Tríceps',equip:'Polia',ico:'⬇️',color:'#fce7f3',sets:4,reps:'12-15',rest:60,tip:'Cotovelos fixos. Extensão completa. Segura 1s.'},
+  {id:'tr02',name:'Tríceps Testa',muscle:'Tríceps',equip:'Barra',ico:'🧠',color:'#fce7f3',sets:3,reps:'10-12',rest:60,tip:'Barra desce à testa ou atrás da cabeça. Cotovelos apontados ao teto.'},
+  {id:'tr03',name:'Mergulho nas Paralelas',muscle:'Tríceps',equip:'Paralelas',ico:'⬇️',color:'#fce7f3',sets:3,reps:'Máx.',rest:90,tip:'Tronco ligeiramente inclinado. Foco nos tríceps.'},
+  {id:'tr04',name:'Kickback com Halteres',muscle:'Tríceps',equip:'Halteres',ico:'🦵',color:'#fce7f3',sets:3,reps:'12-15',rest:60,tip:'Tronco paralelo ao solo. Extensão completa do cotovelo.'},
+  // CORE
+  {id:'ab01',name:'Prancha Isométrica',muscle:'Core',equip:'Peso Corporal',ico:'🔲',color:'#f0fdf4',sets:3,reps:'30-60s',rest:45,tip:'Corpo reto como uma prancha. Contrai o abdômen.'},
+  {id:'ab02',name:'Abdominal Crunch',muscle:'Core',equip:'Peso Corporal',ico:'💫',color:'#f0fdf4',sets:3,reps:'15-20',rest:45,tip:'Não force o pescoço. Movimento curto e controlado.'},
+  {id:'ab03',name:'Russian Twist',muscle:'Core',equip:'Peso Corporal',ico:'🔄',color:'#f0fdf4',sets:3,reps:'20 total',rest:45,tip:'Pés suspensos para aumentar dificuldade. Rotação completa.'},
+  {id:'ab04',name:'Elevação de Pernas',muscle:'Core',equip:'Barra',ico:'⬆️',color:'#f0fdf4',sets:3,reps:'12-15',rest:45,tip:'Controla a descida. Perna levemente flexionada.'},
+  // GLÚTEOS
+  {id:'gl01',name:'Hip Thrust',muscle:'Glúteos',equip:'Barra',ico:'🍑',color:'#fdf2f8',sets:4,reps:'10-12',rest:90,tip:'Pico de contração no topo. Quadril sobe com força.'},
+  {id:'gl02',name:'Glúteo no Cabo (Kickback)',muscle:'Glúteos',equip:'Polia',ico:'🍑',color:'#fdf2f8',sets:3,reps:'12-15',rest:60,tip:'Ativa o glúteo antes de extender. Não balança o quadril.'},
+  {id:'gl03',name:'Agachamento Sumo',muscle:'Glúteos',equip:'Haltere',ico:'🦵',color:'#fdf2f8',sets:4,reps:'12-15',rest:75,tip:'Pés afastados, ponta dos pés voltadas para fora.'},
+  // PEITO - extra
+  {id:'pe06',name:'Supino Declinado',muscle:'Peito',equip:'Barra',ico:'💪',color:'#fee2e2',sets:4,reps:'8-10',rest:90,tip:'Banco a -15°/-30°. Foco na parte inferior do peitoral.'},
+  {id:'pe07',name:'Crossover (Polia Alta)',muscle:'Peito',equip:'Polia',ico:'🦋',color:'#fee2e2',sets:3,reps:'12-15',rest:60,tip:'Puxe cruzando na frente do tronco. Máxima contração.'},
+  {id:'pe08',name:'Pullover com Haltere',muscle:'Peito',equip:'Halteres',ico:'🔙',color:'#fee2e2',sets:3,reps:'12-15',rest:60,tip:'Trabalha serrátil e peitoral. Não hiperestenda o ombro.'},
+  // COSTAS - extra
+  {id:'co07',name:'Remada Baixa (Seated Row)',muscle:'Costas',equip:'Polia',ico:'🔙',color:'#dcfce7',sets:4,reps:'10-12',rest:75,tip:'Puxe até o umbigo. Retração escapular completa.'},
+  {id:'co08',name:'Puxada Supinada',muscle:'Costas',equip:'Polia',ico:'⬇️',color:'#dcfce7',sets:4,reps:'10-12',rest:75,tip:'Pega supinada recruta mais bíceps. Puxe até o peitoral.'},
+  {id:'co09',name:'Face Pull',muscle:'Costas',equip:'Polia',ico:'😤',color:'#dcfce7',sets:3,reps:'15-20',rest:45,tip:'Mãos na altura dos olhos. Excelente para saúde do ombro.'},
+  {id:'co10',name:'Remada Pendlay',muscle:'Costas',equip:'Barra',ico:'🏋️',color:'#dcfce7',sets:4,reps:'6-8',rest:120,tip:'Barra parte do chão a cada rep. Alta intensidade.'},
+  // OMBROS - extra
+  {id:'om04',name:'Arnold Press',muscle:'Ombros',equip:'Halteres',ico:'🌀',color:'#ede9fe',sets:4,reps:'10-12',rest:75,tip:'Rotação completa do movimento. Maior amplitude.'},
+  {id:'om05',name:'Elevação Posterior (Crucifixo Inverso)',muscle:'Ombros',equip:'Halteres',ico:'✈️',color:'#ede9fe',sets:3,reps:'12-15',rest:60,tip:'Tronco inclinado a 90°. Cotovelos levemente flexionados.'},
+  {id:'om06',name:'Push Press',muscle:'Ombros',equip:'Barra',ico:'⬆️',color:'#ede9fe',sets:4,reps:'6-8',rest:120,tip:'Usa impulso das pernas. Explosivo. Bom para força.'},
+  // BÍCEPS - extra
+  {id:'bi05',name:'Rosca Scott (Barra)',muscle:'Bíceps',equip:'Banco Scott',ico:'💪',color:'#dbeafe',sets:3,reps:'10-12',rest:60,tip:'Cotovelo apoiado evita batota. Fase excêntrica lenta.'},
+  {id:'bi06',name:'Rosca 21s',muscle:'Bíceps',equip:'Barra',ico:'💪',color:'#dbeafe',sets:3,reps:'21 (7+7+7)',rest:90,tip:'7 reps metade inferior + 7 superior + 7 completas.'},
+  // TRÍCEPS - extra
+  {id:'tr05',name:'Tríceps Francês (Haltere)',muscle:'Tríceps',equip:'Halteres',ico:'🧠',color:'#fce7f3',sets:3,reps:'10-12',rest:60,tip:'Mantém o cotovelo estático. Desce atrás da cabeça.'},
+  {id:'tr06',name:'Tríceps Coice (Cabo)',muscle:'Tríceps',equip:'Polia',ico:'🦵',color:'#fce7f3',sets:3,reps:'12-15',rest:60,tip:'Tronco paralelo. Extensão completa, segura 1s.'},
+  // PERNAS - extra
+  {id:'pg07',name:'Hack Squat',muscle:'Pernas',equip:'Máquina',ico:'🦵',color:'#fef9c3',sets:4,reps:'10-12',rest:90,tip:'Joelhos seguem a ponta dos pés. Boa alternativa ao agachamento.'},
+  {id:'pg08',name:'Bulgarian Split Squat',muscle:'Pernas',equip:'Halteres',ico:'🚶',color:'#fef9c3',sets:3,reps:'10 cada',rest:90,tip:'Pé traseiro no banco. Afunda o quadril. Unilateral e difícil.'},
+  {id:'pg09',name:'Leg Curl em Pé (Unilateral)',muscle:'Pernas',equip:'Máquina',ico:'🦵',color:'#fef9c3',sets:3,reps:'12 cada',rest:60,tip:'Movimento unilateral. Maior amplitude que a mesa flexora.'},
+  {id:'pg10',name:'Good Morning',muscle:'Pernas',equip:'Barra',ico:'🌅',color:'#fef9c3',sets:3,reps:'12-15',rest:75,tip:'Coluna neutra. Incline o tronco até sentir os isquiotibiais.'},
+  // GLÚTEOS - extra
+  {id:'gl04',name:'Abdução de Quadril (Máquina)',muscle:'Glúteos',equip:'Máquina',ico:'🍑',color:'#fdf2f8',sets:3,reps:'15-20',rest:45,tip:'Foco no glúteo médio. Abra lento, controle a volta.'},
+  {id:'gl05',name:'Donkey Kick no Cabo',muscle:'Glúteos',equip:'Polia',ico:'🍑',color:'#fdf2f8',sets:3,reps:'15 cada',rest:45,tip:'Quadril estável. Extensão completa do quadril.'},
+  // PANTURRILHA
+  {id:'pn01',name:'Panturrilha em Pé',muscle:'Panturrilha',equip:'Máquina',ico:'🦶',color:'#ecfdf5',sets:4,reps:'15-20',rest:45,tip:'Sobe na ponta do pé, segura 2s. Desce totalmente.'},
+  {id:'pn02',name:'Panturrilha Sentado',muscle:'Panturrilha',equip:'Máquina',ico:'🦶',color:'#ecfdf5',sets:3,reps:'15-20',rest:45,tip:'Trabalha o sóleo (músculo profundo). Complementa a em pé.'},
+  {id:'pn03',name:'Panturrilha no Leg Press',muscle:'Panturrilha',equip:'Máquina',ico:'🦶',color:'#ecfdf5',sets:3,reps:'15-20',rest:45,tip:'Use a plataforma do leg. Amplitude completa.'},
+  // CORE - extra
+  {id:'ab05',name:'Prancha Lateral',muscle:'Core',equip:'Peso Corporal',ico:'🔲',color:'#f0fdf4',sets:3,reps:'30-45s cada',rest:30,tip:'Quadril elevado. Trabalha oblíquos. Mantenha alinhamento.'},
+  {id:'ab06',name:'Dead Bug',muscle:'Core',equip:'Peso Corporal',ico:'🐛',color:'#f0fdf4',sets:3,reps:'10 cada',rest:45,tip:'Lombar no chão SEMPRE. Braço e perna opostos se estendem.'},
+  {id:'ab07',name:'Abdominal na Polia',muscle:'Core',equip:'Polia',ico:'💫',color:'#f0fdf4',sets:3,reps:'15-20',rest:45,tip:'Enrole o tronco, não incline. Foco na contração.'},
+  {id:'ab08',name:'Roda Abdominal',muscle:'Core',equip:'Roda',ico:'⭕',color:'#f0fdf4',sets:3,reps:'8-12',rest:60,tip:'Extensão total e retorno controlado. Avançado.'},
+  // CARDIO
+  {id:'ca01',name:'Esteira (HIIT)',muscle:'Cardio',equip:'Esteira',ico:'🏃',color:'#fff7ed',sets:1,reps:'20-30min',rest:0,tip:'Alterne 1min rápido / 1min recuperação.'},
+  {id:'ca02',name:'Bike Ergométrica',muscle:'Cardio',equip:'Bike',ico:'🚴',color:'#fff7ed',sets:1,reps:'20-40min',rest:0,tip:'Mantenha a cadência constante. Ajuste a resistência.'},
+  {id:'ca03',name:'Pular Corda',muscle:'Cardio',equip:'Corda',ico:'⭕',color:'#fff7ed',sets:5,reps:'1min',rest:30,tip:'Ótimo aquecimento. 5 rounds de 1 minuto.'},
+  {id:'ca04',name:'Burpee',muscle:'Cardio',equip:'Peso Corporal',ico:'🔥',color:'#fff7ed',sets:4,reps:'10-15',rest:60,tip:'Exercício total body. Mantenha o ritmo constante.'},
+  {id:'ca05',name:'Remo Ergométrico',muscle:'Cardio',equip:'Remo',ico:'🚣',color:'#fff7ed',sets:1,reps:'20-30min',rest:0,tip:'60% esforço das pernas, 30% tronco, 10% braços.'},
+  {id:'ca06',name:'Elíptico',muscle:'Cardio',equip:'Elíptico',ico:'🔄',color:'#fff7ed',sets:1,reps:'30-45min',rest:0,tip:'Impacto zero. Ótimo para recuperação ativa.'},
+  // FUNCIONAL
+  {id:'fn01',name:'Kettlebell Swing',muscle:'Funcional',equip:'Kettlebell',ico:'⚾',color:'#f0f9ff',sets:4,reps:'15-20',rest:60,tip:'Força explosiva do quadril — não curvatura das costas. Potência!'},
+  {id:'fn02',name:'Turkish Get-Up',muscle:'Funcional',equip:'Kettlebell',ico:'🧘',color:'#f0f9ff',sets:3,reps:'3-5 cada',rest:90,tip:'Movimento complexo. Aprenda os passos separado. Mobilidade total.'},
+  {id:'fn03',name:'Box Jump',muscle:'Funcional',equip:'Caixote',ico:'📦',color:'#f0f9ff',sets:4,reps:'8-10',rest:90,tip:'Aterrissagem suave e controlada. Potência de membros inferiores.'},
+  {id:'fn04',name:'Battle Rope (Ondas)',muscle:'Funcional',equip:'Corda',ico:'🌊',color:'#f0f9ff',sets:5,reps:'30s',rest:30,tip:'Posição atlética. Alterne ondas duplas, simples e laterais.'},
+  {id:'fn05',name:'Sled Push',muscle:'Funcional',equip:'Trenó',ico:'🛷',color:'#f0f9ff',sets:4,reps:'20m',rest:90,tip:'Tronco inclinado, passo curto e rápido. Potência e cardio.'},
+  {id:'fn06',name:'Medicine Ball Slam',muscle:'Funcional',equip:'Med Ball',ico:'💣',color:'#f0f9ff',sets:4,reps:'10-12',rest:60,tip:'Máxima força na jogada. Corpo inteiro. Explosivo.'},
+  {id:'fn07',name:'Jump Squat',muscle:'Funcional',equip:'Peso Corporal',ico:'⬆️',color:'#f0f9ff',sets:4,reps:'10-12',rest:60,tip:'Aterrissagem amortecida. Potência de agachamento.'},
+  {id:'fn08',name:'Farmer\'s Walk',muscle:'Funcional',equip:'Halteres',ico:'🧳',color:'#f0f9ff',sets:4,reps:'30m',rest:90,tip:'Peso pesado, passos firmes. Core ativado. Grip forte.'},
+  {id:'fn09',name:'Wall Ball',muscle:'Funcional',equip:'Med Ball',ico:'🎯',color:'#f0f9ff',sets:4,reps:'15-20',rest:60,tip:'Agachamento completo, joga a bola a 3m. Endurance total.'},
+  {id:'fn10',name:'Mountain Climber',muscle:'Funcional',equip:'Peso Corporal',ico:'🏔️',color:'#f0f9ff',sets:4,reps:'30s',rest:30,tip:'Quadril estável. Joelhos ao peito alternados. Ritmo rápido.'},
+  {id:'fn11',name:'Bear Crawl',muscle:'Funcional',equip:'Peso Corporal',ico:'🐻',color:'#f0f9ff',sets:4,reps:'15m',rest:60,tip:'Joelhos 2cm do chão. Movimento contralateral.'},
+  {id:'fn12',name:'Single Leg RDL',muscle:'Funcional',equip:'Halteres',ico:'🦩',color:'#f0f9ff',sets:3,reps:'10 cada',rest:60,tip:'Equilíbrio e força unilateral. Coluna neutra, core ativo.'},
+  {id:'fn13',name:'Clean & Press',muscle:'Funcional',equip:'Kettlebell',ico:'💥',color:'#f0f9ff',sets:4,reps:'6-8',rest:120,tip:'Movimento olímpico simplificado. Potência total do corpo.'},
+  {id:'fn14',name:'Tire Flip',muscle:'Funcional',equip:'Pneu',ico:'🔄',color:'#f0f9ff',sets:4,reps:'8-10',rest:120,tip:'Pega embaixo do pneu, empurra com os quadris. Força máxima.'},
+  {id:'fn15',name:'TRX Row',muscle:'Funcional',equip:'TRX',ico:'🔗',color:'#f0f9ff',sets:3,reps:'12-15',rest:60,tip:'Incline mais o corpo para aumentar dificuldade. Core sempre ativo.'},
+  {id:'fn16',name:'TRX Push-Up',muscle:'Funcional',equip:'TRX',ico:'🔗',color:'#f0f9ff',sets:3,reps:'10-15',rest:60,tip:'Alças instáveis aumentam ativação de estabilizadores.'},
+  {id:'fn17',name:'Agachamento com Salto (BodyPump)',muscle:'Funcional',equip:'Peso Corporal',ico:'⬆️',color:'#f0f9ff',sets:4,reps:'15-20',rest:45,tip:'Descida controlada, subida explosiva. Endurance de pernas.'},
+  {id:'fn18',name:'Step-Up com Halteres',muscle:'Funcional',equip:'Halteres',ico:'📦',color:'#f0f9ff',sets:3,reps:'12 cada',rest:60,tip:'Sobe com o pé inteiro. Ativa glúteo e quadríceps.'},
+  // MOBILIDADE
+  {id:'mb01',name:'Hip 90/90 Stretch',muscle:'Mobilidade',equip:'Peso Corporal',ico:'🧘',color:'#f5f3ff',sets:2,reps:'60s cada',rest:0,tip:'Rotação interna e externa do quadril. Essencial para agachamento.'},
+  {id:'mb02',name:'World Greatest Stretch',muscle:'Mobilidade',equip:'Peso Corporal',ico:'🌎',color:'#f5f3ff',sets:2,reps:'5 cada',rest:0,tip:'Aquecimento completo. Mobiliza quadril, torácica e ombros.'},
+  {id:'mb03',name:'Foam Roll (Rolo de Espuma)',muscle:'Mobilidade',equip:'Foam Roll',ico:'🥖',color:'#f5f3ff',sets:1,reps:'2min por grupo',rest:0,tip:'Pressão firme. Pause 20s nos pontos de tensão.'},
+  {id:'mb04',name:'Band Pull Apart',muscle:'Mobilidade',equip:'Elástico',ico:'↔️',color:'#f5f3ff',sets:3,reps:'20',rest:0,tip:'Ativa rotadores externos. Ótimo pre-treino de ombros.'},
+  {id:'mb05',name:'Rotação Torácica',muscle:'Mobilidade',equip:'Peso Corporal',ico:'🌀',color:'#f5f3ff',sets:2,reps:'10 cada',rest:0,tip:'Em quatro apoios. Rotação máxima da coluna torácica.'},
+  {id:'mb06',name:'Alongamento Piriforme',muscle:'Mobilidade',equip:'Peso Corporal',ico:'🧘',color:'#f5f3ff',sets:2,reps:'60s cada',rest:0,tip:'Deitado, coloca tornozelo sobre o joelho oposto.'},
+];
+
+// ═══════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════
+let workout = []; // [{exId, sets, reps, rest, load, note, superset}]
+let currentFilter = 'Todos';
+let selectedStudentIdx = 0;
+let templates = [
+  {name:'Treino A — Peito e Tríceps',goal:'Hipertrofia',exCount:6,week:'Semana 1',exercises:['pe01','pe02','pe03','tr01','tr02','tr03']},
+  {name:'Treino B — Costas e Bíceps',goal:'Hipertrofia',exCount:6,week:'Semana 1',exercises:['co01','co02','co04','bi01','bi02','bi03']},
+  {name:'Treino C — Pernas Completo',goal:'Hipertrofia',exCount:6,week:'Semana 1',exercises:['pg01','pg02','pg03','pg04','pg05','gl01']},
+  {name:'Full Body Funcional',goal:'Funcional',exCount:6,week:'Semana 1',exercises:['pg01','co01','pe01','ab01','ca04','gl01']},
+];
+let students = [
+  {name:'Mariana Costa',goal:'Emagrecimento',since:'Jan 2026',color:'#e8173a'},
+  {name:'Lucas Mendes',goal:'Hipertrofia',since:'Fev 2026',color:'#1a8fff'},
+  {name:'Amanda Rocha',goal:'Condicionamento',since:'Mar 2026',color:'#10b981'},
+];
+
+// ═══════════════════════════════════════════════════
+// RENDER LIBRARY
+// ═══════════════════════════════════════════════════
+function renderLibrary(){
+  const q = document.getElementById('searchInp').value.toLowerCase();
+  const list = document.getElementById('exerciseList');
+  const filtered = EXERCISES.filter(ex=>{
+    const matchFilter = currentFilter==='Todos' || ex.muscle===currentFilter;
+    const matchSearch = !q || ex.name.toLowerCase().includes(q) || ex.muscle.toLowerCase().includes(q);
+    return matchFilter && matchSearch;
+  });
+  const addedIds = workout.map(w=>w.exId);
+  list.innerHTML = filtered.map(ex=>`
+    <div class="ex-card${addedIds.includes(ex.id)?' added':''}" onclick="addExercise('${ex.id}')" id="excard_${ex.id}">
+      <div class="ex-ico" style="background:${ex.color};">${ex.ico}</div>
+      <div class="ex-info">
+        <div class="ex-name">${ex.name}</div>
+        <div class="ex-meta">${ex.muscle} · ${ex.equip}</div>
+      </div>
+      <button class="ex-add" onclick="addExercise('${ex.id}');event.stopPropagation();">+</button>
+    </div>
+  `).join('');
+}
+
+function setFilter(f, el){
+  currentFilter=f;
+  document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('on'));
+  el.classList.add('on');
+  renderLibrary();
+}
+function filterExercises(){ renderLibrary(); }
+
+// ═══════════════════════════════════════════════════
+// WORKOUT MANAGEMENT
+// ═══════════════════════════════════════════════════
+function addExercise(id){
+  const ex = EXERCISES.find(e=>e.id===id);
+  if(!ex || workout.find(w=>w.exId===id)) return;
+  workout.push({exId:id,sets:ex.sets,reps:ex.reps,rest:ex.rest,load:'',note:'',superset:false});
+  renderWorkout();
+  renderLibrary();
+  updateStats();
+  showToast(`✅ ${ex.name} adicionado`);
+  setProgressBar(Math.min(100, workout.length*12));
+}
+
+function removeExercise(idx){
+  workout.splice(idx,1);
+  renderWorkout();
+  renderLibrary();
+  updateStats();
+}
+
+function moveExercise(idx, dir){
+  const newIdx = idx+dir;
+  if(newIdx<0||newIdx>=workout.length) return;
+  [workout[idx],workout[newIdx]]=[workout[newIdx],workout[idx]];
+  renderWorkout();
+}
+
+function toggleSuperset(idx){
+  workout[idx].superset = !workout[idx].superset;
+  renderWorkout();
+}
+
+function updateField(idx, field, val){
+  workout[idx][field] = val;
+  updateStats();
+}
+
+function getSupersetLabel(idx){
+  // Count position among superset items
+  const letters='ABCDEFGH';
+  let count=0;
+  for(let i=0;i<=idx;i++){
+    if(workout[i].superset) count++;
+  }
+  return letters[(count-1)%letters.length]||'A';
+}
+
+// ═══════════════════════════════════════════════════
+// RENDER WORKOUT
+// ═══════════════════════════════════════════════════
+function renderWorkout(){
+  const area = document.getElementById('workoutArea');
+  if(workout.length===0){
+    area.innerHTML=`<div class="empty-state" id="emptyState"><div class="empty-ico">🏋️</div><div class="empty-title">Nenhum exercício adicionado</div><div class="empty-desc">Clique nos exercícios na biblioteca<br>para montar o treino do seu aluno.</div></div>`;
+    return;
+  }
+  area.innerHTML = workout.map((w,i)=>{
+    const ex = EXERCISES.find(e=>e.id===w.exId);
+    if(!ex) return '';
+    const ssLabel = w.superset ? getSupersetLabel(i) : '';
+    return `
+    <div class="workout-item${w.superset?' superset':''}">
+      <div class="wi-header">
+        <span class="wi-drag" title="Mover">⠿</span>
+        <div class="wi-order">${w.superset?ssLabel:i+1}</div>
+        <div class="wi-ico" style="background:${ex.color};">${ex.ico}</div>
+        <div class="wi-name">${ex.name}${w.superset?`<span class="superset-label">Super ${ssLabel}</span>`:''}</div>
+        <div class="wi-muscle">${ex.muscle}</div>
+        <div class="wi-actions">
+          <button class="wi-btn wi-btn-ss${w.superset?' on':''}" title="Superset" onclick="toggleSuperset(${i})">SS</button>
+          <button class="wi-btn wi-btn-up" title="Mover para cima" onclick="moveExercise(${i},-1)">↑</button>
+          <button class="wi-btn wi-btn-down" title="Mover para baixo" onclick="moveExercise(${i},1)">↓</button>
+          <button class="wi-btn wi-btn-del" title="Remover" onclick="removeExercise(${i})">✕</button>
+        </div>
+      </div>
+      <div class="wi-fields">
+        <div class="wi-field">
+          <label>Séries</label>
+          <input class="wi-inp" type="text" value="${w.sets}" placeholder="4" oninput="updateField(${i},'sets',this.value)"/>
+        </div>
+        <div class="wi-field">
+          <label>Repetições</label>
+          <input class="wi-inp" type="text" value="${w.reps}" placeholder="10-12" oninput="updateField(${i},'reps',this.value)"/>
+        </div>
+        <div class="wi-field">
+          <label>Descanso (s)</label>
+          <input class="wi-inp" type="number" value="${w.rest}" placeholder="60" oninput="updateField(${i},'rest',this.value)"/>
+        </div>
+        <div class="wi-field">
+          <label>Carga (kg)</label>
+          <input class="wi-inp" type="text" value="${w.load}" placeholder="ex: 20kg" oninput="updateField(${i},'load',this.value)"/>
+        </div>
+      </div>
+      <div class="wi-notes">
+        <textarea placeholder="Notas do exercício... (ex: amplitude completa, cuidado com o ombro)" oninput="updateField(${i},'note',this.value)">${w.note}</textarea>
+        <div class="wi-tip">💡 ${ex.tip}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════════════════
+// STATS
+// ═══════════════════════════════════════════════════
+function updateStats(){
+  const totalSets = workout.reduce((a,w)=>a+parseInt(w.sets||0),0);
+  const totalTime = workout.reduce((a,w)=>{
+    const sets=parseInt(w.sets||3);
+    const restSec=parseInt(w.rest||60);
+    return a + sets*45/60 + sets*(restSec/60);
+  },0);
+  document.getElementById('statExs').textContent = workout.length;
+  document.getElementById('statSets').textContent = totalSets;
+  document.getElementById('statTime').textContent = Math.round(totalTime);
+  document.getElementById('navStats').textContent = workout.length>0 ? `${workout.length} exercícios · ~${Math.round(totalTime)} min` : '';
+}
+
+// ═══════════════════════════════════════════════════
+// RENDER STUDENTS
+// ═══════════════════════════════════════════════════
+function renderStudents(){
+  document.getElementById('studentList').innerHTML = students.map((s,i)=>`
+    <div class="student-item${i===selectedStudentIdx?' selected':''}" onclick="selectStudent(${i})">
+      <div class="st-avatar" style="background:${s.color};">${s.name[0]}</div>
+      <div class="st-info">
+        <div class="st-name">${s.name}</div>
+        <div class="st-meta">${s.goal} · desde ${s.since}</div>
+      </div>
+      ${i===selectedStudentIdx?'<span class="st-check">✓</span>':''}
+    </div>
+  `).join('');
+}
+
+function selectStudent(i){
+  selectedStudentIdx=i;
+  renderStudents();
+  showToast(`👤 Aluno: ${students[i].name}`);
+}
+
+function addStudentPrompt(){
+  const name = prompt('Nome do aluno:');
+  if(!name||!name.trim()) return;
+  const goal = prompt('Objetivo (ex: Hipertrofia, Emagrecimento):') || 'Geral';
+  const colors=['#e8173a','#1a8fff','#10b981','#7c3aed','#f59e0b','#f97316'];
+  students.push({name:name.trim(),goal,since:new Date().toLocaleDateString('pt-BR',{month:'short',year:'numeric'}),color:colors[students.length%colors.length]});
+  renderStudents();
+  showToast(`✅ Aluno ${name.trim()} adicionado`);
+}
+
+// ═══════════════════════════════════════════════════
+// RENDER TEMPLATES
+// ═══════════════════════════════════════════════════
+function renderTemplates(){
+  document.getElementById('templateList').innerHTML = templates.map((t,i)=>`
+    <div class="template-item" onclick="loadTemplate(${i})">
+      <div>
+        <div class="tmpl-name">${t.name}</div>
+        <div class="tmpl-meta">${t.goal} · ${t.exCount} exercícios</div>
+      </div>
+      <span class="tmpl-load">Carregar</span>
+    </div>
+  `).join('');
+}
+
+function loadTemplate(i){
+  const t = templates[i];
+  if(!confirm(`Carregar template "${t.name}"? O treino atual será substituído.`)) return;
+  workout = [];
+  t.exercises.forEach(id => {
+    const ex = EXERCISES.find(e=>e.id===id);
+    if(ex) workout.push({exId:id,sets:ex.sets,reps:ex.reps,rest:ex.rest,load:'',note:'',superset:false});
+  });
+  document.getElementById('workoutName').value = t.name;
+  document.getElementById('goalSelect').value = t.goal;
+  renderWorkout();
+  renderLibrary();
+  updateStats();
+  showToast(`📁 Template "${t.name}" carregado!`);
+}
+
+function saveTemplate(){
+  if(workout.length===0){ showToast('⚠️ Adicione exercícios primeiro'); return; }
+  const name = document.getElementById('workoutName').value || 'Meu Treino';
+  const goal = document.getElementById('goalSelect').value;
+  const week = document.getElementById('weekSelect').value;
+  templates.unshift({name,goal,week,exCount:workout.length,exercises:workout.map(w=>w.exId)});
+  renderTemplates();
+  showToast(`💾 Template "${name}" salvo!`);
+}
+
+// ═══════════════════════════════════════════════════
+// PREVIEW
+// ═══════════════════════════════════════════════════
+function openPreview(){
+  if(workout.length===0){ showToast('⚠️ Adicione exercícios ao treino'); return; }
+  const student = students[selectedStudentIdx] || {name:'Aluno'};
+  const wName = document.getElementById('workoutName').value || 'Treino';
+  const goal = document.getElementById('goalSelect').value;
+  const week = document.getElementById('weekSelect').value;
+  const totalSets = workout.reduce((a,w)=>a+parseInt(w.sets||0),0);
+  const totalTime = workout.reduce((a,w)=>{const s=parseInt(w.sets||3);const r=parseInt(w.rest||60);return a+s*45/60+s*(r/60);},0);
+
+  const exercisesHTML = workout.map((w,i)=>{
+    const ex = EXERCISES.find(e=>e.id===w.exId);
+    if(!ex) return '';
+    const ssLabel = w.superset ? getSupersetLabel(i) : '';
+    return `
+      <div class="preview-ex${w.superset?' superset':''}">
+        <div class="gif-placeholder">${ex.ico}</div>
+        <div>
+          <div class="preview-ex-num">${w.superset?ssLabel:i+1}</div>
+        </div>
+        <div class="preview-ex-body">
+          <div class="preview-ex-name">${ex.name}${w.superset?` <span style="font-size:.65rem;color:var(--purple);">[Superset ${ssLabel}]</span>`:''}</div>
+          <div class="preview-ex-stats">
+            <span class="preview-stat-chip">📊 ${w.sets} séries × ${w.reps}</span>
+            ${w.rest>0?`<span class="preview-stat-chip">⏱️ ${w.rest}s descanso</span>`:''}
+            ${w.load?`<span class="preview-stat-chip">⚖️ ${w.load}</span>`:''}
+          </div>
+          ${w.note?`<div class="preview-ex-note">📝 ${w.note}</div>`:''}
+          <div class="preview-ex-tip">💡 ${ex.tip}</div>
+        </div>
+      </div>`;
+  }).join('');
+
+  document.getElementById('previewBody').innerHTML = `
+    <div class="workout-preview">
+      <div class="preview-header">
+        <div class="preview-trainer">Personal Trainer · LinkeGym Elite</div>
+        <div class="preview-workout-name">${wName}</div>
+        <div class="preview-student">👤 ${student.name}</div>
+        <div class="preview-tags">
+          <span class="preview-tag">🎯 ${goal}</span>
+          <span class="preview-tag">📅 ${week}</span>
+          <span class="preview-tag">📋 ${workout.length} exercícios</span>
+        </div>
+      </div>
+      ${exercisesHTML}
+      <div class="preview-summary">
+        <div class="preview-sum-item"><div class="preview-sum-val">${workout.length}</div><div class="preview-sum-label">Exercícios</div></div>
+        <div class="preview-sum-item"><div class="preview-sum-val">${totalSets}</div><div class="preview-sum-label">Total de Séries</div></div>
+        <div class="preview-sum-item"><div class="preview-sum-val">~${Math.round(totalTime)} min</div><div class="preview-sum-label">Duração estimada</div></div>
+        <div class="preview-sum-item"><div class="preview-sum-val">${goal}</div><div class="preview-sum-label">Objetivo</div></div>
+      </div>
+      <div class="preview-footer">
+        LinkeGym Elite — Plano de Treino Personalizado · ${new Date().toLocaleDateString('pt-BR')}
+      </div>
+    </div>`;
+  document.getElementById('previewModal').classList.remove('hidden');
+}
+
+// ═══════════════════════════════════════════════════
+// WHATSAPP
+// ═══════════════════════════════════════════════════
+function sendWhatsApp(){
+  if(workout.length===0){ showToast('⚠️ Adicione exercícios ao treino'); return; }
+  const student = students[selectedStudentIdx] || {name:'Aluno'};
+  const wName = document.getElementById('workoutName').value || 'Treino';
+  const goal = document.getElementById('goalSelect').value;
+  const week = document.getElementById('weekSelect').value;
+  const totalSets = workout.reduce((a,w)=>a+parseInt(w.sets||0),0);
+
+  let msg = `🏋️ *${wName}*\n`;
+  msg += `👤 Aluno: ${student.name}\n`;
+  msg += `🎯 Objetivo: ${goal} · ${week}\n`;
+  msg += `📋 ${workout.length} exercícios · ${totalSets} séries\n`;
+  msg += `━━━━━━━━━━━━━━━━━━━━\n\n`;
+
+  workout.forEach((w,i)=>{
+    const ex = EXERCISES.find(e=>e.id===w.exId);
+    if(!ex) return;
+    const ssLabel = w.superset ? ` [SS-${getSupersetLabel(i)}]` : '';
+    msg += `${i+1}️⃣ *${ex.name}*${ssLabel}\n`;
+    msg += `   📊 ${w.sets} séries × ${w.reps}`;
+    if(w.rest>0) msg += ` | ⏱️ ${w.rest}s descanso`;
+    if(w.load) msg += ` | ⚖️ ${w.load}`;
+    msg += `\n`;
+    msg += `   💡 _${ex.tip}_\n`;
+    if(w.note) msg += `   📝 ${w.note}\n`;
+    msg += '\n';
+  });
+
+  msg += `━━━━━━━━━━━━━━━━━━━━\n`;
+  msg += `💪 *Bons treinos, ${student.name.split(' ')[0]}!*\n`;
+  msg += `\n_Treino montado via LinkeGym Elite_`;
+
+  const encoded = encodeURIComponent(msg);
+  window.open(`https://wa.me/?text=${encoded}`, '_blank');
+  closeModal('previewModal');
+}
+
+// ═══════════════════════════════════════════════════
+// EMAIL
+// ═══════════════════════════════════════════════════
+function openEmailModal(){
+  if(workout.length===0){ showToast('⚠️ Adicione exercícios ao treino'); return; }
+  const student = students[selectedStudentIdx] || {name:'Aluno'};
+  const wName = document.getElementById('workoutName').value || 'Treino';
+  const goal = document.getElementById('goalSelect').value;
+  const week = document.getElementById('weekSelect').value;
+
+  let text = `Assunto: Seu treino personalizado — ${wName}\n\n`;
+  text += `Olá, ${student.name.split(' ')[0]}!\n\n`;
+  text += `Segue o seu treino personalizado para esta semana.\n\n`;
+  text += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
+  text += `${wName.toUpperCase()}\n`;
+  text += `Objetivo: ${goal} | ${week}\n`;
+  text += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+
+  workout.forEach((w,i)=>{
+    const ex = EXERCISES.find(e=>e.id===w.exId);
+    if(!ex) return;
+    text += `${i+1}. ${ex.name}\n`;
+    text += `   Séries: ${w.sets}x${w.reps}`;
+    if(w.rest>0) text += ` | Descanso: ${w.rest}s`;
+    if(w.load) text += ` | Carga: ${w.load}`;
+    text += `\n`;
+    text += `   Dica: ${ex.tip}\n`;
+    if(w.note) text += `   Obs: ${w.note}\n`;
+    text += '\n';
+  });
+
+  text += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
+  text += `Qualquer dúvida, me chame no WhatsApp!\n\n`;
+  text += `Bons treinos! 💪\n`;
+  text += `_Treino montado via LinkeGym Elite_`;
+
+  document.getElementById('emailContent').textContent = text;
+  document.getElementById('copyBtn').textContent = '📋 Copiar texto do e-mail';
+  document.getElementById('copyBtn').classList.remove('copied');
+  document.getElementById('emailModal').classList.remove('hidden');
+}
+
+function copyEmail(){
+  const text = document.getElementById('emailContent').textContent;
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn = document.getElementById('copyBtn');
+    btn.textContent = '✅ Copiado!';
+    btn.classList.add('copied');
+    showToast('📋 E-mail copiado para a área de transferência!');
+    setTimeout(()=>{ btn.textContent='📋 Copiar texto do e-mail'; btn.classList.remove('copied'); },3000);
+  }).catch(()=>showToast('❌ Erro ao copiar. Selecione o texto manualmente.'));
+}
+
+// ═══════════════════════════════════════════════════
+// QR CODE (simulated)
+// ═══════════════════════════════════════════════════
+function openQR(){
+  // Generate a simple visual QR-like pattern
+  const qr = document.getElementById('qrDisplay');
+  const pattern = generateFakeQR();
+  qr.innerHTML = `<div class="qr-grid">${pattern}</div>`;
+  document.getElementById('qrModal').classList.remove('hidden');
+}
+
+function generateFakeQR(){
+  // Simple visual QR pattern (decorative)
+  const size = 15;
+  let cells = '';
+  // Corner markers
+  const corners = new Set();
+  for(let r=0;r<7;r++) for(let c=0;c<7;c++) corners.add(`${r},${c}`);
+  for(let r=0;r<7;r++) for(let c=size-7;c<size;c++) corners.add(`${r},${c}`);
+  for(let r=size-7;r<size;r++) for(let c=0;c<7;c++) corners.add(`${r},${c}`);
+
+  for(let r=0;r<size;r++){
+    for(let c=0;c<size;c++){
+      let filled = corners.has(`${r},${c}`) ? (r===0||r===6||c===0||c===6||((r>=2&&r<=4)&&(c>=2&&c<=4))) : Math.random()>0.5;
+      // For non-corners, check if it's inner corner white ring
+      if(!corners.has(`${r},${c}`)) filled=Math.random()>0.45;
+      cells+=`<div class="qr-cell" style="background:${filled?'#111':'white'};"></div>`;
+    }
+  }
+  return cells;
+}
+
+// ═══════════════════════════════════════════════════
+// PRINT
+// ═══════════════════════════════════════════════════
+function printWorkout(){
+  window.print();
+}
+
+// ═══════════════════════════════════════════════════
+// UTILITIES
+// ═══════════════════════════════════════════════════
+function closeModal(id){
+  document.getElementById(id).classList.add('hidden');
+}
+
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2800);
+}
+
+function setProgressBar(pct){
+  document.getElementById('progressBar').style.width = pct+'%';
+  setTimeout(()=>document.getElementById('progressBar').style.width='0', 1200);
+}
+
+// Close modals on backdrop click
+document.querySelectorAll('.modal-bg').forEach(bg=>{
+  bg.addEventListener('click', e=>{ if(e.target===bg) bg.classList.add('hidden'); });
+});
+
+// ═══════════════════════════════════════════════════
+// QR button in send area (add it dynamically)
+// ═══════════════════════════════════════════════════
+
+// ── INIT ──
+renderLibrary();
+renderStudents();
+renderTemplates();
+updateStats();
+</script>
+
+<!-- QR button appended in send area -->
+<script>
+(function(){
+  const sa = document.querySelector('.send-area');
+  if(!sa) return;
+  const qrBtn = document.createElement('button');
+  qrBtn.className = 'btn-save-tmpl';
+  qrBtn.style.marginTop='.5rem';
+  qrBtn.innerHTML = '📱 Gerar QR Code do Treino';
+  qrBtn.onclick = openQR;
+  sa.appendChild(qrBtn);
+})();
+</script>
+</body>
+</html>

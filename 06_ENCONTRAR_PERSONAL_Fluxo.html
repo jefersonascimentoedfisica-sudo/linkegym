@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>LinkeGym — Encontrar Personal Trainer</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --red:#e8173a;--red2:#c0102c;--orange:#f97316;--blue:#1a8fff;
+  --dark:#0d0d0d;--white:#fff;--off:#f8f7f4;--gray:#f1f0ed;
+  --border:#e8e6e1;--text:#1a1a1a;--muted:#8a8a8a;--green:#10b981;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--off);color:var(--text);min-height:100vh;}
+
+nav{background:white;border-bottom:1px solid var(--border);padding:0 5vw;height:64px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;box-shadow:0 2px 12px rgba(0,0,0,.04);}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.nav-logo-name{font-size:1.15rem;font-weight:800;background:linear-gradient(90deg,var(--blue),var(--orange));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.nav-logo-tag{font-size:.6rem;color:var(--muted);font-style:italic;}
+.nav-back{display:flex;align-items:center;gap:6px;font-size:.82rem;font-weight:600;color:var(--muted);background:none;border:1px solid var(--border);cursor:pointer;font-family:inherit;padding:.45rem .9rem;border-radius:8px;transition:all .2s;}
+.nav-back:hover{background:var(--gray);color:var(--text);}
+
+.page-hero{background:linear-gradient(135deg,#0d0d0d 0%,#0f1b2e 100%);padding:2.2rem 5vw;text-align:center;position:relative;overflow:hidden;}
+.page-hero::before{content:'';position:absolute;width:400px;height:400px;background:radial-gradient(circle,rgba(26,143,255,.15),transparent 70%);top:-100px;right:-50px;pointer-events:none;}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(26,143,255,.12);border:1px solid rgba(26,143,255,.25);color:#60b3ff;font-size:.65rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;padding:.3rem .85rem;border-radius:100px;margin-bottom:.9rem;}
+.hero-badge::before{content:'';width:5px;height:5px;background:#60b3ff;border-radius:50%;animation:blink 2s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.page-hero h1{font-size:clamp(1.5rem,3vw,2rem);font-weight:800;color:white;letter-spacing:-.02em;margin-bottom:.4rem;}
+.page-hero p{font-size:.82rem;color:rgba(255,255,255,.4);max-width:400px;margin:0 auto;}
+
+.progress-wrap{background:white;border-bottom:1px solid var(--border);padding:.9rem 5vw;position:sticky;top:64px;z-index:40;}
+.progress-steps{display:flex;align-items:center;max-width:700px;margin:0 auto;}
+.ps{display:flex;flex-direction:column;align-items:center;flex:1;position:relative;}
+.ps:not(:last-child)::after{content:'';position:absolute;top:15px;left:55%;right:-55%;height:2px;background:var(--border);z-index:0;transition:background .4s;}
+.ps.done:not(:last-child)::after{background:var(--blue);}
+.ps-c{width:30px;height:30px;border-radius:50%;border:2px solid var(--border);background:white;display:flex;align-items:center;justify-content:center;font-size:.68rem;font-weight:800;color:var(--muted);position:relative;z-index:1;transition:all .3s;flex-shrink:0;}
+.ps.active .ps-c{border-color:var(--blue);background:var(--blue);color:white;}
+.ps.done .ps-c{border-color:var(--blue);background:var(--blue);color:white;}
+.ps-l{font-size:.58rem;font-weight:700;color:var(--muted);margin-top:.3rem;text-align:center;white-space:nowrap;}
+.ps.active .ps-l,.ps.done .ps-l{color:var(--blue);}
+
+.wizard{max-width:700px;margin:1.8rem auto 4rem;padding:0 5vw;}
+.step-card{background:white;border-radius:20px;border:1px solid var(--border);padding:2rem;box-shadow:0 4px 20px rgba(0,0,0,.04);animation:slideIn .35s cubic-bezier(.16,1,.3,1);}
+.step-card.hidden{display:none;}
+@keyframes slideIn{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:translateY(0);}}
+.s-tag{font-size:.62rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);margin-bottom:.4rem;display:flex;align-items:center;gap:5px;}
+.s-tag::before{content:'';width:12px;height:2px;background:var(--blue);}
+.s-title{font-size:1.25rem;font-weight:800;color:var(--text);letter-spacing:-.02em;}
+.s-desc{font-size:.8rem;color:var(--muted);margin-top:.25rem;margin-bottom:1.5rem;line-height:1.55;}
+
+.field{margin-bottom:1rem;}
+.field label{display:block;font-size:.75rem;font-weight:700;color:#555;margin-bottom:.4rem;}
+.inp{width:100%;padding:.8rem 1rem;border:1.5px solid var(--border);border-radius:12px;font-size:.88rem;font-family:inherit;color:var(--text);outline:none;transition:all .2s;background:white;}
+.inp:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(26,143,255,.07);}
+.inp-wrap{position:relative;}
+.inp-wrap .inp{padding-left:2.6rem;}
+.inp-ico{position:absolute;left:.85rem;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none;}
+.inp-btn{position:absolute;right:.5rem;top:50%;transform:translateY(-50%);padding:.4rem .9rem;background:var(--blue);color:white;border:none;border-radius:8px;font-size:.72rem;font-weight:700;cursor:pointer;font-family:inherit;transition:background .2s;}
+.inp-btn:hover{background:#1577d4;}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;}
+
+.cep-ok{display:none;background:linear-gradient(135deg,rgba(16,185,129,.07),rgba(16,185,129,.02));border:1px solid rgba(16,185,129,.2);border-radius:12px;padding:.9rem 1rem;margin-top:.6rem;animation:slideIn .3s ease;}
+.cep-ok.show{display:flex;align-items:center;gap:10px;}
+.cep-check{width:22px;height:22px;background:var(--green);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+
+.local-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.7rem;margin-bottom:1rem;}
+.lb{padding:1.1rem .7rem;border:1.5px solid var(--border);border-radius:14px;background:white;cursor:pointer;text-align:center;transition:all .2s;font-family:inherit;}
+.lb:hover{border-color:rgba(26,143,255,.3);}
+.lb.on{border-color:var(--blue);background:#f0f8ff;box-shadow:0 0 0 3px rgba(26,143,255,.07);}
+.lb-ico{font-size:1.9rem;display:block;margin-bottom:.35rem;}
+.lb-name{font-size:.78rem;font-weight:700;color:var(--text);}
+.lb-sub{font-size:.62rem;color:var(--muted);margin-top:2px;}
+
+/* Schedule grid */
+.sched-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:.35rem;margin-top:.5rem;}
+.sched-day{padding:.55rem .2rem;border:1.5px solid var(--border);border-radius:10px;text-align:center;cursor:pointer;transition:all .18s;background:white;font-family:inherit;}
+.sched-day:hover{border-color:rgba(26,143,255,.4);}
+.sched-day.on{background:var(--blue);color:white;border-color:var(--blue);}
+.sched-day-name{font-size:.65rem;font-weight:800;display:block;}
+.sched-day-sub{font-size:.55rem;opacity:.7;margin-top:1px;display:block;}
+
+.period-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;margin-top:.6rem;}
+.period-btn{padding:.7rem .4rem;border:1.5px solid var(--border);border-radius:10px;text-align:center;font-size:.78rem;font-weight:700;cursor:pointer;transition:all .18s;background:white;font-family:inherit;color:var(--text);}
+.period-btn:hover{border-color:rgba(26,143,255,.4);}
+.period-btn.on{background:var(--blue);color:white;border-color:var(--blue);}
+.period-sub{font-size:.6rem;display:block;margin-top:2px;opacity:.7;}
+
+.spec-grid{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.6rem;}
+.spec-btn{padding:.45rem .9rem;border:1.5px solid var(--border);border-radius:100px;font-size:.75rem;font-weight:600;cursor:pointer;transition:all .18s;background:white;font-family:inherit;color:#555;}
+.spec-btn:hover{border-color:var(--blue);color:var(--blue);}
+.spec-btn.on{background:var(--blue);color:white;border-color:var(--blue);}
+
+.freq-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem;}
+.freq-btn{padding:.7rem .4rem;border:1.5px solid var(--border);border-radius:10px;text-align:center;font-size:.78rem;font-weight:700;cursor:pointer;transition:all .18s;background:white;font-family:inherit;color:var(--text);}
+.freq-btn:hover{border-color:rgba(26,143,255,.4);}
+.freq-btn.on{background:var(--blue);color:white;border-color:var(--blue);}
+.freq-sub{font-size:.58rem;display:block;margin-top:2px;opacity:.7;}
+
+/* Results */
+.fit-bar-wrap{display:flex;align-items:center;gap:8px;margin-bottom:.6rem;}
+.fit-label{font-size:.65rem;font-weight:800;color:var(--muted);white-space:nowrap;}
+.fit-bar{flex:1;height:5px;background:var(--gray);border-radius:10px;overflow:hidden;}
+.fit-fill{height:100%;border-radius:10px;transition:width .6s ease;}
+.fit-pct{font-size:.75rem;font-weight:800;white-space:nowrap;}
+
+.trial-badge{display:inline-flex;align-items:center;gap:4px;background:linear-gradient(90deg,rgba(249,115,22,.12),rgba(249,115,22,.06));border:1px solid rgba(249,115,22,.3);color:#ea6e0b;font-size:.62rem;font-weight:800;padding:.2rem .7rem;border-radius:100px;}
+
+.slots-badge{display:inline-flex;align-items:center;gap:4px;font-size:.65rem;font-weight:700;color:var(--green);}
+
+.photo-strip{display:flex;gap:.4rem;margin-bottom:.9rem;overflow-x:auto;padding-bottom:.2rem;}
+.photo-thumb{width:56px;height:56px;border-radius:10px;flex-shrink:0;object-fit:cover;cursor:pointer;border:2px solid transparent;transition:border-color .2s;}
+.photo-thumb:hover{border-color:var(--blue);}
+.photo-thumb-placeholder{width:56px;height:56px;border-radius:10px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1.1rem;cursor:pointer;border:2px solid transparent;transition:border-color .2s;}
+.photo-thumb-placeholder:hover{border-color:var(--blue);}
+
+.contact-btn{padding:.65rem 1.3rem;border:none;border-radius:10px;font-size:.78rem;font-weight:800;cursor:pointer;font-family:inherit;transition:all .2s;color:white;display:flex;align-items:center;gap:6px;background:linear-gradient(90deg,#25d366,#1da851);}
+.contact-btn:hover{opacity:.9;transform:translateY(-1px);}
+
+.filter-summary{background:linear-gradient(135deg,rgba(26,143,255,.05),rgba(26,143,255,.02));border:1px solid rgba(26,143,255,.12);border-radius:14px;padding:1.1rem 1.2rem;margin-bottom:1.3rem;display:flex;flex-wrap:wrap;gap:.6rem;}
+.fs-tag{display:flex;align-items:center;gap:5px;background:white;border:1px solid var(--border);padding:.3rem .75rem;border-radius:100px;font-size:.72rem;font-weight:700;color:var(--text);}
+
+.results-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;}
+.results-count{font-size:.82rem;color:var(--muted);font-weight:500;}
+.results-count strong{color:var(--text);}
+.sort-select{padding:.4rem .8rem;border:1px solid var(--border);border-radius:8px;font-size:.75rem;font-family:inherit;color:var(--text);outline:none;cursor:pointer;}
+
+.btn-next{width:100%;margin-top:1.5rem;padding:1rem;background:var(--blue);color:white;border:none;border-radius:14px;font-size:.92rem;font-weight:800;cursor:pointer;font-family:inherit;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;}
+.btn-next:hover{background:#1577d4;transform:translateY(-1px);box-shadow:0 6px 20px rgba(26,143,255,.3);}
+.btn-next:disabled{background:var(--border);color:var(--muted);cursor:not-allowed;transform:none;box-shadow:none;}
+.btn-back-step{background:none;border:1.5px solid var(--border);border-radius:14px;padding:1rem;font-size:.88rem;font-weight:700;color:var(--muted);cursor:pointer;font-family:inherit;transition:all .2s;margin-top:.6rem;width:100%;}
+.btn-back-step:hover{border-color:#aaa;color:var(--text);}
+.btn-filter{width:100%;margin-top:1.5rem;padding:1rem;background:var(--dark);color:white;border:none;border-radius:14px;font-size:.92rem;font-weight:800;cursor:pointer;font-family:inherit;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;}
+.btn-filter:hover{background:#222;transform:translateY(-1px);}
+
+/* Profile modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(8px);z-index:999;display:flex;align-items:center;justify-content:center;padding:1rem;animation:fadeIn .3s ease;overflow-y:auto;}
+.modal-overlay.hidden{display:none;}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal{background:white;border-radius:24px;width:100%;max-width:500px;overflow:hidden;animation:slideIn .35s cubic-bezier(.16,1,.3,1);box-shadow:0 30px 80px rgba(0,0,0,.3);}
+.modal-close{position:absolute;top:1rem;right:1rem;width:32px;height:32px;border-radius:50%;background:rgba(0,0,0,.3);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:white;font-size:1rem;transition:background .2s;}
+.modal-close:hover{background:rgba(0,0,0,.5);}
+
+/* Contact sent modal */
+.contact-modal{background:white;border-radius:24px;width:100%;max-width:460px;overflow:hidden;animation:slideIn .35s cubic-bezier(.16,1,.3,1);box-shadow:0 30px 80px rgba(0,0,0,.3);}
+
+/* Success */
+.success-screen{text-align:center;padding:2.5rem 2rem;}
+.success-anim{font-size:3.5rem;margin-bottom:1rem;animation:bounce .6s ease;}
+@keyframes bounce{0%,100%{transform:scale(1);}50%{transform:scale(1.2);}}
+.success-title{font-size:1.3rem;font-weight:800;color:var(--text);margin-bottom:.5rem;}
+.success-desc{font-size:.85rem;color:var(--muted);line-height:1.65;max-width:360px;margin:0 auto 1.5rem;}
+.what-trainer-gets{background:var(--off);border-radius:16px;padding:1.2rem;text-align:left;margin-bottom:1.5rem;}
+.wtg-title{font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:.8rem;}
+.wtg-row{display:flex;align-items:flex-start;gap:8px;padding:.5rem 0;border-bottom:1px solid var(--border);font-size:.8rem;}
+.wtg-row:last-child{border:none;}
+.wtg-ico{font-size:.9rem;flex-shrink:0;margin-top:1px;}
+.wtg-label{font-size:.68rem;color:var(--muted);display:block;}
+.wtg-val{font-weight:700;color:var(--text);}
+
+.wpp-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:.9rem;background:linear-gradient(90deg,#25d366,#1da851);color:white;border:none;border-radius:12px;font-size:.9rem;font-weight:800;cursor:pointer;font-family:inherit;margin-bottom:.6rem;transition:all .2s;}
+.wpp-btn:hover{opacity:.9;}
+.btn-home2{padding:.9rem 2rem;background:var(--dark);color:white;border:none;border-radius:12px;font-size:.85rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s;width:100%;}
+.btn-home2:hover{background:#222;}
+
+.loading-overlay{position:fixed;inset:0;background:rgba(255,255,255,.92);backdrop-filter:blur(4px);z-index:900;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;}
+.loading-overlay.hidden{display:none;}
+.spinner{width:44px;height:44px;border:3px solid var(--border);border-top-color:var(--blue);border-radius:50%;animation:spin 0.8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.loading-text{font-size:.88rem;font-weight:700;color:var(--text);}
+.loading-sub{font-size:.75rem;color:var(--muted);}
+
+.info-box{background:rgba(26,143,255,.06);border:1px solid rgba(26,143,255,.15);border-radius:10px;padding:.75rem 1rem;font-size:.76rem;color:#1a6bb5;display:flex;align-items:flex-start;gap:8px;line-height:1.5;}
+.divider-or{display:flex;align-items:center;gap:.8rem;margin:.4rem 0;font-size:.72rem;color:var(--muted);}
+.divider-or::before,.divider-or::after{content:'';flex:1;height:1px;background:var(--border);}
+
+@media(max-width:600px){
+  .local-grid{grid-template-columns:1fr 1fr;}
+  .sched-grid{grid-template-columns:repeat(4,1fr);}
+  .freq-grid{grid-template-columns:repeat(2,1fr);}
+  .two-col{grid-template-columns:1fr;}
+  .period-grid{grid-template-columns:1fr 1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- LOADING -->
+<div class="loading-overlay hidden" id="loadingOverlay">
+  <div class="spinner"></div>
+  <div class="loading-text" id="loadingText">Buscando personal trainers...</div>
+  <div class="loading-sub">Analisando compatibilidade e disponibilidade</div>
+</div>
+
+<!-- PROFILE MODAL -->
+<div class="modal-overlay hidden" id="profileModal">
+  <div style="position:relative;width:100%;max-width:500px;">
+    <button class="modal-close" onclick="closeProfile()">✕</button>
+    <div class="modal" id="profileContent"></div>
+  </div>
+</div>
+
+<!-- CONTACT SENT MODAL -->
+<div class="modal-overlay hidden" id="contactModal">
+  <div class="contact-modal">
+    <div id="contactContent"></div>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#">
+    <div>
+      <div class="nav-logo-name">LinkeGym</div>
+      <div class="nav-logo-tag">Conectando você à saúde</div>
+    </div>
+  </a>
+  <button class="nav-back" onclick="window.location.href='01_HOME_Principal.html'">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+    Voltar
+  </button>
+</nav>
+
+<!-- HERO -->
+<div class="page-hero">
+  <div class="hero-badge">Personal Trainer Fixo</div>
+  <h1>Encontre seu personal ideal 🏆</h1>
+  <p>Treinamento contínuo, personalizado e com acompanhamento real. Você negocia diretamente com o trainer.</p>
+</div>
+
+<!-- PROGRESS -->
+<div class="progress-wrap">
+  <div class="progress-steps">
+    <div class="ps active" id="ps1"><div class="ps-c">1</div><div class="ps-l">Localização</div></div>
+    <div class="ps" id="ps2"><div class="ps-c">2</div><div class="ps-l">Perfil do Treino</div></div>
+    <div class="ps" id="ps3"><div class="ps-c">3</div><div class="ps-l">Preferências</div></div>
+    <div class="ps" id="ps4"><div class="ps-c">4</div><div class="ps-l">Trainers</div></div>
+  </div>
+</div>
+
+<!-- WIZARD -->
+<div class="wizard">
+
+  <!-- STEP 1: LOCALIZAÇÃO -->
+  <div class="step-card" id="step1">
+    <div class="s-tag">Passo 1 de 4</div>
+    <div class="s-title">Onde você quer treinar?</div>
+    <div class="s-desc">Informe seu CEP para encontrarmos os melhores trainers da sua região.</div>
+
+    <div class="field">
+      <label>CEP</label>
+      <div class="inp-wrap">
+        <svg class="inp-ico" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        <input type="text" class="inp" id="cepInput" placeholder="00000-000" maxlength="9" oninput="formatCEP(this)" onblur="lookupCEP(this.value)"/>
+        <button class="inp-btn" onclick="lookupCEP(document.getElementById('cepInput').value)">Buscar</button>
+      </div>
+      <div class="cep-ok" id="cepResult">
+        <div class="cep-check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div><div style="font-size:.82rem;font-weight:700;" id="cepStreet">—</div><div style="font-size:.72rem;color:var(--muted);" id="cepCity">—</div></div>
+      </div>
+    </div>
+
+    <div class="divider-or">ou</div>
+    <button onclick="useCurrentLocation()" style="width:100%;padding:.8rem;background:white;border:1.5px solid var(--border);border-radius:12px;font-family:inherit;font-size:.84rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;color:var(--text);transition:all .2s;" onmouseover="this.style.borderColor='#aaa'" onmouseout="this.style.borderColor='var(--border)'">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/><line x1="12" y1="2" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="2" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="22" y2="12"/></svg>
+      Usar minha localização atual
+    </button>
+
+    <button class="btn-next" id="btn1" onclick="goStep(2)" disabled>
+      Continuar <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </button>
+  </div>
+
+  <!-- STEP 2: PERFIL DO TREINO -->
+  <div class="step-card hidden" id="step2">
+    <div class="s-tag">Passo 2 de 4</div>
+    <div class="s-title">Como você quer treinar?</div>
+    <div class="s-desc">Quanto mais detalhes, melhor a compatibilidade com seu trainer.</div>
+
+    <!-- Local type -->
+    <div class="field">
+      <label>Onde prefere treinar</label>
+      <div class="local-grid">
+        <button class="lb" onclick="selectLocal(this,'academia')"><span class="lb-ico">🏋️</span><div class="lb-name">Academia</div><div class="lb-sub">Equipamentos completos</div></button>
+        <button class="lb" onclick="selectLocal(this,'condominio')"><span class="lb-ico">🏢</span><div class="lb-name">Condomínio</div><div class="lb-sub">Área de lazer</div></button>
+        <button class="lb" onclick="selectLocal(this,'residencia')"><span class="lb-ico">🏠</span><div class="lb-name">Residência</div><div class="lb-sub">No conforto de casa</div></button>
+      </div>
+    </div>
+
+    <!-- Goals -->
+    <div class="field">
+      <label>Seus objetivos principais</label>
+      <div class="spec-grid" id="goalGrid">
+        <button class="spec-btn" onclick="toggleGoal(this)">💪 Hipertrofia</button>
+        <button class="spec-btn" onclick="toggleGoal(this)">🔥 Emagrecimento</button>
+        <button class="spec-btn" onclick="toggleGoal(this)">🤸 Condicionamento</button>
+        <button class="spec-btn" onclick="toggleGoal(this)">🦴 Reabilitação</button>
+        <button class="spec-btn" onclick="toggleGoal(this)">🧘 Flexibilidade</button>
+        <button class="spec-btn" onclick="toggleGoal(this)">🏃 Performance</button>
+        <button class="spec-btn" onclick="toggleGoal(this)">❤️ Saúde geral</button>
+        <button class="spec-btn" onclick="toggleGoal(this)">👶 Pós-parto</button>
+        <button class="spec-btn" onclick="toggleGoal(this)">🧓 Melhor idade</button>
+      </div>
+    </div>
+
+    <!-- Needs textarea -->
+    <div class="field">
+      <label>Fale mais sobre você <span style="color:var(--muted);font-weight:400;">(opcional)</span></label>
+      <textarea class="inp" id="needsText" rows="3" placeholder="Ex: Tenho 35 anos, nunca treinei, quero emagrecer 10kg, tenho leve hérnia de disco..." style="resize:vertical;line-height:1.5;"></textarea>
+    </div>
+
+    <!-- Frequency -->
+    <div class="field">
+      <label>Quantas vezes por semana?</label>
+      <div class="freq-grid">
+        <button class="freq-btn" onclick="selectFreq(this,2)">2x<span class="freq-sub">por semana</span></button>
+        <button class="freq-btn on" onclick="selectFreq(this,3)">3x<span class="freq-sub">por semana</span></button>
+        <button class="freq-btn" onclick="selectFreq(this,4)">4x<span class="freq-sub">por semana</span></button>
+        <button class="freq-btn" onclick="selectFreq(this,5)">5x+<span class="freq-sub">por semana</span></button>
+      </div>
+    </div>
+
+    <!-- Days -->
+    <div class="field">
+      <label>Dias disponíveis</label>
+      <div class="sched-grid">
+        <button class="sched-day" onclick="toggleDay(this,'Dom')"><span class="sched-day-name">Dom</span></button>
+        <button class="sched-day on" onclick="toggleDay(this,'Seg')"><span class="sched-day-name">Seg</span></button>
+        <button class="sched-day on" onclick="toggleDay(this,'Ter')"><span class="sched-day-name">Ter</span></button>
+        <button class="sched-day on" onclick="toggleDay(this,'Qua')"><span class="sched-day-name">Qua</span></button>
+        <button class="sched-day" onclick="toggleDay(this,'Qui')"><span class="sched-day-name">Qui</span></button>
+        <button class="sched-day on" onclick="toggleDay(this,'Sex')"><span class="sched-day-name">Sex</span></button>
+        <button class="sched-day" onclick="toggleDay(this,'Sáb')"><span class="sched-day-name">Sáb</span></button>
+      </div>
+    </div>
+
+    <!-- Period -->
+    <div class="field">
+      <label>Período do dia</label>
+      <div class="period-grid">
+        <button class="period-btn" onclick="togglePeriod(this,'manhã')">🌅 Manhã<span class="period-sub">06h–12h</span></button>
+        <button class="period-btn" onclick="togglePeriod(this,'tarde')">☀️ Tarde<span class="period-sub">12h–18h</span></button>
+        <button class="period-btn" onclick="togglePeriod(this,'noite')">🌙 Noite<span class="period-sub">18h–22h</span></button>
+      </div>
+    </div>
+
+    <button class="btn-next" id="btn2" onclick="goStep(3)" disabled>
+      Continuar <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </button>
+    <button class="btn-back-step" onclick="goStep(1)">← Voltar</button>
+  </div>
+
+  <!-- STEP 3: PREFERÊNCIAS -->
+  <div class="step-card hidden" id="step3">
+    <div class="s-tag">Passo 3 de 4</div>
+    <div class="s-title">Suas preferências</div>
+    <div class="s-desc">Filtros adicionais para encontrar o match perfeito. Tudo opcional.</div>
+
+    <div class="field">
+      <label>Orçamento por aula</label>
+      <div class="two-col">
+        <div><label style="font-size:.68rem;color:var(--muted);">Mínimo</label><input type="number" class="inp" id="priceMin" value="0" placeholder="R$ 0"/></div>
+        <div><label style="font-size:.68rem;color:var(--muted);">Máximo</label><input type="number" class="inp" id="priceMax" value="300" placeholder="R$ 300"/></div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Especialidade desejada</label>
+      <div class="spec-grid" id="specGrid">
+        <button class="spec-btn on" onclick="toggleSpec(this)">Qualquer</button>
+        <button class="spec-btn" onclick="toggleSpec(this)">Musculação</button>
+        <button class="spec-btn" onclick="toggleSpec(this)">Funcional</button>
+        <button class="spec-btn" onclick="toggleSpec(this)">Pilates</button>
+        <button class="spec-btn" onclick="toggleSpec(this)">Yoga</button>
+        <button class="spec-btn" onclick="toggleSpec(this)">CrossFit</button>
+        <button class="spec-btn" onclick="toggleSpec(this)">HIIT</button>
+        <button class="spec-btn" onclick="toggleSpec(this)">Corrida</button>
+        <button class="spec-btn" onclick="toggleSpec(this)">Reabilitação</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Gênero do trainer</label>
+      <div style="display:flex;gap:.6rem;">
+        <button class="spec-btn on" id="gAny" onclick="selectGender('any')">Qualquer</button>
+        <button class="spec-btn" id="gM" onclick="selectGender('m')">Masculino</button>
+        <button class="spec-btn" id="gF" onclick="selectGender('f')">Feminino</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Avaliação mínima</label>
+      <div style="display:flex;gap:.6rem;flex-wrap:wrap;">
+        <button class="spec-btn on" id="r0" onclick="selectRating(0)">Qualquer</button>
+        <button class="spec-btn" id="r4" onclick="selectRating(4)">★ 4.0+</button>
+        <button class="spec-btn" id="r45" onclick="selectRating(4.5)">★ 4.5+</button>
+        <button class="spec-btn" id="r5" onclick="selectRating(5)">★ 5.0</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Aceita aula experimental?</label>
+      <div style="display:flex;gap:.6rem;">
+        <button class="spec-btn on" id="trialAny" onclick="selectTrial('any')">Tanto faz</button>
+        <button class="spec-btn" id="trialYes" onclick="selectTrial('yes')">✅ Sim, prefiro</button>
+      </div>
+    </div>
+
+    <div class="info-box" style="margin-top:.5rem;">
+      <span>💡</span>
+      <span>Você não paga nada agora. O trainer receberá seu contato e vocês negociam diretamente valores e condições.</span>
+    </div>
+
+    <button class="btn-filter" onclick="runFilter()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+      Buscar Personal Trainers
+    </button>
+    <button class="btn-back-step" onclick="goStep(2)">← Voltar</button>
+  </div>
+
+  <!-- STEP 4: RESULTADOS -->
+  <div class="step-card hidden" id="step4">
+    <div class="s-tag">Passo 4 de 4</div>
+    <div class="s-title">Trainers compatíveis</div>
+    <div class="s-desc" id="resultsDesc">Ordenados por compatibilidade com seu perfil.</div>
+
+    <div class="filter-summary" id="filterSummary"></div>
+
+    <div class="results-header">
+      <div class="results-count" id="resultsCount"><strong>0</strong> trainers encontrados</div>
+      <select class="sort-select" onchange="sortTrainers(this.value)">
+        <option value="fit">Melhor match</option>
+        <option value="rating">Melhor avaliação</option>
+        <option value="price_asc">Menor preço</option>
+        <option value="price_desc">Maior preço</option>
+        <option value="distance">Mais próximos</option>
+      </select>
+    </div>
+
+    <div id="trainersList"></div>
+    <button class="btn-back-step" onclick="goStep(3)">← Ajustar filtros</button>
+  </div>
+
+</div><!-- /wizard -->
+
+<script>
+const LOGO_URL = 'https://d2xsxph8kpxj0f.cloudfront.net/310519663402727665/W9B2DZe626mJSzUHcntkhr/linkegym-icon-correct-7iSBeGTmGXpGGLSH7wpVF5.webp';
+
+const state = {
+  cep:'', street:'', city:'',
+  localType:'', goals:[], needs:'',
+  frequency:3, days:['Seg','Ter','Qua','Sex'], periods:[],
+  specs:[], gender:'any', minRating:0, priceMin:0, priceMax:300,
+  trialPref:'any',
+  selectedTrainer:null
+};
+
+// ── CEP ──
+function formatCEP(inp){
+  let v=inp.value.replace(/\D/g,'');
+  if(v.length>5) v=v.slice(0,5)+'-'+v.slice(5,8);
+  inp.value=v;
+  if(v.length===9) lookupCEP(v);
+}
+async function lookupCEP(cep){
+  const clean=cep.replace(/\D/g,'');
+  if(clean.length!==8) return;
+  try{
+    const r=await fetch(`https://viacep.com.br/ws/${clean}/json/`);
+    const d=await r.json();
+    if(d.erro) return simulateCEP();
+    state.cep=clean; state.street=d.logradouro||d.bairro||'Endereço encontrado'; state.city=`${d.localidade} — ${d.uf}`;
+    document.getElementById('cepStreet').textContent=state.street;
+    document.getElementById('cepCity').textContent=state.city;
+    document.getElementById('cepResult').classList.add('show');
+    document.getElementById('btn1').disabled=false;
+  }catch(e){ simulateCEP(); }
+}
+function simulateCEP(){
+  state.cep='01310100'; state.street='Av. Paulista'; state.city='São Paulo — SP';
+  document.getElementById('cepStreet').textContent='Av. Paulista';
+  document.getElementById('cepCity').textContent='São Paulo — SP';
+  document.getElementById('cepResult').classList.add('show');
+  document.getElementById('btn1').disabled=false;
+}
+function useCurrentLocation(){ simulateCEP(); document.getElementById('cepInput').value='01310-100'; }
+
+// ── Local type ──
+function selectLocal(btn,type){
+  document.querySelectorAll('.lb').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on'); state.localType=type; checkStep2();
+}
+
+// ── Goals ──
+function toggleGoal(btn){
+  btn.classList.toggle('on');
+  state.goals=[...document.querySelectorAll('#goalGrid .spec-btn.on')].map(b=>b.textContent.replace(/[^\w\s]/g,'').trim());
+  checkStep2();
+}
+
+// ── Frequency ──
+function selectFreq(btn,n){
+  document.querySelectorAll('.freq-btn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on'); state.frequency=n;
+}
+
+// ── Days ──
+function toggleDay(btn,day){
+  btn.classList.toggle('on');
+  state.days=[...document.querySelectorAll('.sched-day.on')].map(b=>b.querySelector('.sched-day-name').textContent);
+  checkStep2();
+}
+
+// ── Period ──
+function togglePeriod(btn,p){
+  btn.classList.toggle('on');
+  state.periods=[...document.querySelectorAll('.period-btn.on')].map(b=>b.textContent.split(' ').slice(1,2).join('').trim());
+}
+
+function checkStep2(){
+  document.getElementById('btn2').disabled = !(state.localType && state.goals.length>0 && state.days.length>0);
+}
+
+// ── Step 3 filters ──
+function toggleSpec(btn){
+  if(btn.textContent.includes('Qualquer')){
+    document.querySelectorAll('#specGrid .spec-btn').forEach(b=>b.classList.remove('on'));
+    btn.classList.add('on'); state.specs=[];
+  } else {
+    document.querySelector('#specGrid .spec-btn').classList.remove('on');
+    btn.classList.toggle('on');
+    state.specs=[...document.querySelectorAll('#specGrid .spec-btn.on')].filter(b=>!b.textContent.includes('Qualquer')).map(b=>b.textContent);
+  }
+}
+function selectGender(g){
+  ['gAny','gM','gF'].forEach(id=>document.getElementById(id)?.classList.remove('on'));
+  document.getElementById(g==='any'?'gAny':g==='m'?'gM':'gF')?.classList.add('on');
+  state.gender=g;
+}
+function selectRating(r){
+  ['r0','r4','r45','r5'].forEach(id=>document.getElementById(id)?.classList.remove('on'));
+  document.getElementById({0:'r0',4:'r4',4.5:'r45',5:'r5'}[r])?.classList.add('on');
+  state.minRating=r;
+}
+function selectTrial(v){
+  ['trialAny','trialYes'].forEach(id=>document.getElementById(id)?.classList.remove('on'));
+  document.getElementById(v==='any'?'trialAny':'trialYes')?.classList.add('on');
+  state.trialPref=v;
+}
+
+// ── TRAINERS DATA ──
+const TRAINERS = [
+  {
+    id:1, name:'Rafael Costa', gender:'m', plan:'elite',
+    spec:'Musculação · Hipertrofia · Funcional',
+    bio:'Especialista em hipertrofia e emagrecimento. 8 anos de experiência, ex-atleta de fisiculturismo. Metodologia periodizada com resultados comprovados.',
+    rating:5.0, reviews:142, price:80, distance:'0.8km',
+    avatar:'RC', color:'linear-gradient(135deg,#e8173a,#f97316)',
+    tags:['Musculação','Funcional','HIIT','Emagrecimento','Hipertrofia'],
+    cref:'CREF 012345-G/SP', verified:true,
+    responseTime:'~5min', acceptRate:98,
+    currentStudents:8, maxStudents:12,
+    trialOffer:true, trialPrice:50,
+    education:'Bacharel em Ed. Física — USP',
+    certifications:['NSCA-CPT','Treinamento Funcional','Nutrição Esportiva'],
+    neighborhoods:['Paulista','Jardins','Itaim','Vila Olímpia'],
+    highlights:['Mais solicitado','Responde rápido','Aceita experimental'],
+    photos:['#e8173a','#f97316','#ff6b6b','#ffab40'],
+    hasVideo:true,
+    socialProof: {retention:'94%', avgTime:'11 meses', transformations:67}
+  },
+  {
+    id:2, name:'Ana Paula Ferreira', gender:'f', plan:'premium',
+    spec:'Pilates · Yoga · Reabilitação · Mobilidade',
+    bio:'Formada em Ed. Física e pós-graduada em Pilates clínico. Especialista em reabilitação e bem-estar. Atendo com foco na saúde do movimento.',
+    rating:4.9, reviews:98, price:90, distance:'1.2km',
+    avatar:'AF', color:'linear-gradient(135deg,#7c3aed,#4f46e5)',
+    tags:['Pilates','Yoga','Reabilitação','Mobilidade','Gestantes'],
+    cref:'CREF 067890-G/SP', verified:true,
+    responseTime:'~12min', acceptRate:95,
+    currentStudents:10, maxStudents:15,
+    trialOffer:true, trialPrice:60,
+    education:'Bacharel em Ed. Física — UNICAMP · Pós em Pilates Clínico',
+    certifications:['Pilates Clínico','Yoga Alliance 200h','Reabilitação Postural'],
+    neighborhoods:['Moema','Vila Olímpia','Ibirapuera','Brooklin'],
+    highlights:['Alta avaliação','CREF verificado','Especialista em reabilitação'],
+    photos:['#7c3aed','#4f46e5','#a78bfa','#8b5cf6'],
+    hasVideo:true,
+    socialProof: {retention:'97%', avgTime:'14 meses', transformations:45}
+  },
+  {
+    id:3, name:'Marcos Oliveira', gender:'m', plan:'pro',
+    spec:'CrossFit · Emagrecimento · Condicionamento',
+    bio:'Personal trainer especializado em resultados rápidos. Treinos intensos e 100% personalizados. Metodologia baseada em evidências.',
+    rating:4.7, reviews:67, price:75, distance:'1.5km',
+    avatar:'MO', color:'linear-gradient(135deg,#059669,#10b981)',
+    tags:['CrossFit','Funcional','Emagrecimento','Condicionamento'],
+    cref:'CREF 011111-G/SP', verified:true,
+    responseTime:'~20min', acceptRate:90,
+    currentStudents:6, maxStudents:10,
+    trialOffer:false, trialPrice:null,
+    education:'Bacharel em Ed. Física — FMUSP',
+    certifications:['CrossFit L1','Treinamento de Alta Intensidade'],
+    neighborhoods:['Pinheiros','Vila Madalena','Lapa'],
+    highlights:['Bom custo-benefício','Vagas disponíveis'],
+    photos:['#059669','#10b981','#34d399','#6ee7b7'],
+    hasVideo:false,
+    socialProof: {retention:'88%', avgTime:'8 meses', transformations:29}
+  },
+  {
+    id:4, name:'Juliana Ramos', gender:'f', plan:'premium',
+    spec:'Emagrecimento · Funcional · Saúde da Mulher',
+    bio:'Especialista em saúde feminina e emagrecimento saudável. Trabalho com metodologia personalizada respeitando as fases do ciclo hormonal.',
+    rating:4.8, reviews:54, price:85, distance:'2.0km',
+    avatar:'JR', color:'linear-gradient(135deg,#ec4899,#f43f5e)',
+    tags:['Emagrecimento','Funcional','Saúde Feminina','Pós-parto'],
+    cref:'CREF 055555-G/SP', verified:true,
+    responseTime:'~15min', acceptRate:92,
+    currentStudents:9, maxStudents:12,
+    trialOffer:true, trialPrice:55,
+    education:'Bacharel em Ed. Física — PUC-SP · Especialização em Saúde da Mulher',
+    certifications:['Saúde Feminina','Treinamento Pós-Parto','Nutrição para Mulheres'],
+    neighborhoods:['Perdizes','Pompéia','Vila Romana','Água Branca'],
+    highlights:['Especialista saúde feminina','Aceita experimental'],
+    photos:['#ec4899','#f43f5e','#fb7185','#fda4af'],
+    hasVideo:true,
+    socialProof: {retention:'91%', avgTime:'10 meses', transformations:38}
+  },
+  {
+    id:5, name:'Carlos Mendes', gender:'m', plan:'free',
+    spec:'Musculação · Hipertrofia',
+    bio:'Personal trainer certificado, atende na região da Paulista e adjacências.',
+    rating:4.3, reviews:18, price:60, distance:'2.8km',
+    avatar:'CM', color:'linear-gradient(135deg,#64748b,#94a3b8)',
+    tags:['Musculação','Hipertrofia'],
+    cref:'CREF 033333-G/SP', verified:true,
+    responseTime:'~35min', acceptRate:80,
+    currentStudents:3, maxStudents:8,
+    trialOffer:false, trialPrice:null,
+    education:'Tecnólogo em Ed. Física',
+    certifications:['CREF Ativo'],
+    neighborhoods:['Paulista'],
+    highlights:[],
+    photos:['#64748b','#94a3b8'],
+    hasVideo:false,
+    socialProof: {retention:'75%', avgTime:'5 meses', transformations:9}
+  }
+];
+
+let filteredTrainers = [...TRAINERS];
+
+// ── Fit Score ──
+function calcFitScore(trainer){
+  let score = 50;
+  // Plan bonus
+  const planBonus = {elite:25, premium:18, pro:10, free:0};
+  score += planBonus[trainer.plan] || 0;
+  // Goals match
+  const goalKeywords = state.goals.join(' ').toLowerCase();
+  const trainerTags = trainer.tags.join(' ').toLowerCase();
+  let matchedGoals = 0;
+  ['hipertrofia','emagrecimento','condicionamento','reabilitação','flexibilidade','performance','saúde','pós-parto','melhor idade'].forEach(g=>{
+    if(goalKeywords.includes(g) && trainerTags.includes(g)) matchedGoals++;
+  });
+  score += matchedGoals * 8;
+  // Rating bonus
+  score += (trainer.rating - 4) * 10;
+  // Trial
+  if(state.trialPref === 'yes' && trainer.trialOffer) score += 5;
+  return Math.min(99, Math.round(score));
+}
+
+// ── Filter & run ──
+function runFilter(){
+  showLoading('Calculando compatibilidade...');
+  setTimeout(()=>{
+    hideLoading();
+    state.priceMin = parseInt(document.getElementById('priceMin').value)||0;
+    state.priceMax = parseInt(document.getElementById('priceMax').value)||300;
+    filteredTrainers = TRAINERS.filter(t=>{
+      if(state.gender!=='any' && t.gender!==state.gender) return false;
+      if(t.price<state.priceMin || t.price>state.priceMax) return false;
+      if(state.minRating>0 && t.rating<state.minRating) return false;
+      if(state.trialPref==='yes' && !t.trialOffer) return false;
+      return true;
+    });
+    filteredTrainers.forEach(t => t._fitScore = calcFitScore(t));
+    filteredTrainers.sort((a,b) => b._fitScore - a._fitScore);
+    goStep(4);
+    buildFilterSummary();
+    renderTrainers();
+  }, 2000);
+}
+
+function buildFilterSummary(){
+  const localTypes = {academia:'🏋️ Academia',condominio:'🏢 Condomínio',residencia:'🏠 Residência'};
+  const items = [
+    {label: state.city},
+    {label: localTypes[state.localType]||''},
+    {label: state.goals.slice(0,2).join(', ')},
+    {label: `${state.frequency}x/semana`},
+    {label: state.days.join(' · ')},
+  ].filter(x=>x.label);
+  document.getElementById('filterSummary').innerHTML = items.map(i=>`<div class="fs-tag">${i.label}</div>`).join('');
+  document.getElementById('resultsCount').innerHTML = `<strong>${filteredTrainers.length}</strong> trainer${filteredTrainers.length!==1?'s':''} compatíve${filteredTrainers.length!==1?'is':'l'}`;
+}
+
+function sortTrainers(by){
+  if(by==='fit') filteredTrainers.sort((a,b)=>b._fitScore-a._fitScore);
+  else if(by==='rating') filteredTrainers.sort((a,b)=>b.rating-a.rating);
+  else if(by==='price_asc') filteredTrainers.sort((a,b)=>a.price-b.price);
+  else if(by==='price_desc') filteredTrainers.sort((a,b)=>b.price-a.price);
+  else if(by==='distance') filteredTrainers.sort((a,b)=>parseFloat(a.distance)-parseFloat(b.distance));
+  renderTrainers();
+}
+
+function fitColor(score){
+  if(score>=85) return '#10b981';
+  if(score>=70) return '#f59e0b';
+  return '#94a3b8';
+}
+
+function starsHtml(r){
+  return '★'.repeat(Math.floor(r))+(r%1>=.5?'½':'')+'☆'.repeat(5-Math.floor(r)-(r%1>=.5?1:0));
+}
+
+const PLAN_CFG = {
+  elite:{label:'ELITE',border:'#f59e0b',bg:'linear-gradient(160deg,#fffbeb,#fff)',header:'linear-gradient(90deg,#f59e0b,#f97316)',accent:'#f59e0b',icon:'👑',btnBg:'linear-gradient(90deg,#e8173a,#f97316)',pinnedText:'Destaque Patrocinado'},
+  premium:{label:'PREMIUM',border:'#7c3aed',bg:'linear-gradient(160deg,#f5f3ff,#fff)',header:'linear-gradient(90deg,#7c3aed,#4f46e5)',accent:'#7c3aed',icon:'⭐',btnBg:'linear-gradient(90deg,#7c3aed,#4f46e5)',pinnedText:'Anúncio Patrocinado'},
+  pro:{label:'PRO',border:'#10b981',bg:'linear-gradient(160deg,#f0fdf4,#fff)',header:'linear-gradient(90deg,#059669,#10b981)',accent:'#10b981',icon:'✅',btnBg:'#059669',pinnedText:null},
+  free:{label:'FREE',border:'#e8e6e1',bg:'#fff',header:null,accent:'#aaa',icon:'',btnBg:'#555',pinnedText:null}
+};
+
+function renderTrainers(){
+  const list = document.getElementById('trainersList');
+  if(!filteredTrainers.length){
+    list.innerHTML=`<div style="text-align:center;padding:3rem 1rem;"><div style="font-size:3rem;margin-bottom:1rem;">🔍</div><div style="font-size:1rem;font-weight:800;margin-bottom:.4rem;">Nenhum trainer encontrado</div><div style="font-size:.82rem;color:var(--muted);">Tente ajustar seus filtros.</div></div>`;
+    return;
+  }
+
+  list.innerHTML = filteredTrainers.map(t => {
+    const cfg = PLAN_CFG[t.plan]||PLAN_CFG.free;
+    const pinned = t.plan==='elite'||t.plan==='premium';
+    const fit = t._fitScore||calcFitScore(t);
+    const slotsLeft = t.maxStudents - t.currentStudents;
+
+    return `
+    <div style="margin-bottom:1.4rem;">
+      ${pinned?`<div style="font-size:.6rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:${cfg.accent};margin-bottom:.35rem;padding-left:.3rem;display:flex;align-items:center;gap:5px;"><span style="width:8px;height:8px;border-radius:50%;background:${cfg.accent};display:inline-block;"></span>${cfg.pinnedText}</div>`:''}
+
+      <div style="border-radius:20px;overflow:hidden;border:2px solid ${cfg.border};background:${cfg.bg};box-shadow:0 6px 24px rgba(0,0,0,.06);transition:transform .2s,box-shadow .2s;" onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 12px 32px rgba(0,0,0,.1)'" onmouseout="this.style.transform='';this.style.boxShadow='0 6px 24px rgba(0,0,0,.06)'">
+
+        ${cfg.header?`<div style="padding:.55rem 1.2rem;display:flex;align-items:center;gap:6px;font-size:.65rem;font-weight:800;letter-spacing:.08em;background:${cfg.header};color:white;">${cfg.icon} ${cfg.label} — Perfil Verificado</div>`:''}
+
+        <div style="padding:1.4rem;">
+
+          <!-- Fit score bar -->
+          <div class="fit-bar-wrap">
+            <span class="fit-label">Match</span>
+            <div class="fit-bar"><div class="fit-fill" style="width:${fit}%;background:${fitColor(fit)};"></div></div>
+            <span class="fit-pct" style="color:${fitColor(fit)};">${fit}%</span>
+          </div>
+
+          <!-- Top row -->
+          <div style="display:flex;align-items:flex-start;gap:1rem;margin-bottom:.9rem;">
+            <div style="position:relative;flex-shrink:0;">
+              <div style="width:64px;height:64px;border-radius:16px;background:${t.color};display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:800;color:white;">${t.avatar}</div>
+              <div style="position:absolute;bottom:-3px;right:-3px;width:16px;height:16px;border-radius:50%;background:var(--green);border:2px solid white;"></div>
+              ${t.hasVideo?`<div style="position:absolute;top:-3px;left:-3px;width:18px;height:18px;border-radius:50%;background:#1a8fff;border:2px solid white;display:flex;align-items:center;justify-content:center;"><svg width="8" height="8" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>`:''}
+            </div>
+            <div style="flex:1;min-width:0;">
+              <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:2px;">
+                <span style="font-size:.98rem;font-weight:800;">${t.name}</span>
+                <span style="font-size:.58rem;font-weight:800;padding:2px 8px;border-radius:20px;background:${cfg.header||'#f1f0ed'};color:${cfg.header?'white':'#888'};">${cfg.label}</span>
+                ${t.verified?`<span style="background:#ecfdf5;color:var(--green);font-size:.58rem;font-weight:800;padding:2px 7px;border-radius:20px;">✓ CREF</span>`:''}
+              </div>
+              <div style="font-size:.75rem;color:var(--muted);margin-bottom:.3rem;">${t.spec}</div>
+              <div style="display:flex;align-items:center;gap:5px;">
+                <span style="color:#f59e0b;font-size:.8rem;">${starsHtml(t.rating)}</span>
+                <span style="font-size:.78rem;font-weight:700;">${t.rating.toFixed(1)}</span>
+                <span style="font-size:.68rem;color:var(--muted);">(${t.reviews} avaliações)</span>
+              </div>
+            </div>
+            <div style="text-align:right;flex-shrink:0;">
+              <div style="font-size:1.35rem;font-weight:800;color:var(--red);line-height:1;">R$${t.price}</div>
+              <div style="font-size:.62rem;color:var(--muted);">por aula</div>
+              ${t.trialOffer?`<div class="trial-badge" style="margin-top:4px;">🎯 Exp. R$${t.trialPrice}</div>`:''}
+            </div>
+          </div>
+
+          <!-- Photo strip -->
+          ${t.photos.length>0?`
+          <div class="photo-strip">
+            ${t.photos.map((c,i)=>`<div class="photo-thumb-placeholder" style="background:${c};color:rgba(255,255,255,.6);font-size:.65rem;font-weight:700;" onclick="openProfile(${t.id})">${i===0?'📷':i===1?'💪':i===2?'🏋️':'📸'}</div>`).join('')}
+            ${t.hasVideo?`<div class="photo-thumb-placeholder" style="background:#0d0d0d;color:white;" onclick="openProfile(${t.id})"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>`:''}
+          </div>`:''}
+
+          <!-- Bio -->
+          <div style="font-size:.78rem;color:#555;line-height:1.6;margin-bottom:.9rem;padding:.75rem .9rem;background:rgba(0,0,0,.025);border-radius:10px;border-left:3px solid ${cfg.accent};">"${t.bio}"</div>
+
+          <!-- Stats -->
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:.4rem;margin-bottom:.9rem;">
+            <div style="text-align:center;background:var(--off);border-radius:10px;padding:.5rem .2rem;">
+              <div style="font-size:.9rem;font-weight:800;color:var(--green);">${t.socialProof.retention}</div>
+              <div style="font-size:.55rem;color:var(--muted);">Retenção</div>
+            </div>
+            <div style="text-align:center;background:var(--off);border-radius:10px;padding:.5rem .2rem;">
+              <div style="font-size:.9rem;font-weight:800;color:var(--blue);">${t.responseTime}</div>
+              <div style="font-size:.55rem;color:var(--muted);">Resposta</div>
+            </div>
+            <div style="text-align:center;background:var(--off);border-radius:10px;padding:.5rem .2rem;">
+              <div style="font-size:.9rem;font-weight:800;color:var(--text);">${t.socialProof.avgTime}</div>
+              <div style="font-size:.55rem;color:var(--muted);">Tempo médio</div>
+            </div>
+            <div style="text-align:center;background:var(--off);border-radius:10px;padding:.5rem .2rem;">
+              <div style="font-size:.9rem;font-weight:800;color:var(--orange);">${slotsLeft}</div>
+              <div style="font-size:.55rem;color:var(--muted);">Vagas</div>
+            </div>
+          </div>
+
+          <!-- Tags -->
+          <div style="display:flex;flex-wrap:wrap;gap:.35rem;margin-bottom:.9rem;">
+            ${t.tags.map(tag=>`<span style="background:var(--off);border:1px solid var(--border);border-radius:100px;padding:.2rem .65rem;font-size:.67rem;font-weight:600;color:#555;">${tag}</span>`).join('')}
+            <span style="background:rgba(0,0,0,.04);border:1px solid var(--border);border-radius:100px;padding:.2rem .65rem;font-size:.67rem;color:var(--muted);">📍 ${t.distance}</span>
+          </div>
+
+          <!-- Neighborhoods -->
+          <div style="margin-bottom:1rem;">
+            <div style="font-size:.63rem;font-weight:700;color:var(--muted);margin-bottom:.35rem;text-transform:uppercase;letter-spacing:.06em;">Atende nos bairros</div>
+            <div style="display:flex;flex-wrap:wrap;gap:.3rem;">
+              ${t.neighborhoods.map(n=>`<span style="background:white;border:1px solid var(--border);border-radius:8px;padding:.18rem .55rem;font-size:.65rem;font-weight:600;color:#555;">📍 ${n}</span>`).join('')}
+            </div>
+          </div>
+
+          <!-- Footer -->
+          <div style="display:flex;align-items:center;justify-content:space-between;padding-top:.9rem;border-top:1px solid var(--border);gap:.5rem;">
+            <div style="font-size:.68rem;color:var(--muted);">🤝 Você negocia direto</div>
+            <div style="display:flex;gap:.5rem;">
+              <button onclick="openProfile(${t.id})" style="padding:.6rem 1rem;background:white;border:1.5px solid var(--border);border-radius:10px;font-size:.75rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s;color:var(--text);" onmouseover="this.style.borderColor='#aaa'" onmouseout="this.style.borderColor='var(--border)'">
+                👤 Ver perfil
+              </button>
+              <button onclick="sendContact(${t.id})" class="contact-btn">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M20.52 3.48A12 12 0 003.48 20.52L2 22l1.48-1.48A12 12 0 0020.52 3.48z"/></svg>
+                Entrar em contato
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── Profile modal ──
+function openProfile(id){
+  const t = TRAINERS.find(x=>x.id===id);
+  if(!t) return;
+  const cfg = PLAN_CFG[t.plan]||PLAN_CFG.free;
+  const fit = t._fitScore||calcFitScore(t);
+  document.getElementById('profileContent').innerHTML = `
+    <div style="background:${t.color};padding:2rem;text-align:center;position:relative;">
+      <div style="width:80px;height:80px;border-radius:20px;background:rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;font-size:1.5rem;font-weight:800;color:white;margin:0 auto .8rem;">${t.avatar}</div>
+      <div style="font-size:1.2rem;font-weight:800;color:white;">${t.name}</div>
+      <div style="font-size:.78rem;color:rgba(255,255,255,.7);margin-top:.2rem;">${t.spec}</div>
+      <div style="display:flex;align-items:center;justify-content:center;gap:6px;margin-top:.5rem;">
+        <span style="color:#fbbf24;font-size:.9rem;">${starsHtml(t.rating)}</span>
+        <span style="color:white;font-size:.82rem;font-weight:700;">${t.rating.toFixed(1)}</span>
+        <span style="color:rgba(255,255,255,.6);font-size:.75rem;">(${t.reviews})</span>
+      </div>
+      <div style="display:inline-flex;align-items:center;gap:6px;background:rgba(0,0,0,.2);padding:.3rem .9rem;border-radius:100px;margin-top:.6rem;font-size:.7rem;color:rgba(255,255,255,.9);font-weight:700;">
+        Match ${fit}% com seu perfil
+      </div>
+    </div>
+
+    <div style="padding:1.5rem;">
+
+      ${t.trialOffer?`<div style="background:linear-gradient(90deg,rgba(249,115,22,.1),rgba(249,115,22,.05));border:1px solid rgba(249,115,22,.25);border-radius:12px;padding:.9rem;text-align:center;margin-bottom:1.2rem;"><div style="font-size:.7rem;font-weight:800;color:#ea6e0b;margin-bottom:.2rem;">🎯 AULA EXPERIMENTAL DISPONÍVEL</div><div style="font-size:1.3rem;font-weight:800;color:var(--text);">R$${t.trialPrice} <span style="font-size:.8rem;font-weight:500;color:var(--muted);text-decoration:line-through;">R$${t.price}</span></div><div style="font-size:.7rem;color:var(--muted);">Primeira aula com desconto especial</div></div>`:''}
+
+      <div style="margin-bottom:1.2rem;">
+        <div style="font-size:.65rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:.6rem;">📸 Fotos & Vídeo</div>
+        <div style="display:flex;gap:.5rem;overflow-x:auto;">
+          ${t.photos.map((c,i)=>`<div style="width:72px;height:72px;border-radius:12px;background:${c};flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1.3rem;">${['💪','🏋️','⚡','🎯'][i]||'📸'}</div>`).join('')}
+          ${t.hasVideo?`<div style="width:72px;height:72px;border-radius:12px;background:#0d0d0d;flex-shrink:0;display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;"><svg width="20" height="20" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21 5 3"/></svg><div style="position:absolute;bottom:4px;right:4px;background:var(--blue);border-radius:4px;font-size:.5rem;font-weight:800;color:white;padding:1px 4px;">VÍD</div></div>`:''}
+        </div>
+      </div>
+
+      <div style="margin-bottom:1.2rem;">
+        <div style="font-size:.65rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:.5rem;">📝 Sobre</div>
+        <div style="font-size:.82rem;color:#555;line-height:1.65;">${t.bio}</div>
+      </div>
+
+      <div style="margin-bottom:1.2rem;">
+        <div style="font-size:.65rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:.5rem;">🎓 Formação</div>
+        <div style="font-size:.8rem;color:var(--text);font-weight:600;">${t.education}</div>
+      </div>
+
+      <div style="margin-bottom:1.2rem;">
+        <div style="font-size:.65rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:.5rem;">🏅 Certificações</div>
+        <div style="display:flex;flex-wrap:wrap;gap:.4rem;">
+          ${t.certifications.map(c=>`<span style="background:rgba(26,143,255,.08);border:1px solid rgba(26,143,255,.2);color:#1a6bb5;font-size:.68rem;font-weight:700;padding:.25rem .7rem;border-radius:100px;">✓ ${c}</span>`).join('')}
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;margin-bottom:1.2rem;">
+        <div style="text-align:center;background:var(--off);border-radius:12px;padding:.8rem .3rem;">
+          <div style="font-size:1rem;font-weight:800;color:var(--green);">${t.socialProof.retention}</div>
+          <div style="font-size:.6rem;color:var(--muted);">Retenção</div>
+        </div>
+        <div style="text-align:center;background:var(--off);border-radius:12px;padding:.8rem .3rem;">
+          <div style="font-size:1rem;font-weight:800;color:var(--text);">${t.socialProof.avgTime}</div>
+          <div style="font-size:.6rem;color:var(--muted);">Tempo médio</div>
+        </div>
+        <div style="text-align:center;background:var(--off);border-radius:12px;padding:.8rem .3rem;">
+          <div style="font-size:1rem;font-weight:800;color:var(--orange);">${t.socialProof.transformations}</div>
+          <div style="font-size:.6rem;color:var(--muted);">Transformações</div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:.6rem;">
+        <button onclick="closeProfile();sendContact(${t.id})" class="contact-btn" style="flex:1;justify-content:center;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M20.52 3.48A12 12 0 003.48 20.52L2 22l1.48-1.48A12 12 0 0020.52 3.48z"/></svg>
+          Entrar em contato
+        </button>
+        <button onclick="closeProfile()" style="padding:.7rem 1rem;background:white;border:1.5px solid var(--border);border-radius:12px;font-size:.8rem;font-weight:700;cursor:pointer;font-family:inherit;">Fechar</button>
+      </div>
+
+    </div>
+  `;
+  document.getElementById('profileModal').classList.remove('hidden');
+  document.body.style.overflow='hidden';
+}
+function closeProfile(){
+  document.getElementById('profileModal').classList.add('hidden');
+  document.body.style.overflow='';
+}
+
+// ── Send contact ──
+function sendContact(id){
+  const t = TRAINERS.find(x=>x.id===id);
+  if(!t) return;
+  state.selectedTrainer = t;
+  showLoading('Enviando seus dados ao trainer...');
+  setTimeout(()=>{
+    hideLoading();
+    const d = state.days.join(', ');
+    const p = state.periods.length ? state.periods.join('/') : 'Flexível';
+    const goals = state.goals.join(', ') || 'Não especificado';
+    const needs = document.getElementById('needsText').value || '—';
+    const freq = `${state.frequency}x por semana`;
+    const wppText = encodeURIComponent(`Olá ${t.name}! Vi seu perfil na LinkeGym e quero contratar seus serviços.\n\n📍 Região: ${state.city}\n🏋️ Local: ${({academia:'Academia',condominio:'Condomínio',residencia:'Residência'})[state.localType]||'—'}\n🎯 Objetivos: ${goals}\n📅 Disponibilidade: ${d} — ${p}\n⚡ Frequência: ${freq}\n\n${needs !== '—' ? `📝 Observações: ${needs}\n\n` : ''}Podemos conversar?`);
+
+    document.getElementById('contactContent').innerHTML = `
+      <div class="success-screen">
+        <div class="success-anim">✅</div>
+        <div class="success-title">Contato enviado!</div>
+        <div class="success-desc"><strong>${t.name}</strong> recebeu suas informações por WhatsApp e e-mail. Resposta esperada em ${t.responseTime}.</div>
+
+        <div class="what-trainer-gets">
+          <div class="wtg-title">📨 O que o trainer recebeu</div>
+          <div class="wtg-row"><span class="wtg-ico">📍</span><div><span class="wtg-label">Localização</span><span class="wtg-val">${state.city}</span></div></div>
+          <div class="wtg-row"><span class="wtg-ico">🏋️</span><div><span class="wtg-label">Local de treino</span><span class="wtg-val">${({academia:'Academia',condominio:'Condomínio',residencia:'Residência'})[state.localType]||'—'}</span></div></div>
+          <div class="wtg-row"><span class="wtg-ico">🎯</span><div><span class="wtg-label">Objetivos</span><span class="wtg-val">${goals}</span></div></div>
+          <div class="wtg-row"><span class="wtg-ico">📅</span><div><span class="wtg-label">Disponibilidade</span><span class="wtg-val">${d} — ${p}</span></div></div>
+          <div class="wtg-row"><span class="wtg-ico">⚡</span><div><span class="wtg-label">Frequência</span><span class="wtg-val">${freq}</span></div></div>
+          ${needs!=='—'?`<div class="wtg-row"><span class="wtg-ico">📝</span><div><span class="wtg-label">Observações</span><span class="wtg-val" style="font-size:.75rem;">${needs}</span></div></div>`:''}
+        </div>
+
+        <div style="background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.2);border-radius:12px;padding:.9rem;margin-bottom:1.2rem;font-size:.78rem;color:#059669;display:flex;gap:8px;align-items:flex-start;text-align:left;">
+          <span style="font-size:1rem;">💡</span>
+          <span>Você e o trainer negociam diretamente: valor, frequência, local e contrato. A LinkeGym não cobra comissão das suas aulas.</span>
+        </div>
+
+        <button class="wpp-btn" onclick="window.open('https://wa.me/5511999999999?text=${wppText}','_blank')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M20.52 3.48A12 12 0 003.48 20.52L2 22l1.48-1.48A12 12 0 0020.52 3.48z"/></svg>
+          Falar agora no WhatsApp
+        </button>
+        <button class="btn-home2" onclick="document.getElementById('contactModal').classList.add('hidden');document.body.style.overflow='';window.location.href='01_HOME_Principal.html'">
+          Voltar ao início
+        </button>
+      </div>
+    `;
+    document.getElementById('contactModal').classList.remove('hidden');
+    document.body.style.overflow='hidden';
+  }, 1500);
+}
+
+// ── Steps ──
+function goStep(n){
+  ['step1','step2','step3','step4'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el){el.classList.add('hidden');el.classList.remove('step-card');}
+  });
+  const el=document.getElementById(`step${n}`);
+  if(el){el.classList.remove('hidden');el.classList.add('step-card');}
+  for(let i=1;i<=4;i++){
+    const ps=document.getElementById('ps'+i);
+    if(!ps) continue;
+    ps.classList.remove('active','done');
+    if(i<n) ps.classList.add('done');
+    else if(i===n) ps.classList.add('active');
+  }
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ── Loading ──
+function showLoading(msg){
+  document.getElementById('loadingText').textContent=msg||'Carregando...';
+  document.getElementById('loadingOverlay').classList.remove('hidden');
+}
+function hideLoading(){ document.getElementById('loadingOverlay').classList.add('hidden'); }
+
+// ── Click outside modal ──
+document.getElementById('profileModal').addEventListener('click',function(e){if(e.target===this)closeProfile();});
+document.getElementById('contactModal').addEventListener('click',function(e){
+  if(e.target===this){this.classList.add('hidden');document.body.style.overflow='';}
+});
+
+// ── Init days ──
+document.querySelectorAll('.sched-day').forEach(btn=>{
+  const day=btn.querySelector('.sched-day-name').textContent;
+  if(state.days.includes(day)) btn.classList.add('on');
+});
+</script>
+</body>
+</html>
