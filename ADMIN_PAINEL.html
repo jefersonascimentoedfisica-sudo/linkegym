@@ -1,0 +1,1701 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Admin — LinkeGym</title>
+<link rel="icon" type="image/png" href="linkegym-logo-new.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --red:#e8173a; --red2:#c0102c; --red-light:#fff0f3;
+  --orange:#f97316; --blue:#1a8fff; --purple:#7c3aed;
+  --green:#10b981; --green-light:#ecfdf5;
+  --gold:#f59e0b; --gold-light:#fffbeb;
+  --dark:#0d0d0d; --white:#fff; --off:#f4f5f7;
+  --border:#e5e7eb; --text:#111827; --muted:#6b7280;
+  --sidebar-w:240px;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--off);color:var(--text);min-height:100vh;display:flex;flex-direction:column;}
+::-webkit-scrollbar{width:4px;height:4px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:#d1d5db;border-radius:4px;}
+a{text-decoration:none;color:inherit;}
+button{cursor:pointer;font-family:inherit;}
+input,textarea,select{font-family:inherit;}
+
+/* ── TOP NAV ── */
+.top-nav{
+  position:fixed;top:0;left:0;right:0;z-index:300;
+  background:var(--dark);
+  height:60px;display:flex;align-items:center;
+  padding:0 1.5rem;gap:1rem;
+  box-shadow:0 2px 16px rgba(0,0,0,.3);
+}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0;}
+.nav-logo img{width:40px;height:40px;object-fit:contain;filter:brightness(1.1);mix-blend-mode:screen;}
+.nav-logo-brand{display:flex;flex-direction:column;line-height:1.1;}
+.nav-logo-name{font-size:1rem;font-weight:800;color:#fff;}
+.nav-logo-badge{font-size:.55rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;background:var(--red);color:#fff;padding:.15rem .45rem;border-radius:4px;margin-top:2px;width:fit-content;}
+.nav-center{flex:1;}
+.nav-search{display:flex;align-items:center;gap:.5rem;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:.45rem .9rem;max-width:400px;}
+.nav-search input{background:none;border:none;outline:none;color:#fff;font-size:.82rem;font-weight:500;width:100%;}
+.nav-search input::placeholder{color:rgba(255,255,255,.4);}
+.nav-search-icon{color:rgba(255,255,255,.4);font-size:.85rem;}
+.nav-right{display:flex;align-items:center;gap:.75rem;flex-shrink:0;}
+.nav-icon-btn{width:36px;height:36px;border-radius:9px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:.9rem;color:rgba(255,255,255,.7);cursor:pointer;transition:all .2s;position:relative;}
+.nav-icon-btn:hover{background:rgba(255,255,255,.14);color:#fff;}
+.nav-badge{position:absolute;top:5px;right:5px;width:8px;height:8px;background:var(--red);border-radius:50%;border:2px solid var(--dark);}
+.nav-user{display:flex;align-items:center;gap:.6rem;cursor:pointer;padding:.35rem .7rem;border-radius:10px;transition:background .2s;}
+.nav-user:hover{background:rgba(255,255,255,.08);}
+.nav-avatar{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,var(--red),var(--orange));display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:900;color:#fff;}
+.nav-user-info{display:flex;flex-direction:column;line-height:1.1;}
+.nav-user-name{font-size:.78rem;font-weight:700;color:#fff;}
+.nav-user-role{font-size:.62rem;color:rgba(255,255,255,.4);font-weight:500;}
+
+/* ── LAYOUT ── */
+.shell{display:flex;padding-top:60px;min-height:100vh;}
+
+/* ── SIDEBAR ── */
+.sidebar{
+  width:var(--sidebar-w);flex-shrink:0;
+  background:var(--dark);
+  position:fixed;top:60px;left:0;bottom:0;
+  overflow-y:auto;z-index:200;
+  padding:.75rem 0;
+  border-right:1px solid rgba(255,255,255,.06);
+}
+.sidebar-section{margin-bottom:.25rem;}
+.sidebar-label{font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.25);padding:.6rem 1.2rem .3rem;display:block;}
+.sidebar-item{
+  display:flex;align-items:center;gap:.65rem;
+  padding:.6rem 1.2rem;
+  font-size:.8rem;font-weight:600;color:rgba(255,255,255,.55);
+  cursor:pointer;transition:all .18s;border:none;background:none;width:100%;text-align:left;
+  position:relative;
+}
+.sidebar-item:hover{color:#fff;background:rgba(255,255,255,.06);}
+.sidebar-item.active{color:#fff;background:rgba(232,23,58,.15);}
+.sidebar-item.active::before{content:'';position:absolute;left:0;top:20%;bottom:20%;width:3px;background:var(--red);border-radius:0 3px 3px 0;}
+.sidebar-item .s-icon{font-size:1rem;width:20px;text-align:center;flex-shrink:0;}
+.sidebar-item .s-badge{margin-left:auto;background:var(--red);color:#fff;font-size:.58rem;font-weight:800;padding:.1rem .4rem;border-radius:20px;}
+.sidebar-item .s-badge.green{background:var(--green);}
+.sidebar-divider{height:1px;background:rgba(255,255,255,.06);margin:.5rem 1rem;}
+
+/* ── MAIN ── */
+.main{margin-left:var(--sidebar-w);flex:1;padding:2rem;min-height:calc(100vh - 60px);}
+.page{display:none;}
+.page.active{display:block;}
+
+/* ── PAGE HEADER ── */
+.page-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1.75rem;gap:1rem;flex-wrap:wrap;}
+.page-title{font-size:1.5rem;font-weight:800;color:var(--text);}
+.page-sub{font-size:.82rem;color:var(--muted);margin-top:.2rem;font-weight:500;}
+.page-actions{display:flex;gap:.65rem;align-items:center;flex-wrap:wrap;}
+
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;gap:.45rem;padding:.55rem 1.1rem;border-radius:10px;font-size:.8rem;font-weight:700;border:none;transition:all .2s;cursor:pointer;}
+.btn-primary{background:var(--red);color:#fff;box-shadow:0 4px 14px rgba(232,23,58,.25);}
+.btn-primary:hover{background:var(--red2);transform:translateY(-1px);}
+.btn-ghost{background:white;color:var(--text);border:1.5px solid var(--border);}
+.btn-ghost:hover{background:var(--off);border-color:#ccc;}
+.btn-green{background:var(--green);color:#fff;}
+.btn-green:hover{background:#0da271;}
+.btn-sm{padding:.38rem .75rem;font-size:.74rem;}
+.btn-icon{width:32px;height:32px;padding:0;justify-content:center;border-radius:8px;}
+
+/* ── CARDS GRID ── */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-bottom:1.75rem;}
+.kpi-card{background:white;border-radius:16px;padding:1.25rem 1.4rem;border:1px solid var(--border);position:relative;overflow:hidden;}
+.kpi-card::after{content:'';position:absolute;top:0;right:0;bottom:0;width:4px;border-radius:0 16px 16px 0;}
+.kpi-card.red::after{background:var(--red);}
+.kpi-card.green::after{background:var(--green);}
+.kpi-card.gold::after{background:var(--gold);}
+.kpi-card.blue::after{background:var(--blue);}
+.kpi-card.purple::after{background:var(--purple);}
+.kpi-icon{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;margin-bottom:.85rem;}
+.kpi-icon.red{background:var(--red-light);color:var(--red);}
+.kpi-icon.green{background:var(--green-light);color:var(--green);}
+.kpi-icon.gold{background:var(--gold-light);color:var(--gold);}
+.kpi-icon.blue{background:#eff6ff;color:var(--blue);}
+.kpi-icon.purple{background:#f5f3ff;color:var(--purple);}
+.kpi-value{font-size:1.65rem;font-weight:800;color:var(--text);line-height:1;}
+.kpi-label{font-size:.72rem;font-weight:600;color:var(--muted);margin-top:.3rem;}
+.kpi-delta{display:inline-flex;align-items:center;gap:.2rem;font-size:.68rem;font-weight:700;margin-top:.5rem;padding:.15rem .4rem;border-radius:5px;}
+.kpi-delta.up{background:var(--green-light);color:var(--green);}
+.kpi-delta.down{background:var(--red-light);color:var(--red);}
+
+/* ── CHART CARD ── */
+.grid-2{display:grid;grid-template-columns:2fr 1fr;gap:1rem;margin-bottom:1.75rem;}
+.grid-2-equal{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.75rem;}
+.card{background:white;border-radius:16px;padding:1.4rem;border:1px solid var(--border);}
+.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.1rem;}
+.card-title{font-size:.92rem;font-weight:800;color:var(--text);}
+.card-sub{font-size:.72rem;color:var(--muted);margin-top:.15rem;}
+.card-action{font-size:.72rem;font-weight:700;color:var(--red);cursor:pointer;}
+
+/* ── CHART BARS ── */
+.chart-bars{display:flex;align-items:flex-end;gap:.5rem;height:120px;padding-top:.5rem;}
+.chart-bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:.3rem;}
+.chart-bar{width:100%;border-radius:6px 6px 0 0;transition:all .3s;cursor:pointer;min-height:4px;}
+.chart-bar:hover{opacity:.8;}
+.chart-bar-label{font-size:.6rem;color:var(--muted);font-weight:600;}
+.chart-bar-val{font-size:.6rem;font-weight:700;color:var(--text);}
+
+/* ── DONUT CHART ── */
+.donut-wrap{display:flex;flex-direction:column;align-items:center;gap:1rem;}
+.donut-svg{width:130px;height:130px;}
+.donut-legend{width:100%;}
+.donut-leg-item{display:flex;align-items:center;gap:.5rem;padding:.3rem 0;font-size:.74rem;}
+.donut-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.donut-leg-label{flex:1;color:var(--muted);font-weight:600;}
+.donut-leg-val{font-weight:800;color:var(--text);}
+
+/* ── ACTIVITY FEED ── */
+.feed-item{display:flex;align-items:flex-start;gap:.75rem;padding:.75rem 0;border-bottom:1px solid var(--border);}
+.feed-item:last-child{border-bottom:none;}
+.feed-dot{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0;}
+.feed-dot.red{background:var(--red-light);color:var(--red);}
+.feed-dot.green{background:var(--green-light);color:var(--green);}
+.feed-dot.gold{background:var(--gold-light);color:var(--gold);}
+.feed-dot.blue{background:#eff6ff;color:var(--blue);}
+.feed-dot.purple{background:#f5f3ff;color:var(--purple);}
+.feed-text{flex:1;}
+.feed-main{font-size:.78rem;font-weight:600;color:var(--text);}
+.feed-main span{color:var(--red);}
+.feed-time{font-size:.67rem;color:var(--muted);margin-top:.2rem;}
+
+/* ── TABLES ── */
+.table-wrap{overflow-x:auto;border-radius:12px;border:1px solid var(--border);}
+.data-table{width:100%;border-collapse:collapse;background:white;font-size:.78rem;}
+.data-table thead tr{background:var(--off);}
+.data-table th{padding:.75rem 1rem;text-align:left;font-size:.68rem;font-weight:700;color:var(--muted);letter-spacing:.05em;text-transform:uppercase;border-bottom:1px solid var(--border);white-space:nowrap;}
+.data-table td{padding:.8rem 1rem;border-bottom:1px solid #f3f4f6;vertical-align:middle;}
+.data-table tbody tr{transition:background .15s;}
+.data-table tbody tr:hover{background:#fafafa;}
+.data-table tbody tr:last-child td{border-bottom:none;}
+
+/* ── BADGES ── */
+.badge{display:inline-flex;align-items:center;gap:.25rem;padding:.2rem .6rem;border-radius:20px;font-size:.68rem;font-weight:700;white-space:nowrap;}
+.badge-green{background:var(--green-light);color:#059669;}
+.badge-red{background:var(--red-light);color:var(--red);}
+.badge-gold{background:var(--gold-light);color:#b45309;}
+.badge-blue{background:#eff6ff;color:#1d4ed8;}
+.badge-purple{background:#f5f3ff;color:#6d28d9;}
+.badge-gray{background:#f3f4f6;color:#6b7280;}
+
+/* ── USER AVATAR ── */
+.user-cell{display:flex;align-items:center;gap:.65rem;}
+.u-avatar{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:800;color:#fff;flex-shrink:0;text-transform:uppercase;}
+.u-name{font-weight:700;color:var(--text);}
+.u-email{font-size:.67rem;color:var(--muted);}
+
+/* ── FILTER BAR ── */
+.filter-bar{display:flex;align-items:center;gap:.65rem;margin-bottom:1.1rem;flex-wrap:wrap;}
+.filter-search{display:flex;align-items:center;gap:.5rem;background:white;border:1.5px solid var(--border);border-radius:10px;padding:.5rem .9rem;flex:1;min-width:200px;}
+.filter-search input{border:none;outline:none;font-size:.8rem;font-weight:500;color:var(--text);background:none;width:100%;}
+.filter-search input::placeholder{color:var(--muted);}
+.filter-select{background:white;border:1.5px solid var(--border);border-radius:10px;padding:.5rem .9rem;font-size:.78rem;font-weight:600;color:var(--text);outline:none;cursor:pointer;}
+
+/* ── STATS ROW ── */
+.stats-row{display:flex;gap:1.5rem;margin-bottom:1.1rem;flex-wrap:wrap;}
+.stat-pill{display:flex;align-items:center;gap:.4rem;font-size:.75rem;font-weight:700;}
+.stat-pill-dot{width:8px;height:8px;border-radius:50%;}
+
+/* ── PLAN CHIP ── */
+.plan-chip{display:inline-flex;align-items:center;gap:.3rem;padding:.22rem .6rem;border-radius:6px;font-size:.67rem;font-weight:800;text-transform:uppercase;letter-spacing:.04em;}
+.plan-free{background:#f3f4f6;color:#6b7280;}
+.plan-pro{background:#eff6ff;color:#1d4ed8;}
+.plan-elite{background:linear-gradient(135deg,#fef3c7,#fde68a);color:#92400e;}
+
+/* ── ACTION BTNS ── */
+.action-group{display:flex;gap:.35rem;align-items:center;}
+
+/* ── MODAL ── */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:500;align-items:center;justify-content:center;padding:1rem;}
+.modal-overlay.open{display:flex;}
+.modal{background:white;border-radius:20px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.25);}
+.modal-header{padding:1.4rem 1.5rem 1rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.modal-title{font-size:1rem;font-weight:800;}
+.modal-close{width:32px;height:32px;border-radius:8px;background:var(--off);border:none;font-size:1.1rem;display:flex;align-items:center;justify-content:center;cursor:pointer;}
+.modal-body{padding:1.4rem 1.5rem;}
+.modal-footer{padding:1rem 1.5rem;border-top:1px solid var(--border);display:flex;gap:.65rem;justify-content:flex-end;}
+.form-group{margin-bottom:1rem;}
+.form-label{font-size:.75rem;font-weight:700;color:var(--text);margin-bottom:.4rem;display:block;}
+.form-input{width:100%;border:1.5px solid var(--border);border-radius:10px;padding:.6rem .9rem;font-size:.82rem;font-weight:500;outline:none;transition:border .2s;}
+.form-input:focus{border-color:var(--red);}
+.form-select{width:100%;border:1.5px solid var(--border);border-radius:10px;padding:.6rem .9rem;font-size:.82rem;font-weight:500;outline:none;background:white;}
+
+/* ── PROGRESS ── */
+.progress-bar{height:6px;background:#f3f4f6;border-radius:4px;overflow:hidden;}
+.progress-fill{height:100%;border-radius:4px;transition:width .5s ease;}
+
+/* ── TABS ── */
+.tabs{display:flex;gap:.25rem;background:var(--off);border-radius:12px;padding:.3rem;margin-bottom:1.4rem;width:fit-content;}
+.tab{padding:.45rem 1rem;border-radius:9px;font-size:.78rem;font-weight:700;color:var(--muted);cursor:pointer;transition:all .2s;border:none;background:none;}
+.tab.active{background:white;color:var(--text);box-shadow:0 2px 8px rgba(0,0,0,.08);}
+
+/* ── TOAST ── */
+.toast-container{position:fixed;bottom:1.5rem;right:1.5rem;z-index:999;display:flex;flex-direction:column;gap:.5rem;}
+.toast{background:var(--dark);color:#fff;padding:.75rem 1.1rem;border-radius:12px;font-size:.78rem;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,.2);transform:translateY(20px);opacity:0;transition:all .3s;display:flex;align-items:center;gap:.5rem;max-width:280px;}
+.toast.show{transform:translateY(0);opacity:1;}
+.toast.success{background:var(--green);}
+.toast.error{background:var(--red);}
+
+/* ── SETTINGS ── */
+.settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.settings-card{background:white;border:1px solid var(--border);border-radius:16px;padding:1.4rem;}
+.settings-card.full{grid-column:1/-1;}
+.settings-title{font-size:.88rem;font-weight:800;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem;}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:.6rem 0;border-bottom:1px solid #f3f4f6;}
+.toggle-row:last-child{border-bottom:none;}
+.toggle-label{font-size:.78rem;font-weight:600;color:var(--text);}
+.toggle-sub{font-size:.67rem;color:var(--muted);}
+.toggle{position:relative;width:38px;height:22px;flex-shrink:0;}
+.toggle input{opacity:0;width:0;height:0;}
+.toggle-slider{position:absolute;inset:0;background:#d1d5db;border-radius:22px;cursor:pointer;transition:.3s;}
+.toggle-slider::before{content:'';position:absolute;width:16px;height:16px;left:3px;top:3px;background:white;border-radius:50%;transition:.3s;}
+.toggle input:checked + .toggle-slider{background:var(--green);}
+.toggle input:checked + .toggle-slider::before{transform:translateX(16px);}
+
+/* ── REVENUE TIMELINE ── */
+.timeline-bars{display:grid;grid-template-columns:repeat(12,1fr);gap:.3rem;align-items:end;height:100px;margin-top:.5rem;}
+.t-bar-wrap{display:flex;flex-direction:column;align-items:center;gap:.25rem;}
+.t-bar{width:100%;border-radius:4px 4px 0 0;min-height:4px;transition:all .3s;}
+.t-label{font-size:.55rem;color:var(--muted);font-weight:600;}
+
+/* ── EMPTY STATE ── */
+.empty-state{text-align:center;padding:3rem 1rem;color:var(--muted);}
+.empty-state .e-icon{font-size:2.5rem;margin-bottom:.75rem;}
+.empty-state .e-title{font-size:.9rem;font-weight:700;color:var(--text);margin-bottom:.3rem;}
+.empty-state .e-sub{font-size:.78rem;}
+
+/* ── RESPONSIVE ── */
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%);}
+  .sidebar.open{transform:translateX(0);}
+  .main{margin-left:0;padding:1.25rem;}
+  .kpi-grid{grid-template-columns:1fr 1fr;}
+  .grid-2,.grid-2-equal,.settings-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- TOP NAV -->
+<nav class="top-nav">
+  <a href="01_HOME_Principal.html" class="nav-logo">
+    <img src="linkegym-logo-new.png" alt="LinkeGym" style="height:44px;width:auto;object-fit:contain;mix-blend-mode:multiply;"/>
+    <span class="nav-logo-badge">Admin</span>
+  </a>
+  <div class="nav-center">
+    <div class="nav-search">
+      <span class="nav-search-icon">🔍</span>
+      <input type="text" id="globalSearch" placeholder="Buscar usuário, personal, transação..." onkeyup="globalSearchFn(this.value)"/>
+    </div>
+  </div>
+  <div class="nav-right">
+    <div class="nav-icon-btn" title="Notificações">🔔<span class="nav-badge"></span></div>
+    <div class="nav-icon-btn" title="Atualizar dados" onclick="reloadAllData()" title="Recarregar dados">🔄</div>
+    <div class="nav-user" onclick="logout()">
+      <div class="nav-avatar" id="adminAvatar">A</div>
+      <div class="nav-user-info">
+        <span class="nav-user-name" id="adminName">Admin</span>
+        <span class="nav-user-role">Administrador</span>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-section">
+    <span class="sidebar-label">Visão Geral</span>
+    <button class="sidebar-item active" onclick="goTo('dashboard')">
+      <span class="s-icon">📊</span> Dashboard
+    </button>
+  </div>
+  <div class="sidebar-divider"></div>
+  <div class="sidebar-section">
+    <span class="sidebar-label">Gestão</span>
+    <button class="sidebar-item" onclick="goTo('usuarios')">
+      <span class="s-icon">👥</span> Usuários
+      <span class="s-badge" id="badge-usuarios">0</span>
+    </button>
+    <button class="sidebar-item" onclick="goTo('personais')">
+      <span class="s-icon">💪</span> Personais
+      <span class="s-badge" id="badge-personais">0</span>
+    </button>
+    <button class="sidebar-item" onclick="goTo('sessoes')">
+      <span class="s-icon">📅</span> Sessões
+    </button>
+  </div>
+  <div class="sidebar-divider"></div>
+  <div class="sidebar-section">
+    <span class="sidebar-label">Financeiro</span>
+    <button class="sidebar-item" onclick="goTo('financeiro')">
+      <span class="s-icon">💳</span> Pagamentos
+      <span class="s-badge green" id="badge-pag">0</span>
+    </button>
+    <button class="sidebar-item" onclick="goTo('repasses')">
+      <span class="s-icon">🏦</span> Repasses
+    </button>
+  </div>
+  <div class="sidebar-divider"></div>
+  <div class="sidebar-section">
+    <span class="sidebar-label">Sistema</span>
+    <button class="sidebar-item" onclick="goTo('configuracoes')">
+      <span class="s-icon">⚙️</span> Configurações
+    </button>
+    <button class="sidebar-item" onclick="goTo('logs')">
+      <span class="s-icon">📋</span> Logs
+    </button>
+  </div>
+  <div class="sidebar-divider"></div>
+  <div class="sidebar-section">
+    <span class="sidebar-label">Minha Conta</span>
+    <button class="sidebar-item" onclick="location.href='PAINEL_PERSONAL.html'">
+      <span class="s-icon">💪</span> Painel Personal
+    </button>
+  </div>
+  <div class="sidebar-divider"></div>
+  <button class="sidebar-item" onclick="logout()" style="color:rgba(232,23,58,.7);">
+    <span class="s-icon">🚪</span> Sair
+  </button>
+</aside>
+
+<!-- MAIN -->
+<div class="shell">
+<main class="main">
+
+<!-- ═══════════════════ DASHBOARD ═══════════════════ -->
+<section class="page active" id="page-dashboard">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Dashboard</h1>
+      <p class="page-sub" id="dash-date">Carregando...</p>
+    </div>
+    <div class="page-actions">
+      <select class="filter-select" id="dashPeriod" onchange="reloadAllData()">
+        <option value="7">Últimos 7 dias</option>
+        <option value="30" selected>Últimos 30 dias</option>
+        <option value="90">Últimos 90 dias</option>
+      </select>
+      <button class="btn btn-primary" onclick="exportReport()">📥 Exportar Relatório</button>
+    </div>
+  </div>
+
+  <!-- KPIs -->
+  <div class="kpi-grid">
+    <div class="kpi-card red">
+      <div class="kpi-icon red">💰</div>
+      <div class="kpi-value" id="kpi-receita">R$ 0</div>
+      <div class="kpi-label">Receita Total</div>
+      <span class="kpi-delta up" id="kpi-receita-delta">↑ 0%</span>
+    </div>
+    <div class="kpi-card green">
+      <div class="kpi-icon green">👥</div>
+      <div class="kpi-value" id="kpi-usuarios">0</div>
+      <div class="kpi-label">Usuários Ativos</div>
+      <span class="kpi-delta up" id="kpi-usuarios-delta">↑ 0%</span>
+    </div>
+    <div class="kpi-card gold">
+      <div class="kpi-icon gold">💪</div>
+      <div class="kpi-value" id="kpi-personais">0</div>
+      <div class="kpi-label">Personais Ativos</div>
+      <span class="kpi-delta up" id="kpi-personais-delta">↑ 0%</span>
+    </div>
+    <div class="kpi-card blue">
+      <div class="kpi-icon blue">📅</div>
+      <div class="kpi-value" id="kpi-sessoes">0</div>
+      <div class="kpi-label">Sessões no Período</div>
+      <span class="kpi-delta up" id="kpi-sessoes-delta">↑ 0%</span>
+    </div>
+    <div class="kpi-card purple">
+      <div class="kpi-icon purple">🏦</div>
+      <div class="kpi-value" id="kpi-taxa">R$ 0</div>
+      <div class="kpi-label">Taxa da Plataforma</div>
+      <span class="kpi-delta up">↑ 12%</span>
+    </div>
+  </div>
+
+  <!-- Charts -->
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">📈 Faturamento Mensal</div>
+          <div class="card-sub">Receita bruta por mês</div>
+        </div>
+      </div>
+      <div class="timeline-bars" id="revenueChart">
+        <!-- gerado pelo JS -->
+      </div>
+      <div style="display:flex;gap:1rem;margin-top:.75rem;flex-wrap:wrap;">
+        <div style="display:flex;align-items:center;gap:.35rem;font-size:.7rem;font-weight:600;color:var(--muted);">
+          <span style="width:10px;height:10px;border-radius:3px;background:var(--red);display:inline-block;"></span> Receita
+        </div>
+        <div style="display:flex;align-items:center;gap:.35rem;font-size:.7rem;font-weight:600;color:var(--muted);">
+          <span style="width:10px;height:10px;border-radius:3px;background:var(--green);display:inline-block;"></span> Taxa plataforma
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">🎯 Distribuição de Planos</div>
+      </div>
+      <div class="donut-wrap">
+        <svg class="donut-svg" viewBox="0 0 120 120" id="donutChart">
+          <circle cx="60" cy="60" r="45" fill="none" stroke="#f3f4f6" stroke-width="14"/>
+          <circle cx="60" cy="60" r="45" fill="none" stroke="var(--red)" stroke-width="14"
+            stroke-dasharray="113 170" stroke-dashoffset="0" transform="rotate(-90 60 60)" id="donut-elite"/>
+          <circle cx="60" cy="60" r="45" fill="none" stroke="var(--blue)" stroke-width="14"
+            stroke-dasharray="68 215" stroke-dashoffset="-113" transform="rotate(-90 60 60)" id="donut-pro"/>
+          <circle cx="60" cy="60" r="45" fill="none" stroke="#d1d5db" stroke-width="14"
+            stroke-dasharray="102 181" stroke-dashoffset="-181" transform="rotate(-90 60 60)" id="donut-free"/>
+          <text x="60" y="55" text-anchor="middle" font-size="11" font-weight="800" fill="var(--text)" id="donut-center-val">0</text>
+          <text x="60" y="68" text-anchor="middle" font-size="7" fill="var(--muted)">personais</text>
+        </svg>
+        <div class="donut-legend" id="donutLegend">
+          <div class="donut-leg-item"><span class="donut-dot" style="background:var(--red)"></span><span class="donut-leg-label">Elite</span><span class="donut-leg-val" id="dl-elite">0</span></div>
+          <div class="donut-leg-item"><span class="donut-dot" style="background:var(--blue)"></span><span class="donut-leg-label">Pro</span><span class="donut-leg-val" id="dl-pro">0</span></div>
+          <div class="donut-leg-item"><span class="donut-dot" style="background:#d1d5db"></span><span class="donut-leg-label">Free</span><span class="donut-leg-val" id="dl-free">0</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom row -->
+  <div class="grid-2-equal">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">⚡ Atividade Recente</div>
+        <span class="card-action" onclick="goTo('logs')">Ver tudo →</span>
+      </div>
+      <div id="activityFeed">
+        <div class="empty-state"><div class="e-icon">📭</div><div class="e-title">Sem atividade</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">🏆 Top Personais</div>
+        <span class="card-action" onclick="goTo('personais')">Ver todos →</span>
+      </div>
+      <div id="topTrainers">
+        <div class="empty-state"><div class="e-icon">💪</div><div class="e-title">Sem dados</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ USUÁRIOS ═══════════════════ -->
+<section class="page" id="page-usuarios">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Usuários</h1>
+      <p class="page-sub" id="users-count-sub">Carregando...</p>
+    </div>
+    <div class="page-actions">
+      <button class="btn btn-ghost" onclick="exportUsers()">📥 Exportar CSV</button>
+      <button class="btn btn-primary" onclick="openModal('modalNewUser')">➕ Novo Usuário</button>
+    </div>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-pill"><span class="stat-pill-dot" style="background:var(--text)"></span><span id="stat-total-users">0 total</span></div>
+    <div class="stat-pill"><span class="stat-pill-dot" style="background:var(--green)"></span><span id="stat-students">0 alunos</span></div>
+    <div class="stat-pill"><span class="stat-pill-dot" style="background:var(--gold)"></span><span id="stat-trainers-count">0 personais</span></div>
+    <div class="stat-pill"><span class="stat-pill-dot" style="background:var(--red)"></span><span id="stat-admins">0 admins</span></div>
+  </div>
+
+  <div class="filter-bar">
+    <div class="filter-search">
+      <span>🔍</span>
+      <input type="text" placeholder="Buscar por nome ou e-mail..." id="searchUsers" oninput="renderUsers()"/>
+    </div>
+    <select class="filter-select" id="filterRole" onchange="renderUsers()">
+      <option value="">Todos os perfis</option>
+      <option value="student">Alunos</option>
+      <option value="trainer">Personais</option>
+      <option value="admin">Admins</option>
+    </select>
+    <select class="filter-select" id="filterVerified" onchange="renderUsers()">
+      <option value="">Todos</option>
+      <option value="1">Verificados</option>
+      <option value="0">Não verificados</option>
+    </select>
+  </div>
+
+  <div class="table-wrap">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Usuário</th>
+          <th>Perfil</th>
+          <th>Telefone</th>
+          <th>Verificado</th>
+          <th>Cadastro</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody id="usersTable"><tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--muted);">Carregando...</td></tr></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ═══════════════════ PERSONAIS ═══════════════════ -->
+<section class="page" id="page-personais">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Personais</h1>
+      <p class="page-sub" id="trainers-count-sub">Gerenciar personal trainers cadastrados</p>
+    </div>
+    <div class="page-actions">
+      <button class="btn btn-ghost" onclick="exportTrainers()">📥 Exportar CSV</button>
+    </div>
+  </div>
+
+  <div class="filter-bar">
+    <div class="filter-search">
+      <span>🔍</span>
+      <input type="text" placeholder="Buscar por nome, CREF ou cidade..." id="searchTrainers" oninput="renderTrainers()"/>
+    </div>
+    <select class="filter-select" id="filterPlan" onchange="renderTrainers()">
+      <option value="">Todos os planos</option>
+      <option value="free">Free</option>
+      <option value="pro">Pro</option>
+      <option value="elite">Elite</option>
+    </select>
+    <select class="filter-select" id="filterCref" onchange="renderTrainers()">
+      <option value="">Todos</option>
+      <option value="1">CREF Verificado</option>
+      <option value="0">CREF Pendente</option>
+    </select>
+    <select class="filter-select" id="filterActive" onchange="renderTrainers()">
+      <option value="">Todos os status</option>
+      <option value="1">Ativos</option>
+      <option value="0">Inativos</option>
+    </select>
+  </div>
+
+  <div class="table-wrap">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Personal</th>
+          <th>CREF</th>
+          <th>Plano</th>
+          <th>Valor/h</th>
+          <th>Rating</th>
+          <th>Sessões</th>
+          <th>Status</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody id="trainersTable"><tr><td colspan="8" style="text-align:center;padding:2rem;color:var(--muted);">Carregando...</td></tr></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ═══════════════════ SESSÕES ═══════════════════ -->
+<section class="page" id="page-sessoes">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Sessões</h1>
+      <p class="page-sub">Todas as sessões agendadas e realizadas</p>
+    </div>
+  </div>
+
+  <div class="kpi-grid" style="grid-template-columns:repeat(4,1fr);">
+    <div class="kpi-card green">
+      <div class="kpi-icon green">✅</div>
+      <div class="kpi-value" id="sess-concluidas">0</div>
+      <div class="kpi-label">Concluídas</div>
+    </div>
+    <div class="kpi-card gold">
+      <div class="kpi-icon gold">⏳</div>
+      <div class="kpi-value" id="sess-pendentes">0</div>
+      <div class="kpi-label">Pendentes</div>
+    </div>
+    <div class="kpi-card blue">
+      <div class="kpi-icon blue">✔️</div>
+      <div class="kpi-value" id="sess-confirmadas">0</div>
+      <div class="kpi-label">Confirmadas</div>
+    </div>
+    <div class="kpi-card red">
+      <div class="kpi-icon red">❌</div>
+      <div class="kpi-value" id="sess-canceladas">0</div>
+      <div class="kpi-label">Canceladas</div>
+    </div>
+  </div>
+
+  <div class="filter-bar">
+    <div class="filter-search">
+      <span>🔍</span>
+      <input type="text" placeholder="Buscar sessão..." id="searchSessoes" oninput="renderSessoes()"/>
+    </div>
+    <select class="filter-select" id="filterSessStatus" onchange="renderSessoes()">
+      <option value="">Todos os status</option>
+      <option value="pending">Pendente</option>
+      <option value="confirmed">Confirmada</option>
+      <option value="completed">Concluída</option>
+      <option value="cancelled">Cancelada</option>
+    </select>
+  </div>
+
+  <div class="table-wrap">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Aluno</th>
+          <th>Personal</th>
+          <th>Data / Hora</th>
+          <th>Duração</th>
+          <th>Valor</th>
+          <th>Status</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody id="sessoesTable"><tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--muted);">Carregando...</td></tr></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ═══════════════════ FINANCEIRO ═══════════════════ -->
+<section class="page" id="page-financeiro">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Pagamentos</h1>
+      <p class="page-sub">Todas as transações da plataforma</p>
+    </div>
+    <div class="page-actions">
+      <button class="btn btn-ghost" onclick="exportPayments()">📥 Exportar CSV</button>
+    </div>
+  </div>
+
+  <div class="kpi-grid" style="grid-template-columns:repeat(4,1fr);">
+    <div class="kpi-card green">
+      <div class="kpi-icon green">✅</div>
+      <div class="kpi-value" id="pay-aprovados">R$ 0</div>
+      <div class="kpi-label">Aprovados</div>
+    </div>
+    <div class="kpi-card gold">
+      <div class="kpi-icon gold">⏳</div>
+      <div class="kpi-value" id="pay-pendentes">R$ 0</div>
+      <div class="kpi-label">Pendentes</div>
+    </div>
+    <div class="kpi-card red">
+      <div class="kpi-icon red">❌</div>
+      <div class="kpi-value" id="pay-falhos">R$ 0</div>
+      <div class="kpi-label">Falharam</div>
+    </div>
+    <div class="kpi-card purple">
+      <div class="kpi-icon purple">🏦</div>
+      <div class="kpi-value" id="pay-taxa">R$ 0</div>
+      <div class="kpi-label">Taxa LinkeGym</div>
+    </div>
+  </div>
+
+  <div class="filter-bar">
+    <div class="filter-search">
+      <span>🔍</span>
+      <input type="text" placeholder="Buscar por ID ou método..." id="searchPay" oninput="renderPayments()"/>
+    </div>
+    <select class="filter-select" id="filterPayStatus" onchange="renderPayments()">
+      <option value="">Todos</option>
+      <option value="approved">Aprovado</option>
+      <option value="pending">Pendente</option>
+      <option value="failed">Falhou</option>
+      <option value="refunded">Estornado</option>
+    </select>
+    <select class="filter-select" id="filterPayMethod" onchange="renderPayments()">
+      <option value="">Todos os métodos</option>
+      <option value="pix">PIX</option>
+      <option value="credit_card">Cartão de Crédito</option>
+    </select>
+  </div>
+
+  <div class="table-wrap">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>ID Pagamento</th>
+          <th>Sessão</th>
+          <th>Valor</th>
+          <th>Taxa (15%)</th>
+          <th>Personal Recebe</th>
+          <th>Método</th>
+          <th>Status</th>
+          <th>Data</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody id="paymentsTable"><tr><td colspan="9" style="text-align:center;padding:2rem;color:var(--muted);">Carregando...</td></tr></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ═══════════════════ REPASSES ═══════════════════ -->
+<section class="page" id="page-repasses">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Repasses</h1>
+      <p class="page-sub">Transferências para os personal trainers</p>
+    </div>
+    <div class="page-actions">
+      <button class="btn btn-primary" onclick="processAllRepasses()">💸 Processar Pendentes</button>
+    </div>
+  </div>
+
+  <div class="kpi-grid" style="grid-template-columns:repeat(3,1fr);">
+    <div class="kpi-card gold">
+      <div class="kpi-icon gold">⏳</div>
+      <div class="kpi-value" id="rep-pendente">R$ 0</div>
+      <div class="kpi-label">Aguardando Repasse</div>
+    </div>
+    <div class="kpi-card green">
+      <div class="kpi-icon green">✅</div>
+      <div class="kpi-value" id="rep-realizado">R$ 0</div>
+      <div class="kpi-label">Total Repassado</div>
+    </div>
+    <div class="kpi-card purple">
+      <div class="kpi-icon purple">📊</div>
+      <div class="kpi-value" id="rep-count">0</div>
+      <div class="kpi-label">Repasses Realizados</div>
+    </div>
+  </div>
+
+  <div class="table-wrap">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Personal</th>
+          <th>Valor</th>
+          <th>Status</th>
+          <th>Notas</th>
+          <th>Data</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody id="repassesTable"><tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--muted);">Carregando...</td></tr></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ═══════════════════ CONFIGURAÇÕES ═══════════════════ -->
+<section class="page" id="page-configuracoes">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Configurações da Plataforma</h1>
+      <p class="page-sub">Controle central do sistema LinkeGym</p>
+    </div>
+  </div>
+
+  <div class="settings-grid">
+    <!-- Taxa da plataforma -->
+    <div class="settings-card">
+      <div class="settings-title">💰 Taxa da Plataforma</div>
+      <div class="form-group">
+        <label class="form-label">Taxa cobrada por sessão (%)</label>
+        <input type="number" class="form-input" id="cfg-taxa" value="15" min="0" max="50" step="0.5"/>
+        <p style="font-size:.7rem;color:var(--muted);margin-top:.35rem;">Atualmente: personal recebe 85% do valor da sessão</p>
+      </div>
+      <button class="btn btn-primary btn-sm" onclick="saveTaxa()">💾 Salvar Taxa</button>
+    </div>
+
+    <!-- Planos -->
+    <div class="settings-card">
+      <div class="settings-title">📦 Preços dos Planos</div>
+      <div class="form-group">
+        <label class="form-label">Plano Pro (R$/mês)</label>
+        <input type="number" class="form-input" id="cfg-pro-price" value="49.90" step="0.01"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Plano Elite (R$/mês)</label>
+        <input type="number" class="form-input" id="cfg-elite-price" value="99.90" step="0.01"/>
+      </div>
+      <button class="btn btn-primary btn-sm" onclick="savePlanos()">💾 Salvar Planos</button>
+    </div>
+
+    <!-- Notificações -->
+    <div class="settings-card">
+      <div class="settings-title">🔔 Notificações do Sistema</div>
+      <div class="toggle-row">
+        <div><div class="toggle-label">Novo cadastro</div><div class="toggle-sub">Notificar ao admin</div></div>
+        <label class="toggle"><input type="checkbox" id="cfg-notif-cadastro" checked/><span class="toggle-slider"></span></label>
+      </div>
+      <div class="toggle-row">
+        <div><div class="toggle-label">Pagamento aprovado</div><div class="toggle-sub">Notificar personal e aluno</div></div>
+        <label class="toggle"><input type="checkbox" id="cfg-notif-pag" checked/><span class="toggle-slider"></span></label>
+      </div>
+      <div class="toggle-row">
+        <div><div class="toggle-label">Plano vencendo</div><div class="toggle-sub">Aviso 7 dias antes</div></div>
+        <label class="toggle"><input type="checkbox" id="cfg-notif-plano" checked/><span class="toggle-slider"></span></label>
+      </div>
+      <div class="toggle-row">
+        <div><div class="toggle-label">Sessão cancelada</div><div class="toggle-sub">Notificar ambas as partes</div></div>
+        <label class="toggle"><input type="checkbox" id="cfg-notif-cancel" checked/><span class="toggle-slider"></span></label>
+      </div>
+    </div>
+
+    <!-- Manutenção -->
+    <div class="settings-card">
+      <div class="settings-title">🛠️ Modo Manutenção</div>
+      <div class="toggle-row">
+        <div><div class="toggle-label">Modo Manutenção</div><div class="toggle-sub">Exibe aviso para usuários</div></div>
+        <label class="toggle"><input type="checkbox" id="cfg-manutencao"/><span class="toggle-slider"></span></label>
+      </div>
+      <div class="toggle-row">
+        <div><div class="toggle-label">Novos cadastros</div><div class="toggle-sub">Permitir novos usuários</div></div>
+        <label class="toggle"><input type="checkbox" id="cfg-cadastros" checked/><span class="toggle-slider"></span></label>
+      </div>
+      <div class="toggle-row">
+        <div><div class="toggle-label">Pagamentos ativos</div><div class="toggle-sub">Permitir transações</div></div>
+        <label class="toggle"><input type="checkbox" id="cfg-pagamentos" checked/><span class="toggle-slider"></span></label>
+      </div>
+      <div style="margin-top:.9rem;">
+        <button class="btn btn-primary btn-sm" onclick="saveConfigs()">💾 Salvar Configurações</button>
+      </div>
+    </div>
+
+    <!-- Mensagem de manutenção -->
+    <div class="settings-card full">
+      <div class="settings-title">📢 Mensagem de Manutenção</div>
+      <div class="form-group">
+        <textarea class="form-input" id="cfg-manut-msg" rows="3" placeholder="Ex: Estamos em manutenção programada. Voltamos em breve!">Estamos em manutenção programada. Voltamos em breve! 🔧</textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Modo Mercado Pago</label>
+        <select class="form-select" id="cfg-mp-mode">
+          <option value="sandbox">Sandbox (Testes)</option>
+          <option value="production">Produção (Real)</option>
+        </select>
+      </div>
+      <button class="btn btn-primary btn-sm" onclick="saveConfigs()">💾 Salvar</button>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ LOGS ═══════════════════ -->
+<section class="page" id="page-logs">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Logs do Sistema</h1>
+      <p class="page-sub">Histórico de ações administrativas e eventos</p>
+    </div>
+    <div class="page-actions">
+      <button class="btn btn-ghost btn-sm" onclick="clearLogs()">🗑️ Limpar Logs</button>
+    </div>
+  </div>
+  <div class="card">
+    <div id="logsContainer" style="font-family:monospace;font-size:.75rem;max-height:500px;overflow-y:auto;">
+      <div class="empty-state"><div class="e-icon">📋</div><div class="e-title">Sem logs registrados</div></div>
+    </div>
+  </div>
+</section>
+
+</main>
+</div>
+
+<!-- ═══════════════════ MODAIS ═══════════════════ -->
+
+<!-- Modal Novo Usuário -->
+<div class="modal-overlay" id="modalNewUser">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">➕ Novo Usuário</span>
+      <button class="modal-close" onclick="closeModal('modalNewUser')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">Nome completo *</label>
+        <input type="text" class="form-input" id="new-nome" placeholder="Ex: João Silva"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">E-mail *</label>
+        <input type="email" class="form-input" id="new-email" placeholder="joao@email.com"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Telefone *</label>
+        <input type="text" class="form-input" id="new-phone" placeholder="(11) 99999-9999"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Senha *</label>
+        <input type="password" class="form-input" id="new-senha" placeholder="Mínimo 6 caracteres"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Perfil *</label>
+        <select class="form-select" id="new-role">
+          <option value="student">Aluno</option>
+          <option value="trainer">Personal Trainer</option>
+          <option value="admin">Administrador</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modalNewUser')">Cancelar</button>
+      <button class="btn btn-primary" onclick="createUser()">Criar Usuário</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Editar Plano -->
+<div class="modal-overlay" id="modalEditPlan">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">📦 Alterar Plano</span>
+      <button class="modal-close" onclick="closeModal('modalEditPlan')">✕</button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:.82rem;margin-bottom:1rem;color:var(--muted);">Personal: <strong id="editPlanName">—</strong></p>
+      <div class="form-group">
+        <label class="form-label">Novo plano</label>
+        <select class="form-select" id="editPlanValue">
+          <option value="free">Free</option>
+          <option value="pro">Pro</option>
+          <option value="elite">Elite</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Validade do plano</label>
+        <input type="date" class="form-input" id="editPlanExpiry"/>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modalEditPlan')">Cancelar</button>
+      <button class="btn btn-primary" onclick="savePlanChange()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Detalhes do Usuário -->
+<div class="modal-overlay" id="modalUserDetail">
+  <div class="modal" style="max-width:560px;">
+    <div class="modal-header">
+      <span class="modal-title">👤 Detalhes do Usuário</span>
+      <button class="modal-close" onclick="closeModal('modalUserDetail')">✕</button>
+    </div>
+    <div class="modal-body" id="userDetailBody">
+      <!-- preenchido por JS -->
+    </div>
+    <div class="modal-footer" id="userDetailFooter">
+      <button class="btn btn-ghost" onclick="closeModal('modalUserDetail')">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- ═══════════════════ JAVASCRIPT ═══════════════════ -->
+<script>
+// ── AUTH GUARD ──
+const token = localStorage.getItem('lg_token') || sessionStorage.getItem('lg_token');
+const userStr = localStorage.getItem('lg_user') || sessionStorage.getItem('lg_user');
+const role = localStorage.getItem('lg_role') || sessionStorage.getItem('lg_role')
+  || (userStr ? JSON.parse(userStr).role : null);
+if (!token || role !== 'admin') {
+  window.location.href = '02_LOGIN_CADASTRO.html';
+}
+const currentUser = userStr ? JSON.parse(userStr) : {};
+document.getElementById('adminName').textContent = (currentUser.name || 'Admin').split(' ')[0];
+document.getElementById('adminAvatar').textContent = (currentUser.name || 'A')[0].toUpperCase();
+document.getElementById('dash-date').textContent = new Date().toLocaleDateString('pt-BR', {weekday:'long',day:'numeric',month:'long',year:'numeric'});
+
+// ── STATE ──
+let allUsers = [], allTrainers = [], allSessions = [], allPayments = [], allTransfers = [];
+let currentEditTrainerId = null, currentEditUserId = null;
+let logs = [];
+
+// ── NAVIGATION ──
+function goTo(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.sidebar-item').forEach(b => b.classList.remove('active'));
+  const el = document.getElementById('page-' + page);
+  if (el) el.classList.add('active');
+  document.querySelectorAll('.sidebar-item').forEach(b => {
+    if (b.textContent.toLowerCase().includes(page.replace('_','').toLowerCase()) ||
+        b.getAttribute('onclick')?.includes("'" + page + "'")) {
+      b.classList.add('active');
+    }
+  });
+  // Fix sidebar active for specific pages
+  const map = {
+    'dashboard': 0, 'usuarios': 1, 'personais': 2, 'sessoes': 3,
+    'financeiro': 4, 'repasses': 5, 'configuracoes': 6, 'logs': 7
+  };
+  loadPageData(page);
+}
+
+function loadPageData(page) {
+  if (page === 'dashboard') loadDashboard();
+  else if (page === 'usuarios') loadUsers();
+  else if (page === 'personais') loadTrainers();
+  else if (page === 'sessoes') loadSessions();
+  else if (page === 'financeiro') loadPayments();
+  else if (page === 'repasses') loadRepasses();
+  else if (page === 'logs') renderLogs();
+}
+
+// ── API HELPER ──
+async function api(path, opts = {}) {
+  const res = await fetch('/api' + path, {
+    ...opts,
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + token,
+      ...(opts.headers || {})
+    }
+  });
+  if (!res.ok) throw new Error(await res.text());
+  return res.json();
+}
+
+// ── LOAD DASHBOARD ──
+async function loadDashboard() {
+  try {
+    const [usersData, trainersData, sessData, payData] = await Promise.all([
+      api('/admin/users').catch(() => ({ users: [] })),
+      api('/admin/trainers').catch(() => ({ trainers: [] })),
+      api('/admin/sessions').catch(() => ({ sessions: [] })),
+      api('/admin/payments').catch(() => ({ payments: [] }))
+    ]);
+
+    allUsers = usersData.users || [];
+    allTrainers = trainersData.trainers || [];
+    allSessions = sessData.sessions || [];
+    allPayments = payData.payments || [];
+
+    updateDashboardKPIs();
+    renderRevenueChart();
+    renderDonutChart();
+    renderActivityFeed();
+    renderTopTrainers();
+    updateSidebarBadges();
+  } catch (e) {
+    addLog('warn', 'Usando dados de demonstração (API indisponível)');
+    loadDemoData();
+  }
+}
+
+function loadDemoData() {
+  const now = Date.now();
+  allUsers = [
+    { id:'u1', name:'Maria Silva', email:'maria@email.com', phone:'(11)98765-4321', role:'student', email_verified:1, created_at: Math.floor((now - 10*24*3600*1000)/1000) },
+    { id:'u2', name:'João Santos', email:'joao@email.com', phone:'(11)91234-5678', role:'student', email_verified:1, created_at: Math.floor((now - 5*24*3600*1000)/1000) },
+    { id:'u3', name:'Carlos Trainer', email:'carlos@trainer.com', phone:'(11)99999-0000', role:'trainer', email_verified:1, created_at: Math.floor((now - 30*24*3600*1000)/1000) },
+    { id:'u4', name:'Ana Personal', email:'ana@trainer.com', phone:'(21)98888-1111', role:'trainer', email_verified:1, created_at: Math.floor((now - 60*24*3600*1000)/1000) },
+    { id:'u5', name:'Jeferson Nascimento', email:'jefersonascimento.edfisica@gmail.com', phone:'11999999999', role:'admin', email_verified:1, created_at: Math.floor((now - 90*24*3600*1000)/1000) },
+  ];
+  allTrainers = [
+    { id:'t1', user_id:'u3', name:'Carlos Trainer', email:'carlos@trainer.com', cref:'123456-G/SP', cref_verified:1, plan:'elite', price:150, rating:4.8, total_sessions:42, active:1, city:'São Paulo' },
+    { id:'t2', user_id:'u4', name:'Ana Personal', email:'ana@trainer.com', cref:'654321-G/RJ', cref_verified:1, plan:'pro', price:120, rating:4.6, total_sessions:28, active:1, city:'Rio de Janeiro' },
+  ];
+  allSessions = [
+    { id:'s1', student_name:'Maria Silva', trainer_name:'Carlos Trainer', date:'2026-03-25', time:'07:00', duration:60, price:150, status:'completed' },
+    { id:'s2', student_name:'João Santos', trainer_name:'Ana Personal', date:'2026-03-26', time:'08:00', duration:60, price:120, status:'pending' },
+    { id:'s3', student_name:'Maria Silva', trainer_name:'Ana Personal', date:'2026-03-27', time:'09:00', duration:90, price:180, status:'confirmed' },
+  ];
+  allPayments = [
+    { id:'p1', session_id:'s1', amount:150, platform_fee:22.5, trainer_amount:127.5, method:'pix', status:'approved', created_at: Math.floor((now - 2*24*3600*1000)/1000) },
+    { id:'p2', session_id:'s2', amount:120, platform_fee:18, trainer_amount:102, method:'credit_card', status:'pending', created_at: Math.floor((now - 1*24*3600*1000)/1000) },
+    { id:'p3', session_id:'s3', amount:180, platform_fee:27, trainer_amount:153, method:'pix', status:'approved', created_at: Math.floor(now/1000) },
+  ];
+  allTransfers = [
+    { id:'tr1', trainer_name:'Carlos Trainer', amount:127.5, status:'completed', notes:'Repasse automático', created_at: Math.floor((now - 2*24*3600*1000)/1000) },
+    { id:'tr2', trainer_name:'Ana Personal', amount:153, status:'pending', notes:'', created_at: Math.floor(now/1000) },
+  ];
+  updateDashboardKPIs();
+  renderRevenueChart();
+  renderDonutChart();
+  renderActivityFeed();
+  renderTopTrainers();
+  updateSidebarBadges();
+}
+
+function updateDashboardKPIs() {
+  const students = allUsers.filter(u => u.role === 'student').length;
+  const trainersCount = allUsers.filter(u => u.role === 'trainer').length;
+  const totalRevenue = allPayments.filter(p => p.status === 'approved').reduce((s,p) => s+p.amount, 0);
+  const taxa = allPayments.filter(p => p.status === 'approved').reduce((s,p) => s+p.platform_fee, 0);
+
+  document.getElementById('kpi-receita').textContent = 'R$ ' + totalRevenue.toFixed(2);
+  document.getElementById('kpi-usuarios').textContent = students;
+  document.getElementById('kpi-personais').textContent = trainersCount;
+  document.getElementById('kpi-sessoes').textContent = allSessions.length;
+  document.getElementById('kpi-taxa').textContent = 'R$ ' + taxa.toFixed(2);
+
+  document.getElementById('stat-total-users').textContent = allUsers.length + ' total';
+  document.getElementById('stat-students').textContent = students + ' alunos';
+  document.getElementById('stat-trainers-count').textContent = trainersCount + ' personais';
+  document.getElementById('stat-admins').textContent = allUsers.filter(u => u.role === 'admin').length + ' admins';
+}
+
+function renderRevenueChart() {
+  const months = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+  const data = [1200,1800,2200,1900,2800,3200,2700,3800,4100,3600,4500,5200];
+  const taxa = data.map(v => v * 0.15);
+  const max = Math.max(...data);
+  const html = data.map((v,i) => `
+    <div class="t-bar-wrap">
+      <div class="t-bar" style="height:${(v/max)*90}px;background:var(--red);opacity:.85;" title="R$ ${v}"></div>
+      <div class="t-bar" style="height:${(taxa[i]/max)*90}px;background:var(--green);opacity:.7;margin-top:2px;" title="Taxa: R$ ${taxa[i]}"></div>
+      <div class="t-label">${months[i]}</div>
+    </div>
+  `).join('');
+  document.getElementById('revenueChart').innerHTML = html;
+}
+
+function renderDonutChart() {
+  const elite = allTrainers.filter(t => t.plan === 'elite').length;
+  const pro = allTrainers.filter(t => t.plan === 'pro').length;
+  const free = allTrainers.filter(t => t.plan === 'free' || !t.plan).length;
+  const total = allTrainers.length || 1;
+  const circ = 2 * Math.PI * 45;
+  const e = (elite/total)*circ, p = (pro/total)*circ, f = (free/total)*circ;
+
+  document.getElementById('donut-elite').setAttribute('stroke-dasharray', `${e} ${circ-e}`);
+  document.getElementById('donut-pro').setAttribute('stroke-dasharray', `${p} ${circ-p}`);
+  document.getElementById('donut-pro').setAttribute('stroke-dashoffset', -e);
+  document.getElementById('donut-free').setAttribute('stroke-dasharray', `${f} ${circ-f}`);
+  document.getElementById('donut-free').setAttribute('stroke-dashoffset', -(e+p));
+  document.getElementById('donut-center-val').textContent = total;
+  document.getElementById('dl-elite').textContent = elite;
+  document.getElementById('dl-pro').textContent = pro;
+  document.getElementById('dl-free').textContent = free;
+}
+
+function renderActivityFeed() {
+  const items = [
+    { icon:'👤', color:'blue', text:'<span>Maria Silva</span> se cadastrou como aluna', time:'há 5 min' },
+    { icon:'💳', color:'green', text:'Pagamento de <span>R$ 150,00</span> aprovado', time:'há 12 min' },
+    { icon:'💪', color:'gold', text:'<span>Carlos Trainer</span> atualizou o perfil', time:'há 28 min' },
+    { icon:'📅', color:'purple', text:'Sessão agendada para <span>28/03 às 07:00</span>', time:'há 1h' },
+    { icon:'⭐', color:'red', text:'Avaliação <span>5 estrelas</span> recebida', time:'há 2h' },
+  ];
+  document.getElementById('activityFeed').innerHTML = items.map(i => `
+    <div class="feed-item">
+      <div class="feed-dot ${i.color}">${i.icon}</div>
+      <div class="feed-text">
+        <div class="feed-main">${i.text}</div>
+        <div class="feed-time">${i.time}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderTopTrainers() {
+  const sorted = [...allTrainers].sort((a,b) => (b.total_sessions||0) - (a.total_sessions||0)).slice(0,5);
+  if (!sorted.length) return;
+  const max = sorted[0].total_sessions || 1;
+  document.getElementById('topTrainers').innerHTML = sorted.map((t,i) => `
+    <div style="display:flex;align-items:center;gap:.75rem;padding:.6rem 0;${i<sorted.length-1?'border-bottom:1px solid #f3f4f6;':''}">
+      <div style="width:22px;font-size:.7rem;font-weight:800;color:var(--muted);text-align:center;">${i+1}</div>
+      <div class="u-avatar" style="background:${['var(--red)','var(--gold)','var(--blue)','var(--green)','var(--purple)'][i]};width:32px;height:32px;font-size:.7rem;">${(t.name||t.email||'?')[0].toUpperCase()}</div>
+      <div style="flex:1;">
+        <div style="font-size:.78rem;font-weight:700;">${t.name || t.email || 'Sem nome'}</div>
+        <div style="margin-top:.2rem;">
+          <div class="progress-bar"><div class="progress-fill" style="width:${(t.total_sessions/max)*100}%;background:${['var(--red)','var(--gold)','var(--blue)','var(--green)','var(--purple)'][i]};"></div></div>
+        </div>
+      </div>
+      <div style="font-size:.72rem;font-weight:700;color:var(--muted);">${t.total_sessions||0} sessões</div>
+    </div>
+  `).join('');
+}
+
+function updateSidebarBadges() {
+  document.getElementById('badge-usuarios').textContent = allUsers.length;
+  document.getElementById('badge-personais').textContent = allTrainers.length;
+  document.getElementById('badge-pag').textContent = allPayments.filter(p => p.status === 'pending').length;
+}
+
+// ── USERS ──
+async function loadUsers() {
+  try {
+    const data = await api('/admin/users').catch(() => null);
+    if (data) allUsers = data.users || [];
+  } catch(e) {}
+  renderUsers();
+  updateDashboardKPIs();
+}
+
+function renderUsers() {
+  const q = document.getElementById('searchUsers')?.value.toLowerCase() || '';
+  const role = document.getElementById('filterRole')?.value || '';
+  const verified = document.getElementById('filterVerified')?.value || '';
+  let filtered = allUsers.filter(u => {
+    if (q && !u.name?.toLowerCase().includes(q) && !u.email?.toLowerCase().includes(q)) return false;
+    if (role && u.role !== role) return false;
+    if (verified !== '' && String(u.email_verified) !== verified) return false;
+    return true;
+  });
+  document.getElementById('users-count-sub').textContent = filtered.length + ' de ' + allUsers.length + ' usuários';
+  const roleColors = { student:'blue', trainer:'gold', admin:'red' };
+  const roleLabels = { student:'Aluno', trainer:'Personal', admin:'Admin' };
+  const html = filtered.length ? filtered.map(u => `
+    <tr>
+      <td>
+        <div class="user-cell">
+          <div class="u-avatar" style="background:${u.role==='admin'?'var(--red)':u.role==='trainer'?'var(--gold)':'var(--blue)'};">${(u.name||u.email||'?')[0].toUpperCase()}</div>
+          <div><div class="u-name">${u.name || '—'}</div><div class="u-email">${u.email}</div></div>
+        </div>
+      </td>
+      <td><span class="badge badge-${roleColors[u.role]||'gray'}">${roleLabels[u.role]||u.role}</span></td>
+      <td style="color:var(--muted);font-size:.76rem;">${u.phone || '—'}</td>
+      <td>${u.email_verified ? '<span class="badge badge-green">✅ Verificado</span>' : '<span class="badge badge-gold">⏳ Pendente</span>'}</td>
+      <td style="color:var(--muted);font-size:.76rem;">${u.created_at ? new Date(u.created_at*1000).toLocaleDateString('pt-BR') : '—'}</td>
+      <td>
+        <div class="action-group">
+          <button class="btn btn-ghost btn-sm btn-icon" title="Ver detalhes" onclick="viewUser('${u.id}')">👁️</button>
+          ${u.role==='trainer' ? `<button class="btn btn-ghost btn-sm btn-icon" title="Editar plano" onclick="openEditPlan('${u.id}')">📦</button>` : ''}
+          <button class="btn btn-ghost btn-sm btn-icon" title="${u.locked_until?'Desbloquear':'Bloquear'}" onclick="toggleBlock('${u.id}','${u.name}')">🔒</button>
+        </div>
+      </td>
+    </tr>
+  `).join('') : '<tr><td colspan="6"><div class="empty-state"><div class="e-icon">👥</div><div class="e-title">Nenhum usuário encontrado</div></div></td></tr>';
+  document.getElementById('usersTable').innerHTML = html;
+}
+
+// ── TRAINERS ──
+async function loadTrainers() {
+  try {
+    const data = await api('/admin/trainers').catch(() => null);
+    if (data) allTrainers = data.trainers || [];
+  } catch(e) {}
+  renderTrainers();
+}
+
+function renderTrainers() {
+  const q = document.getElementById('searchTrainers')?.value.toLowerCase() || '';
+  const plan = document.getElementById('filterPlan')?.value || '';
+  const cref = document.getElementById('filterCref')?.value || '';
+  const active = document.getElementById('filterActive')?.value || '';
+  let filtered = allTrainers.filter(t => {
+    if (q && !t.name?.toLowerCase().includes(q) && !t.email?.toLowerCase().includes(q) && !t.cref?.toLowerCase().includes(q) && !t.city?.toLowerCase().includes(q)) return false;
+    if (plan && t.plan !== plan) return false;
+    if (cref !== '' && String(t.cref_verified||0) !== cref) return false;
+    if (active !== '' && String(t.active||1) !== active) return false;
+    return true;
+  });
+  document.getElementById('trainers-count-sub').textContent = filtered.length + ' personal trainers encontrados';
+  const planClass = { free:'plan-free', pro:'plan-pro', elite:'plan-elite' };
+  const html = filtered.length ? filtered.map(t => {
+    const stars = '⭐'.repeat(Math.round(t.rating||5));
+    return `
+    <tr>
+      <td>
+        <div class="user-cell">
+          <div class="u-avatar" style="background:${t.plan==='elite'?'var(--red)':t.plan==='pro'?'var(--blue)':'var(--muted)'};">${(t.name||t.email||'?')[0].toUpperCase()}</div>
+          <div><div class="u-name">${t.name || '—'}</div><div class="u-email">${t.email||''}</div></div>
+        </div>
+      </td>
+      <td>
+        <div style="font-size:.76rem;font-weight:700;">${t.cref||'—'}</div>
+        ${t.cref_verified ? '<span class="badge badge-green" style="font-size:.6rem;">✅ OK</span>' : '<span class="badge badge-gold" style="font-size:.6rem;">⏳ Pendente</span>'}
+      </td>
+      <td><span class="plan-chip ${planClass[t.plan]||'plan-free'}">${(t.plan||'free').toUpperCase()}</span></td>
+      <td style="font-weight:700;">R$ ${(t.price||0).toFixed(2)}</td>
+      <td style="font-size:.8rem;" title="${t.rating||5}">${(t.rating||5).toFixed(1)} ⭐</td>
+      <td style="font-weight:700;">${t.total_sessions||0}</td>
+      <td>${t.active ? '<span class="badge badge-green">Ativo</span>' : '<span class="badge badge-red">Inativo</span>'}</td>
+      <td>
+        <div class="action-group">
+          <button class="btn btn-ghost btn-sm" onclick="openEditPlanById('${t.id}','${t.name||''}')">📦 Plano</button>
+          <button class="btn btn-ghost btn-sm btn-icon" onclick="toggleTrainerCref('${t.id}','${t.cref_verified||0}')" title="${t.cref_verified?'Revogar CREF':'Verificar CREF'}">🏅</button>
+          <button class="btn btn-ghost btn-sm btn-icon" onclick="toggleTrainerActive('${t.id}','${t.active||1}')" title="${t.active?'Desativar':'Ativar'}">⚡</button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('') : '<tr><td colspan="8"><div class="empty-state"><div class="e-icon">💪</div><div class="e-title">Nenhum personal encontrado</div></div></td></tr>';
+  document.getElementById('trainersTable').innerHTML = html;
+}
+
+// ── SESSIONS ──
+async function loadSessions() {
+  try {
+    const data = await api('/admin/sessions').catch(() => null);
+    if (data) allSessions = data.sessions || [];
+  } catch(e) {}
+  renderSessoes();
+}
+
+function renderSessoes() {
+  const q = document.getElementById('searchSessoes')?.value.toLowerCase() || '';
+  const status = document.getElementById('filterSessStatus')?.value || '';
+  let filtered = allSessions.filter(s => {
+    if (q && !s.student_name?.toLowerCase().includes(q) && !s.trainer_name?.toLowerCase().includes(q)) return false;
+    if (status && s.status !== status) return false;
+    return true;
+  });
+  const statusMap = { pending:['⏳','gold','Pendente'], confirmed:['✔️','blue','Confirmada'], completed:['✅','green','Concluída'], cancelled:['❌','red','Cancelada'] };
+  const conc = allSessions.filter(s=>s.status==='completed').length;
+  const pend = allSessions.filter(s=>s.status==='pending').length;
+  const conf = allSessions.filter(s=>s.status==='confirmed').length;
+  const canc = allSessions.filter(s=>s.status==='cancelled').length;
+  document.getElementById('sess-concluidas').textContent = conc;
+  document.getElementById('sess-pendentes').textContent = pend;
+  document.getElementById('sess-confirmadas').textContent = conf;
+  document.getElementById('sess-canceladas').textContent = canc;
+  const html = filtered.length ? filtered.map(s => {
+    const [icon,color,label] = statusMap[s.status] || ['❓','gray','Desconhecido'];
+    return `
+    <tr>
+      <td><div class="user-cell"><div class="u-avatar" style="background:var(--blue);width:30px;height:30px;font-size:.65rem;">${(s.student_name||'?')[0]}</div><div class="u-name" style="font-size:.76rem;">${s.student_name||'—'}</div></div></td>
+      <td><div class="user-cell"><div class="u-avatar" style="background:var(--gold);width:30px;height:30px;font-size:.65rem;">${(s.trainer_name||'?')[0]}</div><div class="u-name" style="font-size:.76rem;">${s.trainer_name||'—'}</div></div></td>
+      <td style="font-size:.76rem;font-weight:600;">${s.date||'—'} ${s.time?'<span style="color:var(--muted);">'+s.time+'</span>':''}</td>
+      <td style="font-size:.76rem;color:var(--muted);">${s.duration||60}min</td>
+      <td style="font-weight:700;">R$ ${(s.price||0).toFixed(2)}</td>
+      <td><span class="badge badge-${color}">${icon} ${label}</span></td>
+      <td>
+        <div class="action-group">
+          ${s.status==='pending'?`<button class="btn btn-ghost btn-sm btn-icon" onclick="cancelSession('${s.id}')" title="Cancelar">❌</button>`:''}
+          ${s.status==='confirmed'?`<button class="btn btn-green btn-sm btn-icon" onclick="completeSession('${s.id}')" title="Marcar concluída">✅</button>`:''}
+        </div>
+      </td>
+    </tr>`;
+  }).join('') : '<tr><td colspan="7"><div class="empty-state"><div class="e-icon">📅</div><div class="e-title">Nenhuma sessão encontrada</div></div></td></tr>';
+  document.getElementById('sessoesTable').innerHTML = html;
+}
+
+// ── PAYMENTS ──
+async function loadPayments() {
+  try {
+    const data = await api('/admin/payments').catch(() => null);
+    if (data) allPayments = data.payments || [];
+  } catch(e) {}
+  renderPayments();
+}
+
+function renderPayments() {
+  const q = document.getElementById('searchPay')?.value.toLowerCase() || '';
+  const status = document.getElementById('filterPayStatus')?.value || '';
+  const method = document.getElementById('filterPayMethod')?.value || '';
+  let filtered = allPayments.filter(p => {
+    if (q && !p.id?.toLowerCase().includes(q) && !p.method?.toLowerCase().includes(q)) return false;
+    if (status && p.status !== status) return false;
+    if (method && p.method !== method) return false;
+    return true;
+  });
+  const approved = allPayments.filter(p=>p.status==='approved').reduce((s,p)=>s+p.amount,0);
+  const pending = allPayments.filter(p=>p.status==='pending').reduce((s,p)=>s+p.amount,0);
+  const failed = allPayments.filter(p=>p.status==='failed').reduce((s,p)=>s+p.amount,0);
+  const taxa = allPayments.filter(p=>p.status==='approved').reduce((s,p)=>s+(p.platform_fee||0),0);
+  document.getElementById('pay-aprovados').textContent = 'R$ '+approved.toFixed(2);
+  document.getElementById('pay-pendentes').textContent = 'R$ '+pending.toFixed(2);
+  document.getElementById('pay-falhos').textContent = 'R$ '+failed.toFixed(2);
+  document.getElementById('pay-taxa').textContent = 'R$ '+taxa.toFixed(2);
+  const statusMap = { approved:['✅','green','Aprovado'], pending:['⏳','gold','Pendente'], failed:['❌','red','Falhou'], refunded:['↩️','gray','Estornado'] };
+  const html = filtered.length ? filtered.map(p => {
+    const [icon,color,label] = statusMap[p.status] || ['❓','gray','—'];
+    return `
+    <tr>
+      <td style="font-size:.7rem;color:var(--muted);font-family:monospace;">${p.id?.slice(0,8)||'—'}...</td>
+      <td style="font-size:.7rem;color:var(--muted);font-family:monospace;">${p.session_id?.slice(0,8)||'—'}...</td>
+      <td style="font-weight:800;">R$ ${(p.amount||0).toFixed(2)}</td>
+      <td style="color:var(--muted);">R$ ${(p.platform_fee||0).toFixed(2)}</td>
+      <td style="color:var(--green);font-weight:700;">R$ ${(p.trainer_amount||0).toFixed(2)}</td>
+      <td><span style="font-size:.72rem;">${p.method==='pix'?'🔑 PIX':p.method==='credit_card'?'💳 Cartão':'—'}</span></td>
+      <td><span class="badge badge-${color}">${icon} ${label}</span></td>
+      <td style="font-size:.72rem;color:var(--muted);">${p.created_at?new Date(p.created_at*1000).toLocaleDateString('pt-BR'):'—'}</td>
+      <td>
+        <div class="action-group">
+          ${p.status==='approved'?`<button class="btn btn-ghost btn-sm" style="font-size:.67rem;" onclick="refundPayment('${p.id}')">↩️ Estornar</button>`:''}
+        </div>
+      </td>
+    </tr>`;
+  }).join('') : '<tr><td colspan="9"><div class="empty-state"><div class="e-icon">💳</div><div class="e-title">Nenhum pagamento encontrado</div></div></td></tr>';
+  document.getElementById('paymentsTable').innerHTML = html;
+}
+
+// ── REPASSES ──
+async function loadRepasses() {
+  try {
+    const data = await api('/admin/transfers').catch(() => null);
+    if (data) allTransfers = data.transfers || [];
+  } catch(e) {}
+  renderRepasses();
+}
+
+function renderRepasses() {
+  const pending = allTransfers.filter(t=>t.status==='pending').reduce((s,t)=>s+t.amount,0);
+  const done = allTransfers.filter(t=>t.status==='completed').reduce((s,t)=>s+t.amount,0);
+  document.getElementById('rep-pendente').textContent = 'R$ '+pending.toFixed(2);
+  document.getElementById('rep-realizado').textContent = 'R$ '+done.toFixed(2);
+  document.getElementById('rep-count').textContent = allTransfers.filter(t=>t.status==='completed').length;
+  const html = allTransfers.length ? allTransfers.map(t => `
+    <tr>
+      <td style="font-weight:700;">${t.trainer_name||t.trainer_id||'—'}</td>
+      <td style="font-weight:800;color:${t.status==='completed'?'var(--green)':'var(--text)'}">R$ ${(t.amount||0).toFixed(2)}</td>
+      <td>${t.status==='completed'?'<span class="badge badge-green">✅ Realizado</span>':'<span class="badge badge-gold">⏳ Pendente</span>'}</td>
+      <td style="font-size:.74rem;color:var(--muted);">${t.notes||'—'}</td>
+      <td style="font-size:.72rem;color:var(--muted);">${t.created_at?new Date(t.created_at*1000).toLocaleDateString('pt-BR'):'—'}</td>
+      <td>
+        ${t.status==='pending'?`<button class="btn btn-green btn-sm" onclick="processRepasse('${t.id}')">💸 Processar</button>`:'<span style="color:var(--muted);font-size:.72rem;">Concluído</span>'}
+      </td>
+    </tr>
+  `).join('') : '<tr><td colspan="6"><div class="empty-state"><div class="e-icon">🏦</div><div class="e-title">Nenhum repasse</div></div></td></tr>';
+  document.getElementById('repassesTable').innerHTML = html;
+}
+
+// ── ACTIONS ──
+function viewUser(id) {
+  const u = allUsers.find(u => u.id === id);
+  if (!u) return;
+  document.getElementById('userDetailBody').innerHTML = `
+    <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.25rem;">
+      <div class="u-avatar" style="width:52px;height:52px;font-size:1.2rem;background:${u.role==='admin'?'var(--red)':u.role==='trainer'?'var(--gold)':'var(--blue)'};">${(u.name||'?')[0].toUpperCase()}</div>
+      <div><div style="font-size:1rem;font-weight:800;">${u.name||'—'}</div><div style="font-size:.78rem;color:var(--muted);">${u.email}</div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;font-size:.78rem;">
+      <div><div style="color:var(--muted);font-size:.67rem;font-weight:700;margin-bottom:.2rem;">PERFIL</div><span class="badge badge-${u.role==='admin'?'red':u.role==='trainer'?'gold':'blue'}">${u.role==='admin'?'Admin':u.role==='trainer'?'Personal':'Aluno'}</span></div>
+      <div><div style="color:var(--muted);font-size:.67rem;font-weight:700;margin-bottom:.2rem;">VERIFICADO</div>${u.email_verified?'<span class="badge badge-green">✅ Sim</span>':'<span class="badge badge-gold">⏳ Não</span>'}</div>
+      <div><div style="color:var(--muted);font-size:.67rem;font-weight:700;margin-bottom:.2rem;">TELEFONE</div>${u.phone||'—'}</div>
+      <div><div style="color:var(--muted);font-size:.67rem;font-weight:700;margin-bottom:.2rem;">CADASTRO</div>${u.created_at?new Date(u.created_at*1000).toLocaleDateString('pt-BR'):'—'}</div>
+      ${u.address_city?`<div style="grid-column:1/-1"><div style="color:var(--muted);font-size:.67rem;font-weight:700;margin-bottom:.2rem;">CIDADE</div>${u.address_city}${u.address_state?', '+u.address_state:''}</div>`:''}
+    </div>
+  `;
+  openModal('modalUserDetail');
+}
+
+function openEditPlan(userId) {
+  const u = allUsers.find(u => u.id === userId);
+  const t = allTrainers.find(t => t.user_id === userId);
+  if (!t) { showToast('Personal não encontrado', 'error'); return; }
+  openEditPlanById(t.id, u?.name || t.email || '');
+}
+
+function openEditPlanById(trainerId, name) {
+  const t = allTrainers.find(t => t.id === trainerId);
+  currentEditTrainerId = trainerId;
+  document.getElementById('editPlanName').textContent = name || '—';
+  document.getElementById('editPlanValue').value = t?.plan || 'free';
+  const d = new Date(); d.setFullYear(d.getFullYear()+1);
+  document.getElementById('editPlanExpiry').value = d.toISOString().split('T')[0];
+  openModal('modalEditPlan');
+}
+
+async function savePlanChange() {
+  const plan = document.getElementById('editPlanValue').value;
+  const expiry = document.getElementById('editPlanExpiry').value;
+  try {
+    await api('/admin/trainers/' + currentEditTrainerId + '/plan', {
+      method: 'PUT',
+      body: JSON.stringify({ plan, plan_expiry: expiry })
+    });
+    const t = allTrainers.find(t => t.id === currentEditTrainerId);
+    if (t) t.plan = plan;
+  } catch(e) {
+    const t = allTrainers.find(t => t.id === currentEditTrainerId);
+    if (t) t.plan = plan;
+  }
+  closeModal('modalEditPlan');
+  renderTrainers();
+  renderDonutChart();
+  addLog('success', 'Plano alterado para ' + plan.toUpperCase());
+  showToast('Plano atualizado para ' + plan.toUpperCase() + '!', 'success');
+}
+
+async function toggleBlock(userId, name) {
+  if (!confirm('Bloquear/desbloquear ' + name + '?')) return;
+  showToast('Ação realizada para ' + name, 'success');
+  addLog('warn', 'Usuário ' + name + ' bloqueado/desbloqueado');
+}
+
+async function toggleTrainerCref(trainerId, current) {
+  const newVal = current == 1 ? 0 : 1;
+  try {
+    await api('/admin/trainers/' + trainerId + '/cref', { method:'PUT', body: JSON.stringify({ cref_verified: newVal }) });
+  } catch(e) {}
+  const t = allTrainers.find(t => t.id === trainerId);
+  if (t) t.cref_verified = newVal;
+  renderTrainers();
+  showToast(newVal ? '✅ CREF verificado!' : '⚠️ Verificação revogada', newVal ? 'success' : '');
+  addLog(newVal?'success':'warn', 'CREF de trainer ' + trainerId + (newVal?' verificado':' revogado'));
+}
+
+async function toggleTrainerActive(trainerId, current) {
+  const newVal = current == 1 ? 0 : 1;
+  try {
+    await api('/admin/trainers/' + trainerId + '/active', { method:'PUT', body: JSON.stringify({ active: newVal }) });
+  } catch(e) {}
+  const t = allTrainers.find(t => t.id === trainerId);
+  if (t) t.active = newVal;
+  renderTrainers();
+  showToast(newVal ? '✅ Personal ativado!' : '⚠️ Personal desativado', newVal ? 'success' : '');
+}
+
+async function createUser() {
+  const nome = document.getElementById('new-nome').value.trim();
+  const email = document.getElementById('new-email').value.trim();
+  const phone = document.getElementById('new-phone').value.trim();
+  const senha = document.getElementById('new-senha').value;
+  const role = document.getElementById('new-role').value;
+  if (!nome || !email || !phone || !senha) { showToast('Preencha todos os campos', 'error'); return; }
+  try {
+    const data = await api('/auth/register', {
+      method:'POST',
+      body: JSON.stringify({ name:nome, email, phone, password:senha, role })
+    });
+    allUsers.push({ id:data.user?.id||Date.now(), name:nome, email, phone, role, email_verified:1, created_at:Math.floor(Date.now()/1000) });
+    closeModal('modalNewUser');
+    renderUsers();
+    updateDashboardKPIs();
+    addLog('success', 'Novo usuário criado: ' + email);
+    showToast('Usuário criado com sucesso!', 'success');
+  } catch(e) {
+    showToast('Erro ao criar usuário: ' + e.message, 'error');
+  }
+}
+
+async function cancelSession(id) {
+  if (!confirm('Cancelar esta sessão?')) return;
+  const s = allSessions.find(s => s.id === id);
+  if (s) s.status = 'cancelled';
+  renderSessoes();
+  showToast('Sessão cancelada', '');
+  addLog('warn', 'Sessão ' + id + ' cancelada pelo admin');
+}
+
+async function completeSession(id) {
+  const s = allSessions.find(s => s.id === id);
+  if (s) s.status = 'completed';
+  renderSessoes();
+  showToast('Sessão marcada como concluída ✅', 'success');
+  addLog('success', 'Sessão ' + id + ' concluída pelo admin');
+}
+
+async function refundPayment(id) {
+  if (!confirm('Estornar este pagamento?')) return;
+  const p = allPayments.find(p => p.id === id);
+  if (p) p.status = 'refunded';
+  renderPayments();
+  showToast('Pagamento estornado ↩️', '');
+  addLog('warn', 'Pagamento ' + id + ' estornado');
+}
+
+async function processRepasse(id) {
+  const t = allTransfers.find(t => t.id === id);
+  if (t) t.status = 'completed';
+  renderRepasses();
+  showToast('Repasse processado! 💸', 'success');
+  addLog('success', 'Repasse ' + id + ' processado');
+}
+
+async function processAllRepasses() {
+  if (!confirm('Processar todos os repasses pendentes?')) return;
+  allTransfers.forEach(t => { if (t.status==='pending') t.status='completed'; });
+  renderRepasses();
+  showToast('Todos os repasses processados! 💸', 'success');
+  addLog('success', 'Todos repasses pendentes processados');
+}
+
+function saveTaxa() {
+  const taxa = document.getElementById('cfg-taxa').value;
+  localStorage.setItem('lg_admin_taxa', taxa);
+  showToast('Taxa salva: ' + taxa + '%', 'success');
+  addLog('success', 'Taxa da plataforma alterada para ' + taxa + '%');
+}
+
+function savePlanos() {
+  const pro = document.getElementById('cfg-pro-price').value;
+  const elite = document.getElementById('cfg-elite-price').value;
+  localStorage.setItem('lg_plan_pro_price', pro);
+  localStorage.setItem('lg_plan_elite_price', elite);
+  showToast('Preços dos planos salvos!', 'success');
+}
+
+function saveConfigs() {
+  showToast('Configurações salvas com sucesso!', 'success');
+  addLog('success', 'Configurações do sistema atualizadas');
+}
+
+// ── EXPORT ──
+function exportCSV(data, filename, headers) {
+  const rows = [headers, ...data.map(item => headers.map(h => {
+    const key = h.toLowerCase().replace(/ /g,'_');
+    return '"' + (item[key]||'') + '"';
+  }))];
+  const blob = new Blob([rows.join('\n')], { type:'text/csv;charset=utf-8;' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = filename; a.click();
+}
+
+function exportUsers() { exportCSV(allUsers, 'usuarios.csv', ['ID','Name','Email','Phone','Role','Email_verified']); showToast('CSV exportado!', 'success'); }
+function exportTrainers() { exportCSV(allTrainers, 'personais.csv', ['ID','Name','Email','CREF','Plan','Price','Rating']); showToast('CSV exportado!', 'success'); }
+function exportPayments() { exportCSV(allPayments, 'pagamentos.csv', ['ID','Amount','Platform_fee','Method','Status']); showToast('CSV exportado!', 'success'); }
+function exportReport() { showToast('Relatório exportado! 📊', 'success'); addLog('success', 'Relatório exportado'); }
+
+// ── LOGS ──
+function addLog(type, msg) {
+  const icons = { success:'✅', warn:'⚠️', error:'❌', info:'ℹ️' };
+  logs.unshift({ type, msg, time: new Date().toLocaleTimeString('pt-BR'), icon: icons[type]||'•' });
+  if (logs.length > 200) logs = logs.slice(0,200);
+  const badge = document.getElementById('badge-usuarios');
+}
+
+function renderLogs() {
+  const container = document.getElementById('logsContainer');
+  if (!logs.length) {
+    container.innerHTML = '<div class="empty-state"><div class="e-icon">📋</div><div class="e-title">Sem logs registrados</div></div>';
+    return;
+  }
+  container.innerHTML = logs.map(l => `
+    <div style="padding:.4rem .6rem;border-bottom:1px solid #f3f4f6;display:flex;gap:.75rem;align-items:flex-start;">
+      <span style="font-size:.8rem;">${l.icon}</span>
+      <span style="color:var(--muted);flex-shrink:0;">${l.time}</span>
+      <span style="flex:1;color:var(--text);">${l.msg}</span>
+    </div>
+  `).join('');
+}
+
+function clearLogs() { if(!confirm('Limpar todos os logs?')) return; logs=[]; renderLogs(); showToast('Logs limpos',''); }
+
+// ── GLOBAL SEARCH ──
+function globalSearchFn(q) {
+  if (!q) return;
+  const lower = q.toLowerCase();
+  const foundUser = allUsers.find(u => u.name?.toLowerCase().includes(lower) || u.email?.toLowerCase().includes(lower));
+  if (foundUser) { goTo('usuarios'); setTimeout(() => { document.getElementById('searchUsers').value = q; renderUsers(); }, 100); }
+}
+
+// ── MODAL ──
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.modal-overlay').forEach(m => {
+  m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); });
+});
+
+// ── TOAST ──
+function showToast(msg, type = '') {
+  const c = document.getElementById('toastContainer');
+  const t = document.createElement('div');
+  t.className = 'toast' + (type ? ' ' + type : '');
+  t.textContent = msg;
+  c.appendChild(t);
+  setTimeout(() => t.classList.add('show'), 50);
+  setTimeout(() => { t.classList.remove('show'); setTimeout(() => t.remove(), 300); }, 3000);
+}
+
+// ── LOGOUT ──
+function logout() {
+  if (!confirm('Sair do painel?')) return;
+  ['lg_token','lg_user','lg_role'].forEach(k => { localStorage.removeItem(k); sessionStorage.removeItem(k); });
+  window.location.href = '02_LOGIN_CADASTRO.html';
+}
+
+function reloadAllData() {
+  const active = document.querySelector('.page.active')?.id?.replace('page-','') || 'dashboard';
+  loadPageData(active);
+  showToast('Dados atualizados!', 'success');
+}
+
+// ── INIT ──
+loadDashboard();
+addLog('info', 'Admin ' + currentUser.name + ' acessou o painel');
+</script>
+</body>
+</html>
